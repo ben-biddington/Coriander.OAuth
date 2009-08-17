@@ -2,10 +2,6 @@ package org.coriander.oauth
 
 import scala.collection.immutable._
 import java.net._
-
-//import collection.Map
-//import collection.immutable.{TreeMap, Map=>IMap}
-
 import javax.crypto
 import java.net.URI
 import org.apache.http.protocol.HTTP.UTF_8

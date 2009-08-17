@@ -5,6 +5,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.Assert._
 import org.junit.matchers._
+import org.junit.matchers.JUnitMatchers._
+import org.hamcrest._
+import org.hamcrest.Matcher._
 import org.hamcrest.CoreMatchers._
 import org.junit._
 import org.apache.commons.httpclient._
@@ -37,10 +40,7 @@ class SignatureBaseStringTest extends TestBase {
 
         Assert.assertEquals(expectedEncodedValue, actualValue)
     }
-
-    // Test: The string-to-sign must contain the oauth parameters, as well as all the supplied parameters
-    // Test: The result has ALL the params supplied
-
+    
     @Test
     def given_a_parameter_containing_reserved_character_then_result_is_RFC3629_percent_encoded() {
         val originalValue = "http://some-url?param=value"
@@ -81,12 +81,6 @@ class SignatureBaseStringTest extends TestBase {
         var parametersExcludingOAuth : List[NameValuePair] = trimOAuth(
             parseQuery(result.getQuery)
         )
-        
-        //        parametersExcludingOAuth.foreach(
-        //            nvp => {
-        //                println("name: " + nvp.getName)
-        //            }
-        //        )
 
         val expectedList : List[NameValuePair] = List(
             new NameValuePair("a", "a_value"),
@@ -102,4 +96,35 @@ class SignatureBaseStringTest extends TestBase {
             )
         }
     }
+
+    @Test @Ignore("In progress")
+    def given_a_list_of_parameters_then_result_contains_them_all() {
+         val requestParams = Map(
+            "a" -> "xxx",
+            "b" -> "yyy",
+            "c" -> "zzz"
+        )
+
+        val result : java.net.URI = new SignatureBaseString(
+            aValidUri,
+            requestParams,
+            consumerKey,
+            consumerKey
+        )
+
+        val allParameters : List[NameValuePair] = parseQuery(result.getQuery)
+
+        val matcher : Matcher[NameValuePair] = equalTo(allParameters(0));
+        val listMatcher : Matcher[java.lang.Iterable[java.lang.String]] = hasItem("xxx");
+        //val nvpListMatcher : Matcher[List[NameValuePair]] = hasItem(new NameValuePair);
+
+        //val iterable : java.lang.Iterable[NameValuePair] = allParameters
+
+        //Assert.assertThat(allParameters, nvpListMatcher);
+        //Assert.assertThat(allParameters, hasItem("key"))
+        //
+        // Assert.assertThat("", hasItem(is(matches("xxx"))))
+    }
+
+    // Test: The string-to-sign must contain the oauth parameters, as well as all the supplied parameters
 }
