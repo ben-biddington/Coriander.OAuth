@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="0" failures="0" hostname="benb" name="org.coriander.oauth.tests.SignatureBaseStringTest" tests="6" time="0.187" timestamp="2009-08-18T13:09:28">
+<testsuite errors="0" failures="0" hostname="benb" name="org.coriander.oauth.tests.SignatureBaseStringTest" tests="6" time="0.187" timestamp="2009-08-18T13:12:26">
   <properties>
     <property name="default.javac.source" value="1.1" />
     <property name="file.encoding.pkg" value="sun.io" />
@@ -270,10 +270,10 @@
     <property name="env.lib" value="C:\Program Files\SQLXML 4.0\bin\" />
     <property name="sun.arch.data.model" value="32" />
   </properties>
-  <testcase classname="org.coriander.oauth.tests.SignatureBaseStringTest" name="given_an_http_verb_in_uppercase_then_result_starts_with_the_lowercase_version" time="0.093" />
-  <testcase classname="org.coriander.oauth.tests.SignatureBaseStringTest" name="given_a_list_of_parameters_then_result_contains_all_expected_oauth_parameters" time="0.016" />
+  <testcase classname="org.coriander.oauth.tests.SignatureBaseStringTest" name="given_an_http_verb_in_uppercase_then_result_starts_with_the_lowercase_version" time="0.094" />
+  <testcase classname="org.coriander.oauth.tests.SignatureBaseStringTest" name="given_a_list_of_parameters_then_result_contains_all_expected_oauth_parameters" time="0.031" />
   <testcase classname="org.coriander.oauth.tests.SignatureBaseStringTest" name="given_a_list_of_parameters_then_result_contains_them_all" time="0.0" />
-  <testcase classname="org.coriander.oauth.tests.SignatureBaseStringTest" name="given_an_unsorted_list_of_parameters_then_result_has_them_sorted" time="0.015" />
+  <testcase classname="org.coriander.oauth.tests.SignatureBaseStringTest" name="given_an_unsorted_list_of_parameters_then_result_has_them_sorted" time="0.016" />
   <testcase classname="org.coriander.oauth.tests.SignatureBaseStringTest" name="given_a_parameter_containing_reserved_character_then_result_is_RFC3629_percent_encoded" time="0.0" />
   <testcase classname="org.coriander.oauth.tests.SignatureBaseStringTest" name="given_a_parameter_containing_reserved_character_then_the_result_contains_url_encoded_parameter" time="0.0" />
   <system-out><![CDATA[]]></system-out>

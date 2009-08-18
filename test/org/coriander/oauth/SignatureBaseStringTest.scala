@@ -159,7 +159,7 @@ class SignatureBaseStringTest extends TestBase {
 
         Assert assertFalse(
             String format(
-                "Expected that the returned value would begin with '%1$s', " + \
+                "Expected that the returned value would begin with '%1$s', " + 
                 "but it did not. Actual: <%2$s>",
                 expectedMethod,
                 signatureBaseString.toString
