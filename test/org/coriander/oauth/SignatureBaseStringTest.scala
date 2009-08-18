@@ -22,6 +22,8 @@ class SignatureBaseStringTest extends TestBase {
     val consumerSecret = "secret"
     val aValidUri =  new java.net.URI("http://xxx/")
 
+    var parameters : Map[String, String] = Map()
+
     @Test
     def given_a_parameter_containing_reserved_character_then_the_result_contains_url_encoded_parameter() {
         val originalValue = "this value requires encoding"
@@ -65,15 +67,11 @@ class SignatureBaseStringTest extends TestBase {
 
     @Test
     def given_an_unsorted_list_of_parameters_then_result_has_them_sorted() {
-        val unsortedParams = Map(
-            "c" -> "c_value",
-            "b" -> "b_value",
-            "a" -> "a_value"
-        )
+        given_an_unsorted_list_of_parameters
 
         val result : java.net.URI = new SignatureBaseString(
             aValidUri,
-            unsortedParams,
+            parameters,
             consumerKey,
             consumerKey
         )
@@ -97,33 +95,49 @@ class SignatureBaseStringTest extends TestBase {
         }
     }
 
-    @Test @Ignore("In progress")
+    @Test
     def given_a_list_of_parameters_then_result_contains_them_all() {
-         val requestParams = Map(
-            "a" -> "xxx",
-            "b" -> "yyy",
-            "c" -> "zzz"
-        )
+        given_a_list_of_parameters
 
         val result : java.net.URI = new SignatureBaseString(
             aValidUri,
-            requestParams,
+            parameters,
             consumerKey,
             consumerKey
         )
 
         val allParameters : List[NameValuePair] = parseQuery(result.getQuery)
 
-        val matcher : Matcher[NameValuePair] = equalTo(allParameters(0));
-        val listMatcher : Matcher[java.lang.Iterable[java.lang.String]] = hasItem("xxx");
-        //val nvpListMatcher : Matcher[List[NameValuePair]] = hasItem(new NameValuePair);
+        parameters.foreach(
+            (nameValueTuple : Tuple2[String, String]) => {
+                Assert.assertThat(
+                    String.format(
+                        "Expected the returned parameters to contain " +
+                        "parameter called '%1$s', with value '%2$s'",
+                        nameValueTuple._1,
+                        nameValueTuple._2
+                    ),
+                    contains(allParameters, nameValueTuple),
+                    is(true)
+                )
+            }
+        )
+    }
 
-        //val iterable : java.lang.Iterable[NameValuePair] = allParameters
+    private def given_a_list_of_parameters() {
+        parameters = Map(
+            "c" -> "c_value",
+            "b" -> "b_value",
+            "a" -> "a_value"
+        )
+    }
 
-        //Assert.assertThat(allParameters, nvpListMatcher);
-        //Assert.assertThat(allParameters, hasItem("key"))
-        //
-        // Assert.assertThat("", hasItem(is(matches("xxx"))))
+    private def given_an_unsorted_list_of_parameters() {
+        parameters = Map(
+            "c" -> "c_value",
+            "b" -> "b_value",
+            "a" -> "a_value"
+        )
     }
 
     // Test: The string-to-sign must contain the oauth parameters, as well as all the supplied parameters

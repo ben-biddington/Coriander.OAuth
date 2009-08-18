@@ -37,4 +37,24 @@ class TestBase {
 
         listResult.toList
     }
+
+    //
+    // Common Assertions
+    //
+     /**
+     * Asserts that the supplied list contains a matching entry
+    */
+    protected def contains(
+        list : List[NameValuePair],
+        expected : Tuple2[String, String]
+    ) : Boolean = {
+        val (expectedName, expectedValue) = expected
+
+        list.exists(
+            actualnameValuePair => {
+                actualnameValuePair.getName == expectedName &&
+                actualnameValuePair.getValue == expectedValue
+            }
+        )
+    }
 }
