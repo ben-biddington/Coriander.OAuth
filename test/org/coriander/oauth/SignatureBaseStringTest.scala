@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.util._
 import org.junit.rules._
 import scala.collection.immutable._
 import org.coriander.oauth._
+import scala.util.matching.Regex._
 
 class SignatureBaseStringTest extends TestBase {
 
@@ -23,7 +24,8 @@ class SignatureBaseStringTest extends TestBase {
     val aValidUri =  new java.net.URI("http://xxx/")
 
     var parameters : Map[String, String] = Map()
-
+    var signatureBaseString : java.net.URI = null;
+    
     @Test
     def given_a_parameter_containing_reserved_character_then_the_result_contains_url_encoded_parameter() {
         val originalValue = "this value requires encoding"
@@ -40,7 +42,7 @@ class SignatureBaseStringTest extends TestBase {
             find(item => item.getName() == "xxx").
             get.getValue;
 
-        Assert.assertEquals(expectedEncodedValue, actualValue)
+        Assert assertEquals(expectedEncodedValue, actualValue)
     }
     
     @Test
@@ -59,7 +61,7 @@ class SignatureBaseStringTest extends TestBase {
             find(item => item.getName() == "xxx").
             get.getValue;
 
-        Assert.assertThat(
+        Assert assertThat(
             "The result must conform to RFC3629 for percent-encoding",
             actualValue, is(equalTo(expectedEncodedValue))
         )
@@ -87,7 +89,7 @@ class SignatureBaseStringTest extends TestBase {
         )
 
         for (i <- 0 to expectedList.length - 1) {
-            Assert.assertThat(
+            Assert assertThat(
                 "Sorting of resultant query paramsters should matches expected.",
                 parametersExcludingOAuth(i),
                 is(equalTo(expectedList(i)))
@@ -110,7 +112,7 @@ class SignatureBaseStringTest extends TestBase {
 
         parameters.foreach(
             (nameValueTuple : Tuple2[String, String]) => {
-                Assert.assertThat(
+                Assert assertThat(
                     String.format(
                         "Expected the returned parameters to contain " +
                         "parameter called '%1$s', with value '%2$s'",
@@ -124,11 +126,56 @@ class SignatureBaseStringTest extends TestBase {
         )
     }
 
+    // See: http://oauth.net/core/1.0/#anchor13
+    @Test
+    def given_a_list_of_parameters_then_result_contains_all_expected_oauth_parameters() {
+        given_a_list_of_parameters
+        when_signature_base_string_is_created
+        val allParameters : List[NameValuePair] = parseQuery(signatureBaseString.getQuery)
+
+        val requiredParameters = List(
+            "oauth_consumer_key",
+            "oauth_signature_method",
+            "oauth_timestamp",
+            "oauth_nonce",
+        )
+
+        requiredParameters.foreach(
+            requiredName => assertContainsName(allParameters, requiredName)
+        )
+    }
+
+    @Test
+    def given_an_http_verb_in_uppercase_then_result_starts_with_the_lowercase_version() {
+        val expectedMethod = "get"
+
+        given_a_list_of_parameters
+       
+        when_signature_base_string_is_created(expectedMethod)
+
+        var pattern = "^" + expectedMethod r
+        
+        val found = pattern findPrefixOf(signatureBaseString.toString)
+
+        Assert assertFalse(
+            String format(
+                "Expected that the returned value would begin with '%1$s', " + \
+                "but it did not. Actual: <%2$s>",
+                expectedMethod,
+                signatureBaseString.toString
+            ),
+            found == None
+        )
+    }
+
+    // Test: given_an_http_verb_then_result_has_lowercased_it
+    // Test: Result includes absolute URL (scheme, host (exlcuding port) and absolute path), and is in lower case
+
     private def given_a_list_of_parameters() {
         parameters = Map(
-            "c" -> "c_value",
+            "a" -> "a_value",
             "b" -> "b_value",
-            "a" -> "a_value"
+            "c" -> "c_value"
         )
     }
 
@@ -138,7 +185,21 @@ class SignatureBaseStringTest extends TestBase {
             "b" -> "b_value",
             "a" -> "a_value"
         )
+    } 
+
+    private def when_signature_base_string_is_created() {
+        when_signature_base_string_is_created("get");
     }
 
-    // Test: The string-to-sign must contain the oauth parameters, as well as all the supplied parameters
+    private def when_signature_base_string_is_created(method : String) {
+        signatureBaseString = new SignatureBaseString(
+            method,
+            aValidUri,
+            parameters,
+            consumerKey,
+            consumerKey
+        )
+
+        // println(String.format("base_string='%1$s'", signatureBaseString))
+    }
 }

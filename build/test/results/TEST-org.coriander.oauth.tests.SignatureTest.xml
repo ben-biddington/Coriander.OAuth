@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="0" failures="0" hostname="benb" name="org.coriander.oauth.tests.SignatureTest" tests="2" time="0.079" timestamp="2009-08-18T08:13:55">
+<testsuite errors="0" failures="0" hostname="benb" name="org.coriander.oauth.tests.SignatureTest" tests="2" time="0.078" timestamp="2009-08-18T13:09:28">
   <properties>
     <property name="default.javac.source" value="1.1" />
     <property name="file.encoding.pkg" value="sun.io" />
@@ -102,8 +102,8 @@
     <property name="libs.javac-api.maven-pom" value="" />
     <property name="javadoc.private" value="false" />
     <property name="sun.desktop" value="windows" />
-    <property name="build.test.classes.dir" value="build/test/classes" />
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+    <property name="build.test.classes.dir" value="build/test/classes" />
     <property name="ant.file.scala-oauth" value="C:\Documents\NetBeansProjects\scala-oauth\build.xml" />
     <property name="libs.jaxb.src" value="" />
     <property name="jaxws.endorsed.dir" value="C:\Program Files\NetBeans 6.7\java2\modules\ext\jaxws21\api" />
@@ -113,6 +113,7 @@
     <property name="scala.home" value="C:\scala" />
     <property name="libs.beans-binding.javadoc" value="C:\Program Files\NetBeans 6.7\java2\docs\beansbinding-1.2.1-doc.zip" />
     <property name="platform.active" value="default_platform" />
+    <property name="maven.mode.standalone" value="true" />
     <property name="http.nonProxyHosts" value="localhost|127.0.0.1|benb" />
     <property name="libs.junit_4.javadoc" value="C:/Documents/NetBeansProjects/scala-oauth/lib/junit_4/junit-4.5-api.zip" />
     <property name="libs.spring-framework.src" value="" />
@@ -147,11 +148,11 @@
     <property name="libs.CopyLibs.src" value="" />
     <property name="org.openide.version" value="deprecated" />
     <property name="env.OS" value="Windows_NT" />
-    <property name="libs.junit.classpath" value="C:/Documents/NetBeansProjects/scala-oauth/lib/junit/junit-3.8.2.jar" />
     <property name="libs.beans-binding.src" value="" />
+    <property name="libs.junit.classpath" value="C:/Documents/NetBeansProjects/scala-oauth/lib/junit/junit-3.8.2.jar" />
     <property name="java.library.path" value="C:\Program Files\Java\jdk1.6.0_14\jre\bin;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Ruby\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Program Files\ATI Technologies\ATI Control Panel;C:\Program Files\Microsoft SQL Server\80\Tools\Binn\;C:\Program Files\Microsoft SQL Server\90\Tools\binn\;C:\Program Files\Microsoft SQL Server\90\DTS\Binn\;C:\Program Files\Microsoft SQL Server\90\Tools\Binn\VSShell\Common7\IDE\;C:\Program Files\Microsoft Visual Studio 8\Common7\IDE\PrivateAssemblies\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\VisualSVN\bin;C:\Program Files\ATI Technologies\ATI.ACE\;C:\Program Files\WinMerge;C:\Program Files\curl;c:\squid\sbin;C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE;c:\lame;$SCALA_HOME/bin;C:\Program Files\Git\cmd" />
-    <property name="libs.toplink.javadoc" value="" />
     <property name="libs.PostgreSQLDriver.javadoc" value="" />
+    <property name="libs.toplink.javadoc" value="" />
     <property name="ant.java.version" value="1.6" />
     <property name="java.class.version" value="50.0" />
     <property name="basedir" value="C:\Documents\NetBeansProjects\scala-oauth" />
@@ -163,21 +164,21 @@
     <property name="javadoc.splitindex" value="true" />
     <property name="env.Path" value="C:\Ruby\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Program Files\ATI Technologies\ATI Control Panel;C:\Program Files\Microsoft SQL Server\80\Tools\Binn\;C:\Program Files\Microsoft SQL Server\90\Tools\binn\;C:\Program Files\Microsoft SQL Server\90\DTS\Binn\;C:\Program Files\Microsoft SQL Server\90\Tools\Binn\VSShell\Common7\IDE\;C:\Program Files\Microsoft Visual Studio 8\Common7\IDE\PrivateAssemblies\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\VisualSVN\bin;C:\Program Files\ATI Technologies\ATI.ACE\;C:\Program Files\WinMerge;C:\Program Files\curl;c:\squid\sbin;C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE;c:\lame;$SCALA_HOME/bin;C:\Program Files\Git\cmd" />
     <property name="file.reference.commons-codec-1.4.jar" value="lib\commons-codec-1.4.jar" />
-    <property name="libs.toplink.src" value="" />
     <property name="libraries.1.basename" value="nblibraries" />
+    <property name="libs.toplink.src" value="" />
     <property name="libs.javac-api.javadoc" value="" />
     <property name="javadoc.preview" value="true" />
     <property name="libs.MySQLDriver.maven-pom" value="" />
     <property name="env.HOMEDRIVE" value="C:" />
     <property name="libs.CopyLibs.javadoc" value="" />
     <property name="libs.PostgreSQLDriver.classpath" value="C:\Program Files\NetBeans 6.7\ide11\modules\ext\postgresql-8.3-603.jdbc3.jar" />
-    <property name="libs.junit_4.classpath" value="C:/Documents/NetBeansProjects/scala-oauth/lib/junit_4/junit-4.5.jar" />
     <property name="libs.jaxws21.maven-pom" value="" />
+    <property name="libs.junit_4.classpath" value="C:/Documents/NetBeansProjects/scala-oauth/lib/junit_4/junit-4.5.jar" />
     <property name="build.dir" value="build" />
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.6.0_14\jre\bin" />
     <property name="env.PROCESSOR_REVISION" value="4303" />
-    <property name="libs.swing-app-framework.classpath" value="C:\Program Files\NetBeans 6.7\java2\modules\ext\appframework-1.0.3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\swing-worker-1.1.jar" />
     <property name="sun.management.compiler" value="HotSpot Client Compiler" />
+    <property name="libs.swing-app-framework.classpath" value="C:\Program Files\NetBeans 6.7\java2\modules\ext\appframework-1.0.3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\swing-worker-1.1.jar" />
     <property name="libs.ejb3-persistence.javadoc" value="" />
     <property name="scala.class.path" value="C:\scala\lib\sbaz-tests.jar;C:\scala\lib\sbaz.jar;C:\scala\lib\scala-compiler.jar;C:\scala\lib\scala-dbc.jar;C:\scala\lib\scala-library.jar;C:\scala\lib\scala-swing.jar" />
     <property name="user.variant" value="" />
@@ -188,8 +189,8 @@
     <property name="run.jvmargs" value="" />
     <property name="build.compiler.emacs" value="true" />
     <property name="ant.project.name" value="scala-oauth" />
-    <property name="libs.spring-framework.classpath" value="C:\Program Files\NetBeans 6.7\ide11\modules\ext\commons-logging-1.1.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\cglib-2.2.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\spring\spring-2.5.jar" />
     <property name="libs.swing-layout.classpath" value="C:\Program Files\NetBeans 6.7\platform10\modules\ext\swing-layout-1.0.3.jar" />
+    <property name="libs.spring-framework.classpath" value="C:\Program Files\NetBeans 6.7\ide11\modules\ext\commons-logging-1.1.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\cglib-2.2.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\spring\spring-2.5.jar" />
     <property name="java.vm.specification.version" value="1.0" />
     <property name="libraries.1.dir" value="C:/Documents/NetBeansProjects/scala-oauth/lib" />
     <property name="work.dir" value="C:\Documents\NetBeansProjects\scala-oauth" />
@@ -209,29 +210,29 @@
     <property name="env.USERDNSDOMAIN" value="7DIGITAL.LOCAL" />
     <property name="libs.absolutelayout.maven-pom" value="" />
     <property name="env.INPUTRC" value="C:\Ruby\bin\inputrc.euro" />
-    <property name="org.openide.TopManager.GUI" value="true" />
     <property name="user.dir" value="C:\Documents\NetBeansProjects\scala-oauth" />
+    <property name="org.openide.TopManager.GUI" value="true" />
     <property name="env.FP_NO_HOST_CHECK" value="NO" />
     <property name="libs.ejb3-persistence.maven-pom" value="" />
     <property name="application.args" value="" />
     <property name="sun.cpu.endian" value="little" />
-    <property name="env.ALLUSERSPROFILE" value="C:\Documents and Settings\All Users" />
     <property name="file.reference.commons-httpclient-3.1.jar" value="lib\commons-httpclient-3.1.jar" />
+    <property name="env.ALLUSERSPROFILE" value="C:\Documents and Settings\All Users" />
     <property name="libs.hibernate-support.classpath" value="C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\antlr-2.7.6.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\asm.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\asm-attrs.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\cglib-2.1.3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\commons-collections-2.1.1.jar;C:\Program Files\NetBeans 6.7\ide11\modules\ext\commons-logging-1.1.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\dom4j-1.6.1.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\ehcache-1.2.3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\jdbc2_0-stdext.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\jta.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-tools.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-annotations.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-commons-annotations.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-entitymanager.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\javassist.jar" />
     <property name="env.PROCESSOR_ARCHITECTURE" value="x86" />
     <property name="env.RUBYOPT" value="-rubygems" />
     <property name="libs.MySQLDriver.src" value="" />
     <property name="java.vm.version" value="14.0-b16" />
-    <property name="libs.hibernate-persistence.classpath" value="C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\antlr-2.7.6.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\asm.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\asm-attrs.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\cglib-2.1.3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\commons-collections-2.1.1.jar;C:\Program Files\NetBeans 6.7\ide11\modules\ext\commons-logging-1.1.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\dom4j-1.6.1.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\ehcache-1.2.3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\jdbc2_0-stdext.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\jta.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-tools.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-annotations.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-commons-annotations.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-entitymanager.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\javassist.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\ejb3-persistence.jar" />
     <property name="env.HOMEPATH" value="\Documents and Settings\benb" />
     <property name="java.class.path" value="C:\Documents\NetBeansProjects\scala-oauth\lib\junit-4.7.jar;C:\Documents\NetBeansProjects\scala-oauth\lib\commons-codec-1.4.jar;C:\Documents\NetBeansProjects\scala-oauth\lib\commons-httpclient-3.1.jar;C:\Documents\NetBeansProjects\scala-oauth\lib\commons-lang-2.4.jar;C:\Documents\NetBeansProjects\scala-oauth\lib\httpcore-4.0.1.jar;C:\Documents\NetBeansProjects\scala-oauth\build\classes;C:\Documents\NetBeansProjects\scala-oauth\build\test\classes;C:\scala\lib\sbaz-tests.jar;C:\scala\lib\sbaz.jar;C:\scala\lib\scala-compiler.jar;C:\scala\lib\scala-dbc.jar;C:\scala\lib\scala-library.jar;C:\scala\lib\scala-swing.jar;C:\Program Files\NetBeans 6.7\java2\ant\lib\ant-launcher.jar;C:\Program Files\NetBeans 6.7\java2\ant\lib\ant.jar;C:\Program Files\NetBeans 6.7\java2\ant\patches\72080.jar" />
+    <property name="libs.hibernate-persistence.classpath" value="C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\antlr-2.7.6.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\asm.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\asm-attrs.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\cglib-2.1.3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\commons-collections-2.1.1.jar;C:\Program Files\NetBeans 6.7\ide11\modules\ext\commons-logging-1.1.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\dom4j-1.6.1.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\ehcache-1.2.3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\jdbc2_0-stdext.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\jta.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate3.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-tools.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-annotations.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-commons-annotations.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\hibernate-entitymanager.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\javassist.jar;C:\Program Files\NetBeans 6.7\java2\modules\ext\hibernate\ejb3-persistence.jar" />
     <property name="file.reference.httpcore-4.0.1.jar" value="lib\httpcore-4.0.1.jar" />
     <property name="os.arch" value="x86" />
     <property name="javac.deprecation" value="false" />
     <property name="nbplatform.default.netbeans.dest.dir" value="C:\Program Files\NetBeans 6.7" />
     <property name="build.classes.excludes" value="**/*.java,**/*.form,**/*.scala" />
-    <property name="dist.dir" value="dist" />
     <property name="env.SESSIONNAME" value="Console" />
+    <property name="dist.dir" value="dist" />
     <property name="netbeans.user" value="C:\Documents and Settings\benb\.netbeans\6.7" />
     <property name="debug.classpath" value="lib\junit-4.7.jar:lib\commons-codec-1.4.jar:lib\commons-httpclient-3.1.jar:lib\commons-lang-2.4.jar:lib\httpcore-4.0.1.jar:build/classes" />
     <property name="sun.java.launcher" value="SUN_STANDARD" />
@@ -255,21 +256,21 @@
     <property name="javadoc.notree" value="false" />
     <property name="env.ClusterLog" value="C:\WINDOWS\Cluster\cluster.log" />
     <property name="libs.jaxws21.javadoc" value="C:\Program Files\NetBeans 6.7\java2\docs\jaxws-2_1-api-doc.zip" />
-    <property name="default.javac.target" value="1.1" />
     <property name="javadoc.additionalparam" value="" />
     <property name="javac.classpath" value="lib\junit-4.7.jar:lib\commons-codec-1.4.jar:lib\commons-httpclient-3.1.jar:lib\commons-lang-2.4.jar:lib\httpcore-4.0.1.jar" />
+    <property name="default.javac.target" value="1.1" />
     <property name="build.classes.dir" value="build/classes" />
-    <property name="libs.swing-layout.javadoc" value="C:\Program Files\NetBeans 6.7\platform10\docs\swing-layout-1.0.3-doc.zip" />
     <property name="libs.swing-layout.src" value="C:\Program Files\NetBeans 6.7\platform10\docs\swing-layout-1.0.3-src.zip" />
-    <property name="javac.target" value="1.5" />
+    <property name="libs.swing-layout.javadoc" value="C:\Program Files\NetBeans 6.7\platform10\docs\swing-layout-1.0.3-doc.zip" />
     <property name="java.vendor" value="Sun Microsystems Inc." />
+    <property name="javac.target" value="1.5" />
     <property name="libs.swing-app-framework.src" value="" />
     <property name="java.specification.version" value="1.6" />
     <property name="libs.JWSAntTasks.javadoc" value="" />
     <property name="env.lib" value="C:\Program Files\SQLXML 4.0\bin\" />
     <property name="sun.arch.data.model" value="32" />
   </properties>
-  <testcase classname="org.coriander.oauth.tests.SignatureTest" name="when_consumerSecret_is_null_then_sign_throws_exception" time="0.032" />
+  <testcase classname="org.coriander.oauth.tests.SignatureTest" name="when_consumerSecret_is_null_then_sign_throws_exception" time="0.031" />
   <testcase classname="org.coriander.oauth.tests.SignatureTest" name="when_consumerKey_is_null_then_sign_throws_exception" time="0.0" />
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

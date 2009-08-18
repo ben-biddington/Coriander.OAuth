@@ -38,12 +38,21 @@ class TestBase {
         listResult.toList
     }
 
-    //
-    // Common Assertions
-    //
-     /**
-     * Asserts that the supplied list contains a matching entry
-    */
+    protected def assertContainsName(
+        list : List[NameValuePair],
+        expected : String
+    ) {
+        Assert.assertThat(
+            String.format(
+                "Expected the list to contain " +
+                "parameter called '%1$s', but it does not.",
+                expected,
+            ),
+            containsName(list, expected),
+            is(true)
+        )
+    }
+
     protected def contains(
         list : List[NameValuePair],
         expected : Tuple2[String, String]
@@ -55,6 +64,16 @@ class TestBase {
                 actualnameValuePair.getName == expectedName &&
                 actualnameValuePair.getValue == expectedValue
             }
+        )
+    }
+
+    protected def containsName(
+        list : List[NameValuePair],
+        expectedName : String
+    ) : Boolean = {
+        list.exists(
+            actualNameValuePair =>
+            actualNameValuePair.getName == expectedName
         )
     }
 }

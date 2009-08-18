@@ -50,7 +50,7 @@ class SignatureBaseString (
 
                 //val message = %%(method :: url :: encoded_ordered_params :: Nil)
 
-        uri + "?" + combinedParameters
+        method.toLowerCase + uri.getScheme + "://" + uri.getHost + "?" + combinedParameters
     }
 
     // OAuth, see: http://oauth.net/core/1.0/#anchor14 (9.1.1)
