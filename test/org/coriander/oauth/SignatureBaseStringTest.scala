@@ -21,7 +21,7 @@ class SignatureBaseStringTest extends TestBase {
 
     val consumerKey = "key"
     val consumerSecret = "secret"
-    val aValidUri =  new java.net.URI("http://xxx/")
+    var aValidUri =  new java.net.URI("http://xxx/")
 
     var parameters : Map[String, String] = Map()
     var signatureBaseString : java.net.URI = null;
@@ -151,7 +151,7 @@ class SignatureBaseStringTest extends TestBase {
 
         given_a_list_of_parameters
        
-        when_signature_base_string_is_created(expectedMethod)
+        when_signature_base_string_is_created(expectedMethod toUpperCase)
 
         var pattern = "^" + expectedMethod r
         
@@ -168,8 +168,31 @@ class SignatureBaseStringTest extends TestBase {
         )
     }
 
-    // Test: given_an_http_verb_then_result_has_lowercased_it
+    @Test
+    def given_an_url_containing_port_number_then_result_excludes_it() {
+        given_a_uri(new java.net.URI("http://xxx:1337/"))
+        
+        given_a_list_of_parameters
+
+        when_signature_base_string_is_created
+
+        Assert assertFalse(
+            "Expected the port number to have been stripped, but it wasn't.",
+            "^gethttp://xxx?".r.findAllIn(signatureBaseString.toString) == None
+        )
+
+        Assert assertFalse(
+            "Expected the port number to have been stripped, but it wasn't.",
+            "^gethttp://xxx:1337".r.findAllIn(signatureBaseString.toString) hasNext
+        )
+    }
+    
     // Test: Result includes absolute URL (scheme, host (exlcuding port) and absolute path), and is in lower case
+    // Test: When URL contains endiong slash, that is included in the result
+    
+    private def given_a_uri(uri: java.net.URI) {
+        aValidUri = uri;
+    }
 
     private def given_a_list_of_parameters() {
         parameters = Map(
@@ -200,6 +223,6 @@ class SignatureBaseStringTest extends TestBase {
             consumerKey
         )
 
-        // println(String.format("base_string='%1$s'", signatureBaseString))
+        //println(String.format("base_string='%1$s'", signatureBaseString))
     }
 }

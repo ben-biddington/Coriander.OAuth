@@ -16,6 +16,8 @@ class SignatureBaseString (
     val consumerSecret  : String
 ) {
 
+    var value : String = null
+
     def this(
         uri             : URI,
         queryParams     : Map[String, String],
@@ -41,7 +43,7 @@ class SignatureBaseString (
         val combined : SortedMap[String, String] = sort(queryParams ++ oauthParams)
 
         val combinedParameters = combined map {
-            case (name, value) => {name + "=" + %%(value) }
+            case (name, value) => { %%(name) + "=" + %%(value) }
         } mkString "&"
 
         //        val encodedOrderedParams = (
