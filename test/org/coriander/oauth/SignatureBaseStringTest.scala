@@ -16,6 +16,7 @@ import org.junit.rules._
 import scala.collection.immutable._
 import org.coriander.oauth._
 import scala.util.matching.Regex._
+import java.util.regex._
 
 class SignatureBaseStringTest extends TestBase {
 
@@ -90,7 +91,7 @@ class SignatureBaseStringTest extends TestBase {
 
         for (i <- 0 to expectedList.length - 1) {
             Assert assertThat(
-                "Sorting of resultant query paramsters should matches expected.",
+                "Sorting of resultant query parameters should match expected.",
                 parametersExcludingOAuth(i),
                 is(equalTo(expectedList(i)))
             )
@@ -110,8 +111,7 @@ class SignatureBaseStringTest extends TestBase {
 
         val allParameters : List[NameValuePair] = parseQuery(result.getQuery)
 
-        parameters.foreach(
-            (nameValueTuple : Tuple2[String, String]) => {
+        parameters.foreach((nameValueTuple : Tuple2[String, String]) => {
                 Assert assertThat(
                     String.format(
                         "Expected the returned parameters to contain " +
@@ -154,22 +154,20 @@ class SignatureBaseStringTest extends TestBase {
         when_signature_base_string_is_created(expectedMethod toUpperCase)
 
         var pattern = "^" + expectedMethod r
-        
-        val found = pattern findPrefixOf(signatureBaseString.toString)
 
         Assert assertFalse(
             String format(
-                "Expected that the returned value would begin with '%1$s', " + 
+                "Expected that the returned value would begin with <%1$s>, " +
                 "but it did not. Actual: <%2$s>",
                 expectedMethod,
                 signatureBaseString.toString
             ),
-            found == None
+            pattern.findPrefixOf(signatureBaseString.toString) == None
         )
     }
 
     @Test
-    def given_an_url_containing_port_number_then_result_excludes_it() {
+    def given_a_uri_containing_port_number_then_result_excludes_it() {
         given_a_uri(new java.net.URI("http://xxx:1337/"))
         
         given_a_list_of_parameters
@@ -186,9 +184,23 @@ class SignatureBaseStringTest extends TestBase {
             "^gethttp://xxx:1337".r.findAllIn(signatureBaseString.toString) hasNext
         )
     }
+
+    @Test
+    def given_a_uri_containing_path_then_result_contains_it() {
+        given_a_uri(new java.net.URI("http://xxx.com/yyy/zzz/index.html"))
+
+        given_a_list_of_parameters
+
+        when_signature_base_string_is_created
+
+        Assert assertThat(
+            signatureBaseString.toString,
+            containsString(aValidUri.getPath)
+        )
+    }
     
-    // Test: Result includes absolute URL (scheme, host (exlcuding port) and absolute path), and is in lower case
-    // Test: When URL contains endiong slash, that is included in the result
+    // Test: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
+    // Test: When URL contains ending slash, that is included in the result
     
     private def given_a_uri(uri: java.net.URI) {
         aValidUri = uri;
