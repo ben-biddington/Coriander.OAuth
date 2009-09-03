@@ -198,10 +198,43 @@ class SignatureBaseStringTest extends TestBase {
             containsString(aValidUri.getPath)
         )
     }
-    
+
+    @Test
+    def when_I_create_two_instances_then_each_has_a_different_nonce_value() {
+        val aSignatureBaseString : String = new SignatureBaseString(
+            "head",
+            aValidUri,
+            parameters,
+            consumerKey,
+            consumerKey
+        )
+
+        val anotherSignatureBaseString : String = new SignatureBaseString(
+            "head",
+            aValidUri,
+            parameters,
+            consumerKey,
+            consumerKey
+        )
+        
+        val theFirstNonce = getQueryParameter(aSignatureBaseString, "oauth_nonce")
+        val theSecondNonce = getQueryParameter(anotherSignatureBaseString, "oauth_nonce")
+
+        Assert assertTrue(
+            String.format(
+                "Expected two instances to have different nonces, " +
+                "they both have value <%1$s>",
+                theFirstNonce
+            ),
+            theSecondNonce != theFirstNonce
+        )
+    }
+
     // Test: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
-    // Test: When URL contains ending slash, that is included in the result
-    
+    // Test: When URL contains ending slash, then it is included in the result
+    // Test: When I create 2 instances, then each has a different timestamp value
+    // Test: When I create an instance without an HTTP verb (method), then an error results
+
     private def given_a_uri(uri: java.net.URI) {
         aValidUri = uri;
     }
@@ -236,5 +269,11 @@ class SignatureBaseStringTest extends TestBase {
         )
 
         //println(String.format("base_string='%1$s'", signatureBaseString))
+    }
+
+    private def getQueryParameter(url: String, name : String) : String = {
+        parseQuery(url).
+            find(item => item.getName() == name).
+            get.getValue;
     }
 }

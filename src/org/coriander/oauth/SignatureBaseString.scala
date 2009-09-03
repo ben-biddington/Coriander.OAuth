@@ -15,7 +15,7 @@ class SignatureBaseString (
     var consumerKey     : String,
     val consumerSecret  : String
 ) {
-
+    val signatureMethod = "HMAC-SHA1"
     var value : String = null
 
     def this(
@@ -65,13 +65,21 @@ class SignatureBaseString (
 
     private def getOAuthParameters() : Map[String, String] = {
         return Map(
-            "oauth_consumer_key" -> consumerKey,
-            "oauth_signature_method" -> "HMAC-SHA1",
-            "oauth_timestamp" -> (System.currentTimeMillis / 1000).toString,
-            "oauth_nonce" -> System.nanoTime.toString
+            "oauth_consumer_key"        -> consumerKey,
+            "oauth_signature_method"    -> signatureMethod,
+            "oauth_timestamp"           -> createTimestamp,
+            "oauth_nonce"               -> createNonce
         )
     }
 
+    private def createNonce : String = {
+        System.nanoTime.toString;
+    }
+
+    private def createTimestamp : String = {
+        (System.currentTimeMillis / 1000).toString;
+    }
+    
     private def %% (t: (String, String)) : (String, String) = {
         (%%(t._1), %%(t._2.toString))
     }
