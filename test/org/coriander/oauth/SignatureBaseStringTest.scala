@@ -230,10 +230,31 @@ class SignatureBaseStringTest extends TestBase {
         )
     }
 
+    @Test
+    def when_I_create_an_instance_without_supplying_a_method_then_method_defaults_to_get() {
+        val signatureBaseString = new SignatureBaseString(
+            aValidUri,
+            parameters,
+            consumerKey,
+            consumerKey
+        )
+
+        val expectedMethod = "get"
+
+        Assert assertTrue(
+            String format(
+                "Expected that the returned value would begin with <%1$s>, " +
+                "but it did not. Actual: <%2$s>",
+                expectedMethod,
+                signatureBaseString.toString
+            ),
+            ("^" + expectedMethod).r.findPrefixOf(signatureBaseString.toString) != None
+        )
+    }
+
     // Test: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
     // Test: When URL contains ending slash, then it is included in the result
     // Test: When I create 2 instances, then each has a different timestamp value
-    // Test: When I create an instance without an HTTP verb (method), then an error results
 
     private def given_a_uri(uri: java.net.URI) {
         aValidUri = uri;
@@ -271,7 +292,7 @@ class SignatureBaseStringTest extends TestBase {
         //println(String.format("base_string='%1$s'", signatureBaseString))
     }
 
-    private def getQueryParameter(url: String, name : String) : String = {
+    private def getQueryParameter(url : String, name : String) : String = {
         parseQuery(url).
             find(item => item.getName() == name).
             get.getValue;
