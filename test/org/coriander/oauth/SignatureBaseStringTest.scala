@@ -17,6 +17,8 @@ import scala.collection.immutable._
 import org.coriander.oauth._
 import scala.util.matching.Regex._
 import java.util.regex._
+import scala.actors.Actor._
+import org.jfugue._
 
 class SignatureBaseStringTest extends TestBase {
 
@@ -26,6 +28,9 @@ class SignatureBaseStringTest extends TestBase {
 
     var parameters : Map[String, String] = Map()
     var signatureBaseString : java.net.URI = null;
+
+    var done = false
+    val caller = self
     
     @Test
     def given_a_parameter_containing_reserved_character_then_the_result_contains_url_encoded_parameter() {
