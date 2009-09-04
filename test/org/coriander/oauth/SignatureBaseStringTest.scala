@@ -133,10 +133,10 @@ class SignatureBaseStringTest extends TestBase {
 
     // See: http://oauth.net/core/1.0/#anchor13
     @Test
-    def given_a_list_of_parameters_then_result_contains_all_expected_oauth_parameters() {
+    def result_contains_all_expected_oauth_parameters() {
         given_a_list_of_parameters
         when_signature_base_string_is_created
-        val allParameters : List[NameValuePair] = parseQuery(signatureBaseString.getQuery)
+        val allParameters = parseQuery(signatureBaseString.getQuery)
 
         val requiredParameters = List(
             "oauth_consumer_key",
@@ -251,9 +251,9 @@ class SignatureBaseStringTest extends TestBase {
                 "Expected that the returned value would begin with <%1$s>, " +
                 "but it did not. Actual: <%2$s>",
                 expectedMethod,
-                signatureBaseString.toString
+                signatureBaseString toString
             ),
-            ("^" + expectedMethod).r.findPrefixOf(signatureBaseString.toString) != None
+            ("^" + expectedMethod).r.findPrefixOf(signatureBaseString toString) != None
         )
     }
 

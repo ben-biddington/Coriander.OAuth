@@ -29,13 +29,7 @@ class TestBase {
     protected def parseQuery(url : String) : List[NameValuePair] = {
         val result : java.util.List[_] = new ParameterParser().parse(url, '&')
 
-        val nameValuePairs : Array[Object] = result.toArray();
-
-        val listResult : Array[NameValuePair] = nameValuePairs.map(
-            (obj : Object) => obj.asInstanceOf[NameValuePair]
-        )
-
-        listResult.toList
+        result toArray() map((obj) => obj.asInstanceOf[NameValuePair]) toList
     }
 
     protected def assertContainsName(

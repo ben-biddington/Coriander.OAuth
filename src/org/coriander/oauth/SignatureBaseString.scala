@@ -16,7 +16,7 @@ class SignatureBaseString (
     val consumerSecret  : String
 ) {
     val signatureMethod = "HMAC-SHA1"
-    var value : String = null
+    var value : String  = null
 
     def this(
         uri             : URI,
@@ -24,7 +24,7 @@ class SignatureBaseString (
         consumerKey     : String,
         consumerSecret  : String
     ) {
-        this("GET", uri, queryParams, consumerKey, consumerSecret)
+        this("get", uri, queryParams, consumerKey, consumerSecret)
     }
 
     override def toString() : String = {
@@ -38,24 +38,18 @@ class SignatureBaseString (
     // See: http://www.docjar.com/docs/api/org/apache/commons/httpclient/util/ParameterFormatter.html
     // OAuth, see: http://oauth.net/core/1.0/#anchor14
     def getSignatureBaseString(uri : URI, queryParams : Map[String, String]) : String = {
-        val oauthParams = getOAuthParameters()
-
-        val combined : SortedMap[String, String] = sort(queryParams ++ oauthParams)
-
-        val combinedParameters = combined map {
+        val combinedParameters = sort(queryParams ++ getOAuthParameters) map {
             case (name, value) => { %%(name) + "=" + %%(value) }
         } mkString "&"
 
-        //        val encodedOrderedParams = (
-        //            (queryParams ++ oauthParams) map %%
-        //        ) map { case (k, v) => k + "=" + v } mkString "&"
-
-                //val message = %%(method :: url :: encoded_ordered_params :: Nil)
-
-        method.toLowerCase +
-            uri.getScheme + "://" + uri.getHost +
-            uri.getPath + 
-            "?" + combinedParameters
+        String format(
+            "%1$s%2$s://%3$s%4$s?%5$s",
+            method.toLowerCase,
+            uri.getScheme,
+            uri.getHost,
+            uri.getPath,
+            combinedParameters
+        );
     }
 
     // OAuth, see: http://oauth.net/core/1.0/#anchor14 (9.1.1)
