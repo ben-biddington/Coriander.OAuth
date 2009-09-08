@@ -9,22 +9,20 @@ import org.apache.commons.codec.binary.Base64.encodeBase64
 
 // OAuth, see: http://oauth.net/core/1.0/#anchor14
 class SignatureBaseString (
-    val method          : String,
-    val uri             : URI,
-    val queryParams     : Map[String, String],
-    var consumerKey     : String,
-    val consumerSecret  : String
+    method              : String,
+    uri                 : URI,
+    queryParams         : Map[String, String],
+    consumerCredential  : OAuthCredential
 ) {
     val signatureMethod = "HMAC-SHA1"
     var value : String  = null
 
     def this(
-        uri             : URI,
-        queryParams     : Map[String, String],
-        consumerKey     : String,
-        consumerSecret  : String
+        uri                 : URI,
+        queryParams         : Map[String, String],
+        consumerCredential  : OAuthCredential
     ) {
-        this("get", uri, queryParams, consumerKey, consumerSecret)
+        this("get", uri, queryParams, consumerCredential)
     }
 
     override def toString() : String = {
@@ -59,7 +57,7 @@ class SignatureBaseString (
 
     private def getOAuthParameters() : Map[String, String] = {
         return Map(
-            "oauth_consumer_key"        -> consumerKey,
+            "oauth_consumer_key"        -> consumerCredential.key,
             "oauth_signature_method"    -> signatureMethod,
             "oauth_timestamp"           -> createTimestamp,
             "oauth_nonce"               -> createNonce

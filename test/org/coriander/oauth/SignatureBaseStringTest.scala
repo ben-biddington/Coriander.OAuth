@@ -21,9 +21,8 @@ import scala.actors.Actor._
 import org.jfugue._
 
 class SignatureBaseStringTest extends TestBase {
+    val consumerCredential = new OAuthCredential("key", "secret")
 
-    val consumerKey = "key"
-    val consumerSecret = "secret"
     var aValidUri =  new java.net.URI("http://xxx/")
 
     var parameters : Map[String, String] = Map()
@@ -37,12 +36,7 @@ class SignatureBaseStringTest extends TestBase {
         val originalValue = "this value requires encoding"
         val expectedEncodedValue = "this%20value%20requires%20encoding"
 
-        val result : String = new SignatureBaseString(
-            aValidUri,
-            Map("xxx" -> originalValue),
-            consumerKey,
-            consumerKey
-        )
+        val result : String = newSignatureBaseString(Map("xxx" -> originalValue))
 
         val actualValue = parseQuery(result).
             find(item => item.getName() == "xxx").
@@ -56,12 +50,7 @@ class SignatureBaseStringTest extends TestBase {
         val originalValue = "http://some-url?param=value"
         val expectedEncodedValue = "http%3A%2F%2Fsome-url%3Fparam%3Dvalue"
 
-        val result : String = new SignatureBaseString(
-            aValidUri,
-            Map("xxx" -> originalValue),
-            consumerKey,
-            consumerKey
-        )
+        val result : String = newSignatureBaseString(Map("xxx" -> originalValue))
 
         val actualValue = parseQuery(result).
             find(item => item.getName() == "xxx").
@@ -77,12 +66,7 @@ class SignatureBaseStringTest extends TestBase {
     def given_an_unsorted_list_of_parameters_then_result_has_them_sorted() {
         given_an_unsorted_list_of_parameters
 
-        val result : java.net.URI = new SignatureBaseString(
-            aValidUri,
-            parameters,
-            consumerKey,
-            consumerKey
-        )
+        val result : java.net.URI = newSignatureBaseString(parameters)
 
         var parametersExcludingOAuth : List[NameValuePair] = trimOAuth(
             parseQuery(result.getQuery)
@@ -110,8 +94,7 @@ class SignatureBaseStringTest extends TestBase {
         val result : java.net.URI = new SignatureBaseString(
             aValidUri,
             parameters,
-            consumerKey,
-            consumerKey
+            consumerCredential
         )
 
         val allParameters : List[NameValuePair] = parseQuery(result.getQuery)
@@ -210,16 +193,14 @@ class SignatureBaseStringTest extends TestBase {
             "head",
             aValidUri,
             parameters,
-            consumerKey,
-            consumerKey
+            consumerCredential
         )
 
         val anotherSignatureBaseString : String = new SignatureBaseString(
             "head",
             aValidUri,
             parameters,
-            consumerKey,
-            consumerKey
+            consumerCredential
         )
         
         val theFirstNonce = getQueryParameter(aSignatureBaseString, "oauth_nonce")
@@ -240,8 +221,7 @@ class SignatureBaseStringTest extends TestBase {
         val signatureBaseString = new SignatureBaseString(
             aValidUri,
             parameters,
-            consumerKey,
-            consumerKey
+            consumerCredential
         )
 
         val expectedMethod = "get"
@@ -290,11 +270,19 @@ class SignatureBaseStringTest extends TestBase {
             method,
             aValidUri,
             parameters,
-            consumerKey,
-            consumerKey
+            consumerCredential
         )
 
         //println(String.format("base_string='%1$s'", signatureBaseString))
+    }
+
+    private def newSignatureBaseString(parameters : Map[String, String]) :
+        SignatureBaseString = {
+        new SignatureBaseString(
+            aValidUri,
+            parameters,
+            consumerCredential
+        );
     }
 
     private def getQueryParameter(url : String, name : String) : String = {
