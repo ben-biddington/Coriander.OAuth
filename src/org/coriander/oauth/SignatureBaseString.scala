@@ -12,7 +12,9 @@ class SignatureBaseString (
     method              : String,
     uri                 : URI,
     queryParams         : Map[String, String],
-    consumerCredential  : OAuthCredential
+    consumerCredential  : OAuthCredential,
+    nonce               : Long,
+    timestamp           : String
 ) {
     val signatureMethod = "HMAC-SHA1"
     var value : String  = null
@@ -20,9 +22,11 @@ class SignatureBaseString (
     def this(
         uri                 : URI,
         queryParams         : Map[String, String],
-        consumerCredential  : OAuthCredential
+        consumerCredential  : OAuthCredential,
+        nonce               : Long,
+        timestamp           : String
     ) {
-        this("get", uri, queryParams, consumerCredential)
+        this("get", uri, queryParams, consumerCredential, nonce, timestamp)
     }
 
     override def toString() : String = {
@@ -59,18 +63,18 @@ class SignatureBaseString (
         return Map(
             "oauth_consumer_key"        -> consumerCredential.key,
             "oauth_signature_method"    -> signatureMethod,
-            "oauth_timestamp"           -> createTimestamp,
-            "oauth_nonce"               -> createNonce
+            "oauth_timestamp"           -> timestamp,
+            "oauth_nonce"               -> nonce.toString
         )
     }
 
-    private def createNonce : String = {
-        System.nanoTime.toString;
-    }
-
-    private def createTimestamp : String = {
-        (System.currentTimeMillis / 1000).toString;
-    }
+//    private def createNonce : String = {
+//        System.nanoTime.toString;
+//    }
+//
+//    private def createTimestamp : String = {
+//        (System.currentTimeMillis / 1000).toString;
+//    }
     
     private def %% (t: (String, String)) : (String, String) = {
         (%%(t._1), %%(t._2.toString))

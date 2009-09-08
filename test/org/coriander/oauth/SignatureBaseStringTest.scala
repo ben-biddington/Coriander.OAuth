@@ -14,17 +14,21 @@ import org.apache.commons.httpclient._
 import org.apache.commons.httpclient.util._
 import org.junit.rules._
 import scala.collection.immutable._
-import org.coriander.oauth._
 import scala.util.matching.Regex._
 import java.util.regex._
 import scala.actors.Actor._
 import org.jfugue._
 
+import org.coriander.oauth._
+import org.coriander.oauth.timestamp._
+import org.coriander.oauth.nonce._
+
 class SignatureBaseStringTest extends TestBase {
     val consumerCredential = new OAuthCredential("key", "secret")
 
     var aValidUri =  new java.net.URI("http://xxx/")
-
+    val aValidNonce = new SystemNonceFactory().createNonce
+    val aValidTimestamp = new SystemTimestampFactory().createTimestamp
     var parameters : Map[String, String] = Map()
     var signatureBaseString : java.net.URI = null;
 
@@ -94,7 +98,9 @@ class SignatureBaseStringTest extends TestBase {
         val result : java.net.URI = new SignatureBaseString(
             aValidUri,
             parameters,
-            consumerCredential
+            consumerCredential,
+            aValidNonce,
+            aValidTimestamp
         )
 
         val allParameters : List[NameValuePair] = parseQuery(result.getQuery)
@@ -188,40 +194,13 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     @Test
-    def when_I_create_two_instances_then_each_has_a_different_nonce_value() {
-        val aSignatureBaseString : String = new SignatureBaseString(
-            "head",
-            aValidUri,
-            parameters,
-            consumerCredential
-        )
-
-        val anotherSignatureBaseString : String = new SignatureBaseString(
-            "head",
-            aValidUri,
-            parameters,
-            consumerCredential
-        )
-        
-        val theFirstNonce = getQueryParameter(aSignatureBaseString, "oauth_nonce")
-        val theSecondNonce = getQueryParameter(anotherSignatureBaseString, "oauth_nonce")
-
-        Assert assertTrue(
-            String.format(
-                "Expected two instances to have different nonces, " +
-                "they both have value <%1$s>",
-                theFirstNonce
-            ),
-            theSecondNonce != theFirstNonce
-        )
-    }
-
-    @Test
     def when_I_create_an_instance_without_supplying_a_method_then_method_defaults_to_get() {
         val signatureBaseString = new SignatureBaseString(
             aValidUri,
             parameters,
-            consumerCredential
+            consumerCredential,
+            aValidNonce,
+            aValidTimestamp
         )
 
         val expectedMethod = "get"
@@ -269,14 +248,20 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     private def when_signature_base_string_is_created(method : String) {
-        signatureBaseString = new SignatureBaseString(
+        signatureBaseString = createDefault(method)
+
+        //println(String.format("base_string='%1$s'", signatureBaseString))
+    }
+
+    private def createDefault(method : String) : SignatureBaseString = {
+         new SignatureBaseString(
             method,
             aValidUri,
             parameters,
-            consumerCredential
-        )
-
-        //println(String.format("base_string='%1$s'", signatureBaseString))
+            consumerCredential,
+            aValidNonce,
+            aValidTimestamp
+        );
     }
 
     private def newSignatureBaseString(parameters : Map[String, String]) :
@@ -284,7 +269,9 @@ class SignatureBaseStringTest extends TestBase {
         new SignatureBaseString(
             aValidUri,
             parameters,
-            consumerCredential
+            consumerCredential,
+            aValidNonce,
+            aValidTimestamp
         );
     }
 
