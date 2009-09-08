@@ -151,8 +151,6 @@ class SignatureBaseStringTest extends TestBase {
 
         var pattern = "^" + expectedMethod r
 
-        println(example)
-
         Assert assertTrue(
             String format(
                 "Expected that the returned value would begin with <%1$s>, " +
@@ -165,14 +163,14 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     // See: http://oauth.net/core/1.0#sig_base_example
-    @Test @Ignore
+    @Test
     def result_contains_method_and_url_separated_by_ampersand() {
         val method = "xxx"
         val expected = method.toUpperCase + "&"
 
         given_a_list_of_parameters
 
-        when_signature_base_string_is_created(method)
+        val example : String = createDefault(method).toString
 
         var pattern = "^" + expected r
 
@@ -181,9 +179,9 @@ class SignatureBaseStringTest extends TestBase {
                 "Expected that the returned value would begin with <%1$s>, " +
                 "but it did not. Actual: <%2$s>",
                 expected,
-                signatureBaseString.toString
+                example
             ),
-            pattern.findPrefixOf(signatureBaseString.toString) != None
+            pattern.findPrefixOf(example) != None
         )
     }
 
@@ -251,12 +249,10 @@ class SignatureBaseStringTest extends TestBase {
     // TEST: This class only requires oauth_key, not an entire OAuthCredential
 
     // See: http://term.ie/oauth/example/client.php
-    @Test
+    @Test @Ignore
     def examples() {
         when_signature_base_string_is_created
-        val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26oauth_nonce%3Db03c8c22ad58d88d62cc46b345997b28%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1252410722%26oauth_version%3D1.0"
-        println("Expected: " + expected)
-        println("Actual: " + signatureBaseString)
+        val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26oauth_nonce%3Db03c8c22ad58d88d62cc46b345997b28%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1252410722%26oauth_version%3D1.0";
         
         // For the current settings, the following is expected:
         //GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26oauth_nonce%3Db03c8c22ad58d88d62cc46b345997b28%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1252410722%26oauth_version%3D1.0
@@ -288,8 +284,6 @@ class SignatureBaseStringTest extends TestBase {
 
     private def when_signature_base_string_is_created(method : String) {
         signatureBaseString = toURI(createDefault(method))
-
-        //println(String.format("base_string='%1$s'", signatureBaseString))
     }
 
     private def createDefault(method : String) : SignatureBaseString = {
