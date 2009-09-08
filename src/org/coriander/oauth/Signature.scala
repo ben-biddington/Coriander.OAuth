@@ -8,32 +8,48 @@ import org.apache.http.protocol.HTTP.UTF_8
 import org.apache.commons.codec.binary.Base64.encodeBase64
 
 // Encapsulates signature behaviour, this is a signature abstraction.
-// As an object, it operates on data. 
+// As an object, it operates on a supplied SignatureBaseString.
 // 
 // See: http://databinder.net/sxr/dispatch/0.4.2/main/OAuth.scala.html#14048
-class Signature(val consumerKey : String, val consumerSecret : String) {
-    
-    def sign(uri : URI, queryParams : Map[String, String]) : URI = {
-        if (null == consumerKey)
-            throw new Exception("Missing the 'consumerKey'.")
+class Signature(consumerCredential : OAuthCredential) {
 
-        if (null == consumerSecret)
-            throw new Exception("Missing the 'consumerSecret'.")
+    val algorithm = "HmacSHA1"
 
-        val theStringToSign = new SignatureBaseString(
-            uri,
-            queryParams,
-            consumerKey, 
-            consumerSecret
-        );
-        
-        return uri;
+    def sign(baseString : SignatureBaseString) : String = {
+        validate
+
+        getSignature(baseString.toString);
+
+        // TODO: This returns a URI, i.e., it is meant to assemble a signed URI.
+        // Consider redefining this to a class that simply creates the signature
+        // and leave the assembly to something else.
     }
 
-  // normalize to OAuth percent encoding
-  //private def %% (str: String) : String = (Http % str) replace ("+", "%20") replace ("%7E", "~")
-  //private def %% (s: Seq[String]) : String = s map %% mkString "&"
+    private def getSignature(baseString : String) : String = {
+        val key = getKey
 
+        val sig = {
+            val mac = crypto.Mac.getInstance(algorithm)
+
+            mac.init(key)
+            
+            new String(encodeBase64(mac.doFinal(baseString.getBytes)))
+        }
+
+        sig;
+    }
+
+    private def getKey : crypto.spec.SecretKeySpec = {
+        new crypto.spec.SecretKeySpec(
+            consumerCredential.secret.getBytes,
+            algorithm
+        );
+    }
+
+    private def validate() {
+        if (null == consumerCredential || null == consumerCredential.secret)
+            throw new Exception("Missing the 'consumerCredential'.")
+    }
 
 //    def sign_xxx(method: String, url: String, user_params: Map[String, String], consumer: Consumer,
 //        token: Option[Token], verifier: Option[String]) = {

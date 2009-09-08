@@ -128,7 +128,7 @@ class SignatureBaseStringTest extends TestBase {
             "oauth_nonce",
         )
 
-        requiredParameters.foreach(
+        requiredParameters foreach(
             requiredName => assertContainsName(allParameters, requiredName)
         )
     }
@@ -240,6 +240,9 @@ class SignatureBaseStringTest extends TestBase {
     // Test: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
     // Test: When URL contains ending slash, then it is included in the result
     // Test: When I create 2 instances, then each has a different timestamp value
+    // TEST: I can supply timestamp behaviour (or value) to create a SignatureBaseString instance
+    // TEST: I can supply nonce behaviour (or value) to create a SignatureBaseString instance
+    // TEST: This class only requires oauth_key, not an entire OAuthCredential
 
     private def given_a_uri(uri: java.net.URI) {
         aValidUri = uri;
