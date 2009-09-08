@@ -8,6 +8,7 @@ import org.apache.http.protocol.HTTP.UTF_8
 import org.apache.commons.codec.binary.Base64.encodeBase64
 
 // OAuth, see: http://oauth.net/core/1.0/#anchor14
+// OAuth, see: http://oauth.net/core/1.0#sig_base_example
 class SignatureBaseString (
     method              : String,
     uri                 : URI,
@@ -46,7 +47,7 @@ class SignatureBaseString (
 
         String format(
             "%1$s%2$s://%3$s%4$s?%5$s",
-            method.toLowerCase,
+            method.toUpperCase +  "&",
             uri.getScheme,
             uri.getHost,
             uri.getPath,
@@ -67,14 +68,6 @@ class SignatureBaseString (
             "oauth_nonce"               -> nonce.toString
         )
     }
-
-//    private def createNonce : String = {
-//        System.nanoTime.toString;
-//    }
-//
-//    private def createTimestamp : String = {
-//        (System.currentTimeMillis / 1000).toString;
-//    }
     
     private def %% (t: (String, String)) : (String, String) = {
         (%%(t._1), %%(t._2.toString))
@@ -92,9 +85,5 @@ class SignatureBaseString (
 object SignatureBaseString {
     implicit def to_string(instance : SignatureBaseString) : String = {
         return instance.toString
-    }
-
-    implicit def to_uri(instance : SignatureBaseString) : URI = {
-        return new URI(instance.toString)
     }
 }

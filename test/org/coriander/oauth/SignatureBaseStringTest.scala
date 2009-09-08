@@ -70,7 +70,7 @@ class SignatureBaseStringTest extends TestBase {
     def given_an_unsorted_list_of_parameters_then_result_has_them_sorted() {
         given_an_unsorted_list_of_parameters
 
-        val result : java.net.URI = newSignatureBaseString(parameters)
+        val result : java.net.URI = toURI(newSignatureBaseString(parameters))
 
         var parametersExcludingOAuth : List[NameValuePair] = trimOAuth(
             parseQuery(result.getQuery)
@@ -95,12 +95,14 @@ class SignatureBaseStringTest extends TestBase {
     def given_a_list_of_parameters_then_result_contains_them_all() {
         given_a_list_of_parameters
 
-        val result : java.net.URI = new SignatureBaseString(
-            aValidUri,
-            parameters,
-            consumerCredential,
-            aValidNonce,
-            aValidTimestamp
+        val result : java.net.URI = toURI(
+            new SignatureBaseString(
+                aValidUri,
+                parameters,
+                consumerCredential,
+                aValidNonce,
+                aValidTimestamp
+            )
         )
 
         val allParameters : List[NameValuePair] = parseQuery(result.getQuery)
@@ -140,23 +142,48 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     @Test
-    def given_an_http_verb_in_uppercase_then_result_starts_with_the_lowercase_version() {
-        val expectedMethod = "get"
+    def given_an_http_verb_in_uppercase_then_result_starts_with_the_uppercase_version() {
+        val expectedMethod = "GET"
 
         given_a_list_of_parameters
        
-        when_signature_base_string_is_created(expectedMethod toUpperCase)
+        val example : String = createDefault(expectedMethod toLowerCase).toString
 
         var pattern = "^" + expectedMethod r
 
-        Assert assertFalse(
+        println(example)
+
+        Assert assertTrue(
             String format(
                 "Expected that the returned value would begin with <%1$s>, " +
                 "but it did not. Actual: <%2$s>",
                 expectedMethod,
+                example
+            ),
+            pattern.findPrefixOf(example) != None
+        )
+    }
+
+    // See: http://oauth.net/core/1.0#sig_base_example
+    @Test @Ignore
+    def result_contains_method_and_url_separated_by_ampersand() {
+        val method = "xxx"
+        val expected = method.toUpperCase + "&"
+
+        given_a_list_of_parameters
+
+        when_signature_base_string_is_created(method)
+
+        var pattern = "^" + expected r
+
+        Assert assertTrue(
+            String format(
+                "Expected that the returned value would begin with <%1$s>, " +
+                "but it did not. Actual: <%2$s>",
+                expected,
                 signatureBaseString.toString
             ),
-            pattern.findPrefixOf(signatureBaseString.toString) == None
+            pattern.findPrefixOf(signatureBaseString.toString) != None
         )
     }
 
@@ -203,7 +230,7 @@ class SignatureBaseStringTest extends TestBase {
             aValidTimestamp
         )
 
-        val expectedMethod = "get"
+        val expectedMethod = "GET"
 
         Assert assertTrue(
             String format(
@@ -216,12 +243,24 @@ class SignatureBaseStringTest extends TestBase {
         )
     }
 
-    // Test: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
-    // Test: When URL contains ending slash, then it is included in the result
-    // Test: When I create 2 instances, then each has a different timestamp value
+    // TEST: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
+    // TEST: When URL contains ending slash, then it is included in the result
+    // TEST: When I create 2 instances, then each has a different timestamp value
     // TEST: I can supply timestamp behaviour (or value) to create a SignatureBaseString instance
     // TEST: I can supply nonce behaviour (or value) to create a SignatureBaseString instance
     // TEST: This class only requires oauth_key, not an entire OAuthCredential
+
+    // See: http://term.ie/oauth/example/client.php
+    @Test
+    def examples() {
+        when_signature_base_string_is_created
+        val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26oauth_nonce%3Db03c8c22ad58d88d62cc46b345997b28%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1252410722%26oauth_version%3D1.0"
+        println("Expected: " + expected)
+        println("Actual: " + signatureBaseString)
+        
+        // For the current settings, the following is expected:
+        //GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26oauth_nonce%3Db03c8c22ad58d88d62cc46b345997b28%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1252410722%26oauth_version%3D1.0
+    }
 
     private def given_a_uri(uri: java.net.URI) {
         aValidUri = uri;
@@ -248,7 +287,7 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     private def when_signature_base_string_is_created(method : String) {
-        signatureBaseString = createDefault(method)
+        signatureBaseString = toURI(createDefault(method))
 
         //println(String.format("base_string='%1$s'", signatureBaseString))
     }
@@ -279,5 +318,16 @@ class SignatureBaseStringTest extends TestBase {
         parseQuery(url).
             find(item => item.getName() == name).
             get.getValue;
+    }
+
+    private def toURI(baseString : SignatureBaseString) : java.net.URI = {
+
+        // [!] Relies on text starting with <method>&
+
+        val index = baseString.toString.indexOf('&') + 1
+
+        val uriPart = baseString.toString().substring(index)
+
+        new java.net.URI(uriPart);
     }
 }
