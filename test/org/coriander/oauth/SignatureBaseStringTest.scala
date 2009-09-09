@@ -212,7 +212,7 @@ class SignatureBaseStringTest extends TestBase {
 
         Assert assertThat(
             signatureBaseString.toString,
-            containsString(%%(aValidUri.getPath))
+            containsString(URLEncoder.%%(aValidUri.getPath))
         )
     }
 
@@ -327,31 +327,37 @@ class SignatureBaseStringTest extends TestBase {
             get.getValue;
     }
 
-    // TODO: Consider moving to SignatureBaseString class
+    // TODO: Consider moving elsewhere
     private def parseParameters(signatureBaseString : SignatureBaseString) : List[NameValuePair] = {
-        val allParameters : String = urlDecode(signatureBaseString.toString().split("&")(2))
-        val pairs = allParameters.split("&")
+        val (method, url, parameters) = parse(signatureBaseString)
+        parameters
+    }
 
+    // TODO: Consider moving elsewhere
+    private def parse(signatureBaseString : SignatureBaseString) :
+        Tuple3[String, String, List[NameValuePair]] = {
+        val parts = signatureBaseString.toString().split("&")
+
+        val method = parts(0)
+        val url = parts(1)
+        val encodedParams = parts(2)
+        
+        (method, url, toNameValuePairs(urlDecode(encodedParams)))
+    }    
+
+    // TODO: Consider moving elsewhere
+    private def toNameValuePairs(parameterString : String) : List[NameValuePair] = {
         var result : List[NameValuePair] = List[NameValuePair]()
-
-        pairs.foreach((pair : String) => {
+        
+        parameterString.split("&").foreach((pair : String) => {
            val parts = pair.split("=");
            result = new NameValuePair(parts(0), parts(1)) :: result // TODO: This is prepending!
         });
 
-        result.reverse; // TODO: This is naff -- it's because of previous 
+        result.reverse;
     }
 
     private def urlDecode(str : String) : String = {
         java.net.URLDecoder.decode(str, "UTF-8")
-    }
-
-    // TODO: Get rid of this, parse from SignatureBaseStrig instead
-    private def %% (str : String) : String = {
-        if (null == str) return ""
-
-        return java.net.URLEncoder.encode(str.toString) replace
-            ("+", "%20") replace
-            ("%7E", "~");
     }
 }
