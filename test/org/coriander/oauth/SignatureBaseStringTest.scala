@@ -30,7 +30,7 @@ class SignatureBaseStringTest extends TestBase {
     val aValidNonce = new SystemNonceFactory().createNonce
     val aValidTimestamp = new SystemTimestampFactory().createTimestamp
     var parameters : Map[String, String] = Map()
-    var signatureBaseString : java.net.URI = null;
+    var signatureBaseString : SignatureBaseString = null;
 
     var done = false
     val caller = self
@@ -40,9 +40,9 @@ class SignatureBaseStringTest extends TestBase {
         val originalValue = "this value requires encoding"
         val expectedEncodedValue = "this%20value%20requires%20encoding"
 
-        val result : String = newSignatureBaseString(Map("xxx" -> originalValue))
+        val result = newSignatureBaseString(Map("xxx" -> originalValue))
 
-        val actualValue = parseQuery(result).
+        val actualValue = parseParameters(result).
             find(item => item.getName() == "xxx").
             get.getValue;
 
@@ -54,9 +54,9 @@ class SignatureBaseStringTest extends TestBase {
         val originalValue = "http://some-url?param=value"
         val expectedEncodedValue = "http%3A%2F%2Fsome-url%3Fparam%3Dvalue"
 
-        val result : String = newSignatureBaseString(Map("xxx" -> originalValue))
+        val result = newSignatureBaseString(Map("xxx" -> originalValue))
 
-        val actualValue = parseQuery(result).
+        val actualValue = parseParameters(result).
             find(item => item.getName() == "xxx").
             get.getValue;
 
@@ -67,13 +67,12 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     @Test
-    def given_an_unsorted_list_of_parameters_then_result_has_them_sorted() {
+    def given_an_unsorted_list_of_parameters_then_result_contains_them_all_and_they_are_sorted() {
         given_an_unsorted_list_of_parameters
-
-        val result : java.net.URI = toURI(newSignatureBaseString(parameters))
+        when_signature_base_string_is_created
 
         var parametersExcludingOAuth : List[NameValuePair] = trimOAuth(
-            parseQuery(result.getQuery)
+            parseParameters(signatureBaseString)
         )
 
         val expectedList : List[NameValuePair] = List(
@@ -95,31 +94,28 @@ class SignatureBaseStringTest extends TestBase {
     def given_a_list_of_parameters_then_result_contains_them_all() {
         given_a_list_of_parameters
 
-        val result : java.net.URI = toURI(
-            new SignatureBaseString(
-                aValidUri,
-                parameters,
-                consumerCredential,
-                aValidNonce,
-                aValidTimestamp
-            )
+        val result = new SignatureBaseString(
+            aValidUri,
+            parameters,
+            consumerCredential,
+            aValidNonce,
+            aValidTimestamp
         )
 
-        val allParameters : List[NameValuePair] = parseQuery(result.getQuery)
+        val allParameters : List[NameValuePair] = parseParameters(result)
 
         parameters.foreach((nameValueTuple : Tuple2[String, String]) => {
-                Assert assertThat(
-                    String.format(
-                        "Expected the returned parameters to contain " +
-                        "parameter called '%1$s', with value '%2$s'",
-                        nameValueTuple._1,
-                        nameValueTuple._2
-                    ),
-                    contains(allParameters, nameValueTuple),
-                    is(true)
-                )
-            }
-        )
+            Assert assertThat(
+                String.format(
+                    "Expected the returned parameters to contain " +
+                    "parameter called '%1$s', with value '%2$s'",
+                    nameValueTuple._1,
+                    nameValueTuple._2
+                ),
+                contains(allParameters, nameValueTuple),
+                is(true)
+            )
+        })
     }
 
     // See: http://oauth.net/core/1.0/#anchor13
@@ -127,13 +123,15 @@ class SignatureBaseStringTest extends TestBase {
     def result_contains_all_expected_oauth_parameters() {
         given_a_list_of_parameters
         when_signature_base_string_is_created
-        val allParameters = parseQuery(signatureBaseString.getQuery)
+        
+        val allParameters = parseParameters(signatureBaseString)
 
         val requiredParameters = List(
             "oauth_consumer_key",
             "oauth_signature_method",
             "oauth_timestamp",
             "oauth_nonce",
+            "oauth_version"
         )
 
         requiredParameters foreach(
@@ -214,7 +212,7 @@ class SignatureBaseStringTest extends TestBase {
 
         Assert assertThat(
             signatureBaseString.toString,
-            containsString(aValidUri.getPath)
+            containsString(%%(aValidUri.getPath))
         )
     }
 
@@ -243,6 +241,7 @@ class SignatureBaseStringTest extends TestBase {
 
     // TEST: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
     // TEST: When URL contains ending slash, then it is included in the result
+    // TEST: When URL contains query string, then it is excluded in the result
     // TEST: When I create 2 instances, then each has a different timestamp value
     // TEST: I can supply timestamp behaviour (or value) to create a SignatureBaseString instance
     // TEST: I can supply nonce behaviour (or value) to create a SignatureBaseString instance
@@ -251,9 +250,23 @@ class SignatureBaseStringTest extends TestBase {
     // See: http://term.ie/oauth/example/client.php
     @Test @Ignore
     def examples() {
-        when_signature_base_string_is_created
-        val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26oauth_nonce%3Db03c8c22ad58d88d62cc46b345997b28%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1252410722%26oauth_version%3D1.0";
         
+        val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26oauth_nonce%3Db03c8c22ad58d88d62cc46b345997b28%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1252410722%26oauth_version%3D1.0";
+
+        val actual = new SignatureBaseString(
+            "get",
+            aValidUri,
+            parameters,
+            consumerCredential,
+            aValidNonce,
+            aValidTimestamp
+        );
+
+        println(actual)
+        println(expected);
+
+        //Assert assertThat(actual, is(equalTo(expected)))
+
         // For the current settings, the following is expected:
         //GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26oauth_nonce%3Db03c8c22ad58d88d62cc46b345997b28%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1252410722%26oauth_version%3D1.0
     }
@@ -283,7 +296,7 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     private def when_signature_base_string_is_created(method : String) {
-        signatureBaseString = toURI(createDefault(method))
+        signatureBaseString = createDefault(method)
     }
 
     private def createDefault(method : String) : SignatureBaseString = {
@@ -314,14 +327,31 @@ class SignatureBaseStringTest extends TestBase {
             get.getValue;
     }
 
-    private def toURI(baseString : SignatureBaseString) : java.net.URI = {
+    // TODO: Consider moving to SignatureBaseString class
+    private def parseParameters(signatureBaseString : SignatureBaseString) : List[NameValuePair] = {
+        val allParameters : String = urlDecode(signatureBaseString.toString().split("&")(2))
+        val pairs = allParameters.split("&")
 
-        // [!] Relies on text starting with <method>&
+        var result : List[NameValuePair] = List[NameValuePair]()
 
-        val index = baseString.toString.indexOf('&') + 1
+        pairs.foreach((pair : String) => {
+           val parts = pair.split("=");
+           result = new NameValuePair(parts(0), parts(1)) :: result // TODO: This is prepending!
+        });
 
-        val uriPart = baseString.toString().substring(index)
+        result.reverse; // TODO: This is naff -- it's because of previous 
+    }
 
-        new java.net.URI(uriPart);
+    private def urlDecode(str : String) : String = {
+        java.net.URLDecoder.decode(str, "UTF-8")
+    }
+
+    // TODO: Get rid of this, parse from SignatureBaseStrig instead
+    private def %% (str : String) : String = {
+        if (null == str) return ""
+
+        return java.net.URLEncoder.encode(str.toString) replace
+            ("+", "%20") replace
+            ("%7E", "~");
     }
 }

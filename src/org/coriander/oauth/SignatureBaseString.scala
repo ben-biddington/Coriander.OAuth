@@ -41,18 +41,20 @@ class SignatureBaseString (
     // See: http://www.docjar.com/docs/api/org/apache/commons/httpclient/util/ParameterFormatter.html
     // OAuth, see: http://oauth.net/core/1.0/#anchor14
     def getSignatureBaseString(uri : URI, queryParams : Map[String, String]) : String = {
-        val combinedParameters = sort(queryParams ++ getOAuthParameters) map {
-            case (name, value) => { %%(name) + "=" + %%(value) }
-        } mkString "&"
+        val normalizedParams : String = normalize(queryParams ++ getOAuthParameters)
+        
+        val requestUrl : String = uri.getScheme + "://" + uri.getHost + uri.getPath
 
-        String format(
-            "%1$s%2$s://%3$s%4$s?%5$s",
-            method.toUpperCase +  "&",
-            uri.getScheme,
-            uri.getHost,
-            uri.getPath,
-            combinedParameters
+        // METHOD&URL&NORMALIZED_PARAMS
+
+        val result = String format(
+            "%1$s%2$s%3$s",
+            method.toUpperCase + "&",
+            %%(requestUrl) + "&",
+            %%(normalizedParams)
         );
+
+        result
     }
 
     // OAuth, see: http://oauth.net/core/1.0/#anchor14 (9.1.1)
@@ -60,12 +62,19 @@ class SignatureBaseString (
         return new TreeMap[String, String] ++ queryParams
     }
 
+    private def normalize(params : Map[String, String]) : String = {
+        sort(params) map {
+            case (name, value) => { %%(name) + "=" + %%(value) }
+        } mkString "&"
+    }
+
     private def getOAuthParameters() : Map[String, String] = {
         return Map(
             "oauth_consumer_key"        -> consumerCredential.key,
             "oauth_signature_method"    -> signatureMethod,
             "oauth_timestamp"           -> timestamp,
-            "oauth_nonce"               -> nonce.toString
+            "oauth_nonce"               -> nonce.toString,
+            "oauth_version"             -> "1.0"
         )
     }
     
