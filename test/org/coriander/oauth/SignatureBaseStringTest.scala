@@ -239,6 +239,29 @@ class SignatureBaseStringTest extends TestBase {
         )
     }
 
+    // See: http://term.ie/oauth/example/client.php
+    // See also: http://oauth.net/core/1.0#sig_base_example
+    @Test
+    def examples() {
+        val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey" +
+            "%26oauth_nonce%3Dddb61ca14d02e9ef7b55cc5c1f88616f%26" +
+            "oauth_signature_method%3DHMAC-SHA1%26" +
+            "oauth_timestamp%3D1252500234%26oauth_version%3D1.0"
+        
+        // Signature for above: oyg55+J+tiWduaXMdMFrCS/PMZQ=
+
+        val actual = new SignatureBaseString(
+            "get",
+            new java.net.URI("http://xxx/"),
+            Map(),
+            new OAuthCredential("key", "secret"),
+            "ddb61ca14d02e9ef7b55cc5c1f88616f",
+            "1252500234"
+        ) toString;
+
+        Assert assertEquals("Actual does not match expected.", expected, actual)
+    }
+
     // TEST: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
     // TEST: When URL contains ending slash, then it is included in the result
     // TEST: When URL contains query string, then it is excluded in the result
@@ -246,30 +269,6 @@ class SignatureBaseStringTest extends TestBase {
     // TEST: I can supply timestamp behaviour (or value) to create a SignatureBaseString instance
     // TEST: I can supply nonce behaviour (or value) to create a SignatureBaseString instance
     // TEST: This class only requires oauth_key, not an entire OAuthCredential
-
-    // See: http://term.ie/oauth/example/client.php
-    @Test @Ignore
-    def examples() {
-        
-        val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26oauth_nonce%3Db03c8c22ad58d88d62cc46b345997b28%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1252410722%26oauth_version%3D1.0";
-
-        val actual = new SignatureBaseString(
-            "get",
-            aValidUri,
-            parameters,
-            consumerCredential,
-            aValidNonce,
-            aValidTimestamp
-        );
-
-        println(actual)
-        println(expected);
-
-        //Assert assertThat(actual, is(equalTo(expected)))
-
-        // For the current settings, the following is expected:
-        //GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26oauth_nonce%3Db03c8c22ad58d88d62cc46b345997b28%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1252410722%26oauth_version%3D1.0
-    }
 
     private def given_a_uri(uri: java.net.URI) {
         aValidUri = uri;

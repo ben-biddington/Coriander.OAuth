@@ -32,7 +32,7 @@ class SignatureTest extends TestBase {
 
         val signature = new Signature(credentialWithNullSecret)
 
-        signature sign(new SignatureBaseString(url, params, consumerCredential, 0, ""));
+        signature sign(new SignatureBaseString(url, params, consumerCredential, "xxx", ""));
     }
 
     // TEST: Given an example baseString, then the correct signature is returned

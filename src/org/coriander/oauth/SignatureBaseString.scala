@@ -14,7 +14,7 @@ class SignatureBaseString (
     uri                 : URI,
     queryParams         : Map[String, String],
     consumerCredential  : OAuthCredential,
-    nonce               : Long,
+    nonce               : String,
     timestamp           : String
 ) {
     val signatureMethod = "HMAC-SHA1"
@@ -24,7 +24,7 @@ class SignatureBaseString (
         uri                 : URI,
         queryParams         : Map[String, String],
         consumerCredential  : OAuthCredential,
-        nonce               : Long,
+        nonce               : String,
         timestamp           : String
     ) {
         this("get", uri, queryParams, consumerCredential, nonce, timestamp)
