@@ -10,13 +10,26 @@ import org.coriander.oauth.URLEncoder
 
 class URLEncoderTest {
 
-    // TEST: Null argument returns empty
-    // TEST: The sequence of characters '%7E' is replaced with '~'
+    // TEST: non-reserved characters are left alone
 
+    @Test
+    def null_returns_empty() {
+        val result = URLEncoder %%(null)
+
+        Assert assertEquals("", result)
+    }
+    
     @Test
     def space_is_percent_encoded() {
         val result = URLEncoder %%(" ")
 
         Assert assertEquals("%20", result)
+    }
+
+    @Test
+    def tilda_is_not_encoded() {
+        val result = URLEncoder %%("~")
+
+        Assert assertEquals("~", result)
     }
 }
