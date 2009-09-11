@@ -6,29 +6,30 @@ import org.junit.Test
 import org.junit.Assert._
 import org.junit._
 
-import org.coriander.oauth.URLEncoder
+import org.coriander.oauth.uri.URLEncoder
 
-class URLEncoderTest {
+class OAuthURLEncoderTest {
 
     // TEST: non-reserved characters are left alone
+    val urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
 
     @Test
     def null_returns_empty() {
-        val result = URLEncoder %%(null)
+        val result = urlEncoder %%(null)
 
         Assert assertEquals("", result)
     }
     
     @Test
     def space_is_percent_encoded() {
-        val result = URLEncoder %%(" ")
+        val result = urlEncoder %%(" ")
 
         Assert assertEquals("%20", result)
     }
 
     @Test
     def tilda_is_not_encoded() {
-        val result = URLEncoder %%("~")
+        val result = urlEncoder %%("~")
 
         Assert assertEquals("~", result)
     }

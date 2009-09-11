@@ -31,6 +31,7 @@ class SignatureBaseStringTest extends TestBase {
     val aValidTimestamp = new SystemTimestampFactory().createTimestamp
     var parameters : Map[String, String] = Map()
     var signatureBaseString : SignatureBaseString = null;
+    val urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
 
     var done = false
     val caller = self
@@ -212,7 +213,7 @@ class SignatureBaseStringTest extends TestBase {
 
         assertThat(
             signatureBaseString.toString,
-            containsString(URLEncoder.%%(aValidUri.getPath))
+            containsString(urlEncoder.%%(aValidUri.getPath))
         )
     }
 

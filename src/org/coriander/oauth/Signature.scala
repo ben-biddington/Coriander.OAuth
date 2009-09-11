@@ -7,13 +7,21 @@ import java.net.URI
 import org.apache.http.protocol.HTTP.UTF_8
 import org.apache.commons.codec.binary.Base64.encodeBase64
 
-class Signature(consumerCredential : OAuthCredential, token : OAuthCredential) {
+class Signature(
+    urlEncoder : org.coriander.oauth.uri.URLEncoder,
+    consumerCredential : OAuthCredential,
+    token : OAuthCredential
+) {
 
     val algorithm = "HmacSHA1"
     val DEFAULT_TOKEN_SECRET : String = ""
+    val mac = crypto.Mac.getInstance(algorithm)
 
-    def this(consumerCredential : OAuthCredential) {
-        this(consumerCredential, null)
+    def this(
+        urlEncoder : org.coriander.oauth.uri.URLEncoder,
+        consumerCredential : OAuthCredential
+    ) {
+        this(urlEncoder, consumerCredential, null)
     }
 
     def sign(baseString : String) : String = {
@@ -23,38 +31,46 @@ class Signature(consumerCredential : OAuthCredential, token : OAuthCredential) {
     }
 
     private def getSignature(baseString : String) : String = {
-        val key = getKey
-
-        val sig = {
-            val mac = crypto.Mac.getInstance(algorithm)
-
-            mac.init(key)
-            
-            new String(encodeBase64(mac.doFinal(baseString.getBytes)))
-        }
-
-        sig;
+        mac.init(getKey)
+        new String(encodeBase64(mac.doFinal(baseString.getBytes)))
     }
 
-    // See: http://oauth.net/core/1.0, section 9.2
     private def getKey : crypto.spec.SecretKeySpec = {
-        val key = getConsumerSecret + "&" + getTokenSecret
-
         new crypto.spec.SecretKeySpec(
-            key getBytes(UTF_8),
+            formatKey getBytes(UTF_8),
             algorithm
         );
     }
 
-    private def getConsumerSecret() : String = {
-        return consumerCredential.secret
+    // See: http://oauth.net/core/1.0, section 9.2
+    private def formatKey : String = {
+        %%(getConsumerSecret) + "&" + %%(getTokenSecret)
     }
 
-    private def getTokenSecret() : String = {
+    private def getConsumerSecret : String = {
+        if (consumerCredential != null) consumerCredential.secret else null
+    }
+
+    private def getTokenSecret : String = {
        if (token != null) token.secret else DEFAULT_TOKEN_SECRET
     }
 
-    private def validate() {
+    private def %% (value : String) : String = {
+        urlEncoder.encode(value)
+    }
+
+    private def validate {
+        requireURLEncoder
+        validateConsumerCredential
+        validateToken
+    }
+
+    private def requireURLEncoder {
+        if (null == urlEncoder)
+            throw new Exception("Please supply a URLEncoder")
+    }
+
+    private def validateConsumerCredential {
         if (null == consumerCredential)
             throw new Exception("Missing the 'consumerCredential'.")
 
@@ -67,5 +83,10 @@ class Signature(consumerCredential : OAuthCredential, token : OAuthCredential) {
             throw new Exception(
                 "The supplied ConsumerCredential has no key defined."
             )
+    }
+
+    private def validateToken {
+        if (token != null && token.secret == null)
+            throw new Exception("The supplied token is missing a secret.")
     }
 }
