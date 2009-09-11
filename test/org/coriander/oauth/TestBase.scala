@@ -13,7 +13,7 @@ import org.junit.rules._
 
 import scala.collection.immutable._
 
-class TestBase {
+class TestBase extends Assert {
     protected def trimOAuth(nameValuePairs : List[NameValuePair]) :
         List[NameValuePair] = {
         nameValuePairs.filter(

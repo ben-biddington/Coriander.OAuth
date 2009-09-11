@@ -46,7 +46,7 @@ class SignatureBaseStringTest extends TestBase {
             find(item => item.getName() == "xxx").
             get.getValue;
 
-        Assert assertEquals(expectedEncodedValue, actualValue)
+        assertEquals(expectedEncodedValue, actualValue)
     }
     
     @Test
@@ -60,7 +60,7 @@ class SignatureBaseStringTest extends TestBase {
             find(item => item.getName() == "xxx").
             get.getValue;
 
-        Assert assertThat(
+        assertThat(
             "The result must conform to RFC3629 for percent-encoding",
             actualValue, is(equalTo(expectedEncodedValue))
         )
@@ -82,7 +82,7 @@ class SignatureBaseStringTest extends TestBase {
         )
 
         for (i <- 0 to expectedList.length - 1) {
-            Assert assertThat(
+            assertThat(
                 "Sorting of resultant query parameters should match expected.",
                 parametersExcludingOAuth(i),
                 is(equalTo(expectedList(i)))
@@ -105,7 +105,7 @@ class SignatureBaseStringTest extends TestBase {
         val allParameters : List[NameValuePair] = parseParameters(result)
 
         parameters.foreach((nameValueTuple : Tuple2[String, String]) => {
-            Assert assertThat(
+            assertThat(
                 String.format(
                     "Expected the returned parameters to contain " +
                     "parameter called '%1$s', with value '%2$s'",
@@ -149,7 +149,7 @@ class SignatureBaseStringTest extends TestBase {
 
         var pattern = "^" + expectedMethod r
 
-        Assert assertTrue(
+        assertTrue(
             String format(
                 "Expected that the returned value would begin with <%1$s>, " +
                 "but it did not. Actual: <%2$s>",
@@ -172,7 +172,7 @@ class SignatureBaseStringTest extends TestBase {
 
         var pattern = "^" + expected r
 
-        Assert assertTrue(
+        assertTrue(
             String format(
                 "Expected that the returned value would begin with <%1$s>, " +
                 "but it did not. Actual: <%2$s>",
@@ -191,12 +191,12 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-        Assert assertFalse(
+        assertFalse(
             "Expected the port number to have been stripped, but it wasn't.",
             "^gethttp://xxx?".r.findAllIn(signatureBaseString.toString) == None
         )
 
-        Assert assertFalse(
+        assertFalse(
             "Expected the port number to have been stripped, but it wasn't.",
             "^gethttp://xxx:1337".r.findAllIn(signatureBaseString.toString) hasNext
         )
@@ -210,7 +210,7 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-        Assert assertThat(
+        assertThat(
             signatureBaseString.toString,
             containsString(URLEncoder.%%(aValidUri.getPath))
         )
@@ -228,7 +228,7 @@ class SignatureBaseStringTest extends TestBase {
 
         val expectedMethod = "GET"
 
-        Assert assertTrue(
+        assertTrue(
             String format(
                 "Expected that the returned value would begin with <%1$s>, " +
                 "but it did not. Actual: <%2$s>",
@@ -259,7 +259,7 @@ class SignatureBaseStringTest extends TestBase {
             "1252500234"
         ) toString;
 
-        Assert assertEquals("Actual does not match expected.", expected, actual)
+        assertEquals("Actual does not match expected.", expected, actual)
     }
 
     // TEST: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case

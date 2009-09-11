@@ -7,22 +7,19 @@ import java.net.URI
 import org.apache.http.protocol.HTTP.UTF_8
 import org.apache.commons.codec.binary.Base64.encodeBase64
 
-// Encapsulates signature behaviour, this is a signature abstraction.
-// As an object, it operates on a supplied SignatureBaseString.
-// 
-// See: http://databinder.net/sxr/dispatch/0.4.2/main/OAuth.scala.html#14048
-class Signature(consumerCredential : OAuthCredential) {
+class Signature(consumerCredential : OAuthCredential, token : OAuthCredential) {
 
     val algorithm = "HmacSHA1"
+    val DEFAULT_TOKEN_SECRET : String = ""
 
-    def sign(baseString : SignatureBaseString) : String = {
+    def this(consumerCredential : OAuthCredential) {
+        this(consumerCredential, null)
+    }
+
+    def sign(baseString : String) : String = {
         validate
 
-        getSignature(baseString.toString);
-
-        // TODO: This returns a URI, i.e., it is meant to assemble a signed URI.
-        // Consider redefining this to a class that simply creates the signature
-        // and leave the assembly to something else.
+        getSignature(baseString);
     }
 
     private def getSignature(baseString : String) : String = {
@@ -39,42 +36,36 @@ class Signature(consumerCredential : OAuthCredential) {
         sig;
     }
 
+    // See: http://oauth.net/core/1.0, section 9.2
     private def getKey : crypto.spec.SecretKeySpec = {
+        val key = getConsumerSecret + "&" + getTokenSecret
+
         new crypto.spec.SecretKeySpec(
-            consumerCredential.secret.getBytes,
+            key getBytes(UTF_8),
             algorithm
         );
     }
 
-    private def validate() {
-        if (null == consumerCredential || null == consumerCredential.secret)
-            throw new Exception("Missing the 'consumerCredential'.")
+    private def getConsumerSecret() : String = {
+        return consumerCredential.secret
     }
 
-//    def sign_xxx(method: String, url: String, user_params: Map[String, String], consumer: Consumer,
-//        token: Option[Token], verifier: Option[String]) = {
-//        val oauth_params = IMap(
-//      "oauth_consumer_key" -> consumer.key,
-//      "oauth_signature_method" -> "HMAC-SHA1",
-//      "oauth_timestamp" -> (System.currentTimeMillis / 1000).toString,
-//      "oauth_nonce" -> System.nanoTime.toString
-//        ) ++ token.map { "oauth_token" -> _.value } ++
-//        verifier.map { "oauth_verifier" -> _ }
-//
-//        val encoded_ordered_params = (
-//          new TreeMap[String, String] ++ (user_params ++ oauth_params map %%)
-//        ) map { case (k, v) => k + "=" + v } mkString "&"
-//
-//        val message = %%(method :: url :: encoded_ordered_params :: Nil)
-//
-//        val SHA1 = "HmacSHA1";
-//        val key_str = %%(consumer.secret :: (token map { _.secret } getOrElse "") :: Nil)
-//        val key = new crypto.spec.SecretKeySpec(bytes(key_str), SHA1)
-//        val sig = {
-//          val mac = crypto.Mac.getInstance(SHA1)
-//          mac.init(key)
-//          new String(encodeBase64(mac.doFinal(bytes(message))))
-//        }
-//        oauth_params + ("oauth_signature" -> sig)
-//  }
+    private def getTokenSecret() : String = {
+       if (token != null) token.secret else DEFAULT_TOKEN_SECRET
+    }
+
+    private def validate() {
+        if (null == consumerCredential)
+            throw new Exception("Missing the 'consumerCredential'.")
+
+        if (null == consumerCredential.secret)
+            throw new Exception(
+                "The supplied ConsumerCredential has no secret defined."
+            )
+
+        if (null == consumerCredential.key)
+            throw new Exception(
+                "The supplied ConsumerCredential has no key defined."
+            )
+    }
 }
