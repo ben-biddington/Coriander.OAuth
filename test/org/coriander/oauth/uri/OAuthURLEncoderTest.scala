@@ -1,4 +1,4 @@
-package org.coriander.oauth
+package org.coriander.oauth.uri
 
 import org.junit.After
 import org.junit.Before
