@@ -106,8 +106,6 @@ class Signature(
     }
 
     private def validateAlgorithm {
-        println(algorithm + ", " + (algorithm == DEFAULT_ALGORITHM).toString)
-        
         if (algorithm != DEFAULT_ALGORITHM)
             throw new Exception(
                 "Unsupported algorithm. Currently only 'HMacSha1' is supported."
