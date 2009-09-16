@@ -96,6 +96,24 @@ class SignatureTest extends TestBase {
         assertEquals(expected, actual)
     }
 
+    @Test
+    def sign_currently_only_supports_hmacsha1_algorithm() {
+        val expectedMessage = "Unsupported algorithm. Currently only 'HMacSha1' is supported."
+        var success = false
+
+        try {
+            new Signature(null, null, null, "Anything but hmacsha1") sign("Any string");
+        } catch {
+            case e : Exception => {
+                assertEquals(expectedMessage, e.getMessage)
+                success = true
+            }
+        }
+
+        assertTrue("The expected exception was not thrown", success)
+    }
+
+
     def newSignature(consumerCredential : OAuthCredential) : Signature = {
         newSignature(consumerCredential, null)
     }

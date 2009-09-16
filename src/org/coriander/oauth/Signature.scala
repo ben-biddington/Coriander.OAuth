@@ -8,21 +8,35 @@ import org.apache.http.protocol.HTTP.UTF_8
 import org.apache.commons.codec.binary.Base64.encodeBase64
 
 class Signature(
-    urlEncoder : org.coriander.oauth.uri.URLEncoder,
-    consumerCredential : OAuthCredential,
-    token : OAuthCredential
+    urlEncoder              : org.coriander.oauth.uri.URLEncoder,
+    consumerCredential      : OAuthCredential,
+    token                   : OAuthCredential
 ) {
 
-    val algorithm = "HmacSHA1"
-    val DEFAULT_TOKEN_SECRET : String = ""
-    val mac = crypto.Mac.getInstance(algorithm)
+    def this(
+        urlEncoder          : org.coriander.oauth.uri.URLEncoder,
+        consumerCredential  : OAuthCredential,
+        token               : OAuthCredential,
+        algorithm           : String
+    ) {
+        this(urlEncoder, consumerCredential, token)
+        this.algorithm = algorithm
+    }
 
     def this(
-        urlEncoder : org.coriander.oauth.uri.URLEncoder,
-        consumerCredential : OAuthCredential
+        urlEncoder          : org.coriander.oauth.uri.URLEncoder,
+        consumerCredential  : OAuthCredential
     ) {
         this(urlEncoder, consumerCredential, null)
     }
+    
+    val DEFAULT_ALGORITHM = "HMacSha1"
+    var algorithm = DEFAULT_ALGORITHM
+    val DEFAULT_TOKEN_SECRET : String = ""
+    val mac = crypto.Mac.getInstance(algorithm)
+    val encoding = UTF_8
+
+   
 
     def sign(baseString : String) : String = {
         validate
@@ -37,7 +51,7 @@ class Signature(
 
     private def getKey : crypto.spec.SecretKeySpec = {
         new crypto.spec.SecretKeySpec(
-            formatKey getBytes(UTF_8),
+            formatKey getBytes(encoding),
             algorithm
         );
     }
@@ -60,6 +74,7 @@ class Signature(
     }
 
     private def validate {
+        validateAlgorithm
         requireURLEncoder
         validateConsumerCredential
         validateToken
@@ -88,5 +103,14 @@ class Signature(
     private def validateToken {
         if (token != null && token.secret == null)
             throw new Exception("The supplied token is missing a secret.")
+    }
+
+    private def validateAlgorithm {
+        println(algorithm + ", " + (algorithm == DEFAULT_ALGORITHM).toString)
+        
+        if (algorithm != DEFAULT_ALGORITHM)
+            throw new Exception(
+                "Unsupported algorithm. Currently only 'HMacSha1' is supported."
+            )
     }
 }
