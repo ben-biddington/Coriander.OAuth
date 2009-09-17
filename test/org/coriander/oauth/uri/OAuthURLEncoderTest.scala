@@ -10,6 +10,9 @@ import org.coriander.oauth.uri.URLEncoder
 
 class OAuthURLEncoderTest {
 
+    // See: http://oauth.net/core/1.0, S 5.1 Parameter Encoding
+    // unreserved characters = ALPHA, DIGIT, '-', '.', '_', '~'
+
     // TEST: non-reserved characters are left alone
     val urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
 
@@ -33,4 +36,28 @@ class OAuthURLEncoderTest {
 
         Assert assertEquals("~", result)
     }
+
+    @Test
+    def period_is_not_encoded() {
+        val result = urlEncoder %%(".")
+
+        Assert assertEquals(".", result)
+    }
+
+    @Test
+    def dash_is_not_encoded() {
+        val result = urlEncoder %%("-")
+
+        Assert assertEquals("-", result)
+    }
+
+    @Test
+    def underscore_is_not_encoded() {
+        val result = urlEncoder %%("_")
+
+        Assert assertEquals("_", result)
+    }
+
+    // TEST: alphabet characters not encoded
+    // TEST: numeric characters not encoded
 }

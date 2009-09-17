@@ -10,6 +10,7 @@ import org.junit._
 import org.apache.commons.httpclient._
 import org.apache.commons.httpclient.util._
 import org.junit.rules._
+import scala.util.matching._
 
 import scala.collection.immutable._
 
@@ -44,6 +45,15 @@ class TestBase extends Assert {
             ),
             containsName(list, expected),
             is(true)
+        )
+    }
+
+    protected def assertMatches(pattern : String, value : String) {
+        val hasMatch = false == (new Regex(pattern).unapplySeq(value).isEmpty)
+        assertTrue(
+            "The supplied value <" + value + "> " +
+            "does not match pattern <" + pattern +">", 
+            hasMatch
         )
     }
 
