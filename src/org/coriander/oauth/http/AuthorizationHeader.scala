@@ -1,5 +1,6 @@
 package org.coriander.oauth.http
 
+// TODO: Consider putting all of this oauth info (realm to version) in a data structure.
 class AuthorizationHeader(
     realm       : String,
     consumerKey : String,
