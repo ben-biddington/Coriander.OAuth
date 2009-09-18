@@ -20,8 +20,12 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     val oauth_timestamp         = "137131200"
     val oauth_nonce             = "4572616e48616d6d65724c61686176"
     val oauth_version           = "1.0"
-    
-    val pattern = "^[\\s]*[\\w]+=\"[^\"]+\"[\\s]*$"
+
+    val linearWhitespace        = "[\t| ]"
+
+    // [!] linear whitespace is either <space> or <horizontal tab>
+    // [linear_whitespace]name="[value|empty]"[linear_whitespace]
+    val nameEqualsAnyQuotedString = "[\\w]+=\"[^\"]+\""
 
     @Test
     def result_is_an_authorization_header {
@@ -30,14 +34,14 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
         assertTrue(value.startsWith("Authorization: OAuth"));
     }
 
-     @Test
+    @Test
     def result_contains_individual_name_value_pairs_formatted_correctly {
         val value = getHeaderValue(newAuthorizationHeader toString)
 
         val nameValuePairs : Array[String] = value.split(",");
 
         nameValuePairs foreach(pair => {
-            assertMatches(pattern, pair)
+            assertMatches(createNameValuePairPattern, pair)
         })
     }
     
@@ -58,7 +62,7 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     // TEST: header value contains just oauth parameters separated by commas
     // TEST: header value contains ALL expected oauth parameters
     // TEST: name and value are url encoded
-    // TEST: parameters values may be empty
+    // TEST: parameter values may be empty
     // TEST: parameters are comma-separated, and whitespace is okay
     // TEST: Realm is optional -- is it always added?
 
@@ -71,5 +75,10 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
         assertTrue("Header value must not be empty", result != "")
 
         result
+    }
+
+    private def createNameValuePairPattern : String = {
+        val anyLinearWhitespace = linearWhitespace + "*"
+         "^" + anyLinearWhitespace + nameEqualsAnyQuotedString + anyLinearWhitespace + "$"
     }
 }
