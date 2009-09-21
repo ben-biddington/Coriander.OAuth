@@ -4,12 +4,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert._
-import org.coriander.oauth._
-import org.coriander.oauth.uri._
 import scala.util.matching._
-
 import org.mockito.Mockito._
 
+import org.coriander.oauth._
+import org.coriander.oauth.uri._
 import org.coriander.oauth.http.AuthorizationHeader
 
 // See: http://oauth.net/core/1.0, S 5.4.1
@@ -101,8 +100,6 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
         val headerName = "Authorization: OAuth"
         val indexOfEndOfHeaderName = header.indexOf(headerName)
         val result = header.substring(indexOfEndOfHeaderName + 1 + headerName.length)
-
-        println(result toString)
 
         assertTrue("Header value must not be empty", result != "")
 
