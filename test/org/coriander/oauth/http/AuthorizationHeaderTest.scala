@@ -8,6 +8,8 @@ import org.coriander.oauth._
 import org.coriander.oauth.uri._
 import scala.util.matching._
 
+import org.mockito.Mockito._
+
 import org.coriander.oauth.http.AuthorizationHeader
 
 // See: http://oauth.net/core/1.0, S 5.4.1
@@ -44,8 +46,29 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
             assertMatches(createNameValuePairPattern, pair)
         })
     }
-    
+
+    @Test
+    def each_value_is_url_encoded_during_toString {
+        val mockURLEncoder = newMockURLEncoder
+
+        val header = newAuthorizationHeader(mockURLEncoder) toString
+
+        // TODO: Consider NameValuePairs
+        verify(mockURLEncoder, times(1)).%%(realm)
+        verify(mockURLEncoder, times(1)).%%(oauth_consumer_key)
+        verify(mockURLEncoder, times(1)).%%(oauth_signature_method)
+        verify(mockURLEncoder, times(1)).%%(oauth_signature)
+        verify(mockURLEncoder, times(1)).%%(oauth_timestamp)
+        verify(mockURLEncoder, times(1)).%%(oauth_nonce)
+        verify(mockURLEncoder, times(1)).%%(oauth_version)
+    }
+
     private def newAuthorizationHeader : AuthorizationHeader = {
+        newAuthorizationHeader(new org.coriander.oauth.uri.OAuthURLEncoder)
+    }
+
+     private def newAuthorizationHeader(urlEncoder : org.coriander.oauth.uri.URLEncoder) :
+        AuthorizationHeader = {
         new AuthorizationHeader(
             realm,
             oauth_consumer_key,
@@ -55,23 +78,32 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
             oauth_timestamp,
             oauth_nonce,
             oauth_version,
-            new org.coriander.oauth.uri.OAuthURLEncoder
+            urlEncoder
         )
     }
 
-    // TEST: header value contains just oauth parameters separated by commas
-    // TEST: header value contains ALL expected oauth parameters
-    // TEST: name and value are url encoded
-    // TEST: parameter values may be empty
-    // TEST: parameters are comma-separated, and whitespace is okay
+    private def newMockURLEncoder : org.coriander.oauth.uri.URLEncoder = {
+        var mockedURLEncoder = mock(classOf[org.coriander.oauth.uri.URLEncoder])
+        when(mockedURLEncoder.%%("any-string")).thenReturn("stubbed-escaped-value")
+        
+        mockedURLEncoder
+    }
+
+    // TEST: Header value contains just oauth parameters separated by commas
+    // TEST: Header value contains ALL expected oauth parameters
+    // TEST: Parameter values may be empty
+    // TEST: Parameters are comma-separated, and whitespace is okay
     // TEST: Realm is optional -- is it always added?
+    // TEST: URLEncoder is required, otherwise an exception results.
 
     private def getHeaderValue(header : String) : String = {
         // TODO: Consider regexp
         val headerName = "Authorization: OAuth"
         val indexOfEndOfHeaderName = header.indexOf(headerName)
         val result = header.substring(indexOfEndOfHeaderName + 1 + headerName.length)
-        
+
+        println(result toString)
+
         assertTrue("Header value must not be empty", result != "")
 
         result
