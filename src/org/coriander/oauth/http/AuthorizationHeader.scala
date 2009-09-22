@@ -22,6 +22,8 @@ class AuthorizationHeader(
     }
 
     private def createValue : String = {
+        requireUrlEncoder
+        
         "realm=\""                  + urlEncoder.%%(realm) + "\"," +
         "oauth_consumer_key=\""     + urlEncoder.%%(consumerKey) + "\"," +
         "oauth_token=\""            + urlEncoder.%%(tokenkey)  + "\"," +
@@ -30,5 +32,10 @@ class AuthorizationHeader(
         "oauth_timestamp=\""        + urlEncoder.%%(timestamp)  + "\", " +
         "oauth_nonce=\""            + urlEncoder.%%(nonce)  + "\", " +
         "oauth_version=\""          + urlEncoder.%%(version)  + "\""
+    }
+
+    private def requireUrlEncoder {
+        if (null == urlEncoder)
+            throw new Exception("No urlEncoder has been supplied.")
     }
 }

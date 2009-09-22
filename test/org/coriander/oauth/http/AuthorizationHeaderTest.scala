@@ -32,7 +32,7 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     def result_is_an_authorization_header {
         val value = newAuthorizationHeader toString
 
-        assertTrue(value.startsWith("Authorization: OAuth"));
+        assertTrue(value startsWith("Authorization: OAuth"));
     }
 
     @Test
@@ -60,6 +60,11 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
         verify(mockURLEncoder, times(1)).%%(oauth_timestamp)
         verify(mockURLEncoder, times(1)).%%(oauth_nonce)
         verify(mockURLEncoder, times(1)).%%(oauth_version)
+    }
+
+    @Test { val expected = classOf[Exception] }
+    def url_encoder_must_be_supplied_otherwise_toString_throws_exception {
+        newAuthorizationHeader(null) toString
     }
 
     private def newAuthorizationHeader : AuthorizationHeader = {
@@ -93,7 +98,6 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     // TEST: Parameter values may be empty
     // TEST: Parameters are comma-separated, and whitespace is okay
     // TEST: Realm is optional -- is it always added?
-    // TEST: URLEncoder is required, otherwise an exception results.
 
     private def getHeaderValue(header : String) : String = {
         // TODO: Consider regexp
