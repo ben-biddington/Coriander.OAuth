@@ -185,22 +185,22 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     @Test
-    def given_a_uri_containing_port_number_then_result_excludes_it() {
+    def given_a_uri_containing_non_default_port_number_then_result_includes_it() {
         given_a_uri(new java.net.URI("http://xxx:1337/"))
         
         given_a_list_of_parameters
 
         when_signature_base_string_is_created
 
-        assertFalse(
-            "Expected the port number to have been stripped, but it wasn't.",
-            "^gethttp://xxx?".r.findAllIn(signatureBaseString.toString) == None
-        )
+        val plainTextValue = urlDecode(signatureBaseString.toString)
 
-        assertFalse(
-            "Expected the port number to have been stripped, but it wasn't.",
-            "^gethttp://xxx:1337".r.findAllIn(signatureBaseString.toString) hasNext
-        )
+        assertStartsWith("^GET&http://xxx:1337/&", plainTextValue)
+    }
+
+    @Test
+    def result_excludes_default_ports_80_and_443() {
+        assetResultExcludesPort(80)
+        assetResultExcludesPort(443)
     }
 
     @Test
@@ -263,6 +263,21 @@ class SignatureBaseStringTest extends TestBase {
         assertEquals("Actual does not match expected.", expected, actual)
     }
 
+    private def assetResultExcludesPort(port : Int) {
+        val expectedUriString = "http://xxx/"
+        val suppliedUriString = "http://xxx:" + port.toString + "/"
+
+        given_a_uri(new java.net.URI(suppliedUriString))
+
+        given_a_list_of_parameters
+
+        when_signature_base_string_is_created
+
+        val plainTextValue = urlDecode(signatureBaseString.toString)
+
+        assertStartsWith("^GET&" + expectedUriString + "&", plainTextValue)
+    }
+    
     // TEST: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
     // TEST: When URL contains ending slash, then it is included in the result
     // TEST: When URL contains query string, then it is excluded in the result
@@ -347,14 +362,7 @@ class SignatureBaseStringTest extends TestBase {
 
     // TODO: Consider moving elsewhere
     private def toNameValuePairs(parameterString : String) : List[NameValuePair] = {
-        var result : List[NameValuePair] = List[NameValuePair]()
-        
-        parameterString.split("&").foreach((pair : String) => {
-           val parts = pair.split("=");
-           result = new NameValuePair(parts(0), parts(1)) :: result // TODO: This is prepending!
-        });
-
-        result.reverse;
+        parseNameValuePairs(parameterString, "&")
     }
 
     private def urlDecode(str : String) : String = {

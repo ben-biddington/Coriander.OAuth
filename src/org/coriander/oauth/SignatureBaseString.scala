@@ -19,6 +19,7 @@ class SignatureBaseString (
 ) {
     val signatureMethod = "HMAC-SHA1"
     var value : String  = null
+    val defaultPorts = List(80, 443)
 
     def this(
         uri                 : URI,
@@ -43,9 +44,9 @@ class SignatureBaseString (
     def getSignatureBaseString(uri : URI, queryParams : Map[String, String]) : String = {
         val normalizedParams : String = normalize(queryParams ++ getOAuthParameters)
         
-        val requestUrl : String = uri.getScheme + "://" + uri.getHost + uri.getPath
+        val requestUrl : String = uri.getScheme + "://" + uri.getHost + getPortString(uri) + uri.getPath
 
-        // METHOD&URL&NORMALIZED_PARAMS
+        println(requestUrl)
 
         val result = String format(
             "%1$s%2$s%3$s",
@@ -55,6 +56,18 @@ class SignatureBaseString (
         );
 
         result
+    }
+
+    private def getPortString(uri : URI) : String = {
+        val port = uri getPort
+        
+        if (port == -1) return ""
+
+        if (isDefaultPort(uri.getPort)) return "" else return ":" + uri.getPort.toString
+    }
+
+    private def isDefaultPort(portNumber : Int) : Boolean = {
+        defaultPorts.contains(portNumber)
     }
 
     // OAuth, see: http://oauth.net/core/1.0/#anchor14 (9.1.1)

@@ -27,10 +27,10 @@ class AuthorizationHeader(
         "realm=\""                  + urlEncoder.%%(realm) + "\"," +
         "oauth_consumer_key=\""     + urlEncoder.%%(consumerKey) + "\"," +
         "oauth_token=\""            + urlEncoder.%%(tokenkey)  + "\"," +
-        "oauth_signature_method=\"" + urlEncoder.%%(algorithm)  + " \", " +
+        "oauth_signature_method=\"" + urlEncoder.%%(algorithm)  + " \"," +
         "oauth_signature=\""        + urlEncoder.%%(signature)  + "\"," +
-        "oauth_timestamp=\""        + urlEncoder.%%(timestamp)  + "\", " +
-        "oauth_nonce=\""            + urlEncoder.%%(nonce)  + "\", " +
+        "oauth_timestamp=\""        + urlEncoder.%%(timestamp)  + "\"," +
+        "oauth_nonce=\""            + urlEncoder.%%(nonce)  + "\"," +
         "oauth_version=\""          + urlEncoder.%%(version)  + "\""
     }
 

@@ -7,6 +7,8 @@ import org.junit.Assert._
 import scala.util.matching._
 import org.mockito.Mockito._
 
+import org.apache.commons.httpclient.NameValuePair
+
 import org.coriander.oauth._
 import org.coriander.oauth.uri._
 import org.coriander.oauth.http.AuthorizationHeader
@@ -23,6 +25,8 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     val oauth_version           = "1.0"
 
     val linearWhitespace        = "[\t| ]"
+
+    val requiredParameters = List("realm", "oauth_consumer_key", "oauth_signature_method", "oauth_signature", "oauth_timestamp", "oauth_version")
 
     // [!] linear whitespace is either <space> or <horizontal tab>
     // [linear_whitespace]name="[value|empty]"[linear_whitespace]
@@ -67,6 +71,22 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
         newAuthorizationHeader(null) toString
     }
 
+    @Test
+    def value_contains_all_expected_oauth_parameters {
+        val headerValues = getHeaderValue(newAuthorizationHeader toString)
+
+        println(headerValues)
+
+        val all : List[NameValuePair] = parseHeaderValue(headerValues);
+
+        assertContainsName(
+            all, 
+            "realm", "oauth_consumer_key", "oauth_signature_method",
+            "oauth_signature", "oauth_timestamp", "oauth_version"
+        )
+    }
+
+
     private def newAuthorizationHeader : AuthorizationHeader = {
         newAuthorizationHeader(new org.coriander.oauth.uri.OAuthURLEncoder)
     }
@@ -94,7 +114,6 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     }
 
     // TEST: Header value contains just oauth parameters separated by commas
-    // TEST: Header value contains ALL expected oauth parameters
     // TEST: Parameter values may be empty
     // TEST: Parameters are comma-separated, and whitespace is okay
     // TEST: Realm is optional -- is it always added?
@@ -113,5 +132,11 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     private def createNameValuePairPattern : String = {
         val anyLinearWhitespace = linearWhitespace + "*"
          "^" + anyLinearWhitespace + nameEqualsAnyQuotedString + anyLinearWhitespace + "$"
+    }
+
+    // [!] Consider removing dependency on import org.apache.commons.httpclient.NameValuePair. 
+    // We're using NameValuePair elsewhere -- only because of ParameterParser. See: TestBase.parseQuery.
+    protected def parseHeaderValue(headerValue : String) : List[NameValuePair] = {
+        parseNameValuePairs(headerValue, ",")
     }
 }

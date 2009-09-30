@@ -33,26 +33,51 @@ class TestBase extends Assert {
         result toArray() map((obj) => obj.asInstanceOf[NameValuePair]) toList
     }
 
-    protected def assertContainsName(
-        list : List[NameValuePair],
-        expected : String
-    ) {
-        Assert.assertThat(
-            String.format(
-                "Expected the list to contain " +
-                "parameter called '%1$s', but it does not.",
-                expected,
-            ),
-            containsName(list, expected),
-            is(true)
-        )
+    protected def parseNameValuePairs(value : String, delimiter : String) : List[NameValuePair] = {
+        var result : List[NameValuePair] = List[NameValuePair]()
+
+        value.split(delimiter).foreach((pair : String) => {
+            val parts = pair.split("=");
+            result = new NameValuePair(parts(0) trim, parts(1) trim) :: result // TODO: This is prepending!
+        });
+
+        result.reverse; // TODO: Pretty naff
     }
 
+    protected def assertContainsName(
+        list : List[NameValuePair],
+        expectedNames : String*
+    ) {
+        expectedNames foreach(expectedName => {
+            assertThat(
+                String.format(
+                    "Expected the list to contain " +
+                    "parameter called <%1$s>, but it does not.",
+                    expectedName,
+                ),
+                containsName(list, expectedName),
+                is(true)
+            )
+        })
+    }
+
+    // [!] Tries to match target (whole match) and returns the matches.
     protected def assertMatches(pattern : String, value : String) {
         val hasMatch = false == (new Regex(pattern).unapplySeq(value).isEmpty)
+
         assertTrue(
             "The supplied value <" + value + "> " +
             "does not match pattern <" + pattern +">", 
+            hasMatch
+        )
+    }
+
+     protected def assertStartsWith(pattern : String, value : String) {
+        val hasMatch = false == (new Regex(pattern).findPrefixOf(value).isEmpty)
+
+        assertTrue(
+            "The supplied value <" + value + "> " +
+            "does not start with <" + pattern +">",
             hasMatch
         )
     }
@@ -63,7 +88,7 @@ class TestBase extends Assert {
     ) : Boolean = {
         val (expectedName, expectedValue) = expected
 
-        list.exists(
+        list exists(
             actualnameValuePair => {
                 actualnameValuePair.getName == expectedName &&
                 actualnameValuePair.getValue == expectedValue
