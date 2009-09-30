@@ -46,8 +46,6 @@ class SignatureBaseString (
         
         val requestUrl : String = uri.getScheme + "://" + uri.getHost + getPortString(uri) + uri.getPath
 
-        println(requestUrl)
-
         val result = String format(
             "%1$s%2$s%3$s",
             method.toUpperCase + "&",

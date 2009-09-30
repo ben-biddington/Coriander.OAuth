@@ -75,8 +75,6 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     def value_contains_all_expected_oauth_parameters {
         val headerValues = getHeaderValue(newAuthorizationHeader toString)
 
-        println(headerValues)
-
         val all : List[NameValuePair] = parseHeaderValue(headerValues);
 
         assertContainsName(
