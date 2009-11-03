@@ -36,8 +36,6 @@ class Signature(
     val mac = crypto.Mac.getInstance(algorithm)
     val encoding = UTF_8
 
-   
-
     def sign(baseString : String) : String = {
         validate
 

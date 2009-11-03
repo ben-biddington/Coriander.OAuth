@@ -113,7 +113,6 @@ class SignatureTest extends TestBase {
         assertTrue("The expected exception was not thrown", success)
     }
 
-
     def newSignature(consumerCredential : OAuthCredential) : Signature = {
         newSignature(consumerCredential, null)
     }

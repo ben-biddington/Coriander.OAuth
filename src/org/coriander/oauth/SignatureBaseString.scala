@@ -20,7 +20,8 @@ class SignatureBaseString (
     val signatureMethod = "HMAC-SHA1"
     var value : String  = null
     val defaultPorts = List(80, 443)
-
+    var urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder()
+    
     def this(
         uri                 : URI,
         queryParams         : Map[String, String],
@@ -68,7 +69,6 @@ class SignatureBaseString (
         defaultPorts.contains(portNumber)
     }
 
-    // OAuth, see: http://oauth.net/core/1.0/#anchor14 (9.1.1)
     private def sort(queryParams : Map[String, String]) : SortedMap[String, String] = {
         return new TreeMap[String, String] ++ queryParams
     }
@@ -96,9 +96,7 @@ class SignatureBaseString (
     private def %% (str : String) : String = {
       if (null == str) return ""
 
-      return java.net.URLEncoder.encode(str.toString) replace
-        ("+", "%20") replace
-        ("%7E", "~");
+      return urlEncoder.%%(str.toString)
     }
 }
 

@@ -25,9 +25,12 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     val oauth_version           = "1.0"
 
     val linearWhitespace        = "[\t| ]"
+    val anyLinearWhitespace     = linearWhitespace + "*"
 
-    val requiredParameters = List("realm", "oauth_consumer_key", "oauth_signature_method", "oauth_signature", "oauth_timestamp", "oauth_version")
-
+    val requiredParameters = List(  "realm", "oauth_consumer_key",
+                                    "oauth_signature_method", "oauth_signature",
+                                    "oauth_timestamp", "oauth_version")
+                          
     // [!] linear whitespace is either <space> or <horizontal tab>
     // [linear_whitespace]name="[value|empty]"[linear_whitespace]
     val nameEqualsAnyQuotedString = "[\\w]+=\"[^\"]+\""
@@ -128,8 +131,7 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     }
 
     private def createNameValuePairPattern : String = {
-        val anyLinearWhitespace = linearWhitespace + "*"
-         "^" + anyLinearWhitespace + nameEqualsAnyQuotedString + anyLinearWhitespace + "$"
+        "^" + anyLinearWhitespace + nameEqualsAnyQuotedString + anyLinearWhitespace + "$"
     }
 
     // [!] Consider removing dependency on import org.apache.commons.httpclient.NameValuePair. 
