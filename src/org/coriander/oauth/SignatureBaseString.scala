@@ -44,7 +44,8 @@ class SignatureBaseString (
     }
 
     def getSignatureBaseString(uri : URI, queryParams : Map[String, String]) : String = {
-        val normalizedParams : String = normalize(queryParams ++ getOAuthParameters)
+        val normalizedParams : String = new org.coriander.oauth.Normalizer().
+            normalize(queryParams ++ getOAuthParameters)
         
         val requestUrl : String = uri.getScheme + "://" + getAuthority(uri) + uri.getPath
 
@@ -70,16 +71,6 @@ class SignatureBaseString (
             port.scheme == uri.getScheme &&
             port.number == uri.getPort
         })
-    }
-
-    private def sort(queryParams : Map[String, String]) : SortedMap[String, String] = {
-        return new TreeMap[String, String] ++ queryParams
-    }
-
-    private def normalize(params : Map[String, String]) : String = {
-        sort(params) map {
-            case (name, value) => { %%(name) + "=" + %%(value) }
-        } mkString "&"
     }
 
     private def getOAuthParameters() : Map[String, String] = {
