@@ -27,9 +27,11 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     val linearWhitespace        = "[\t| ]"
     val anyLinearWhitespace     = linearWhitespace + "*"
 
-    val requiredParameters = List(  "realm", "oauth_consumer_key",
-                                    "oauth_signature_method", "oauth_signature",
-                                    "oauth_timestamp", "oauth_version")
+    val requiredParameters = List(
+        "realm", "oauth_consumer_key",
+        "oauth_signature_method", "oauth_signature",
+        "oauth_timestamp", "oauth_version"
+    )
                           
     // [!] linear whitespace is either <space> or <horizontal tab>
     // [linear_whitespace]name="[value|empty]"[linear_whitespace]
@@ -39,18 +41,43 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     def result_is_an_authorization_header {
         val value = newAuthorizationHeader toString
 
-        assertTrue(value startsWith("Authorization: OAuth"));
+        assertEquals("Authorization", newAuthorizationHeader.name)
     }
 
     @Test
-    def result_contains_individual_name_value_pairs_formatted_correctly {
-        val value = getHeaderValue(newAuthorizationHeader toString)
+    def value_has_oauth_specifier {
+        val value = newAuthorizationHeader toString
+        val expected = "OAuth"
+        val headerValue = newAuthorizationHeader value
+        
+        assertTrue(
+            "The value part <" + headerValue + "> should start with <" + expected + ">",
+            headerValue.startsWith(expected)
+        )
+    }
+
+    @Test
+    def value_contains_individual_name_value_pairs_formatted_correctly {
+        val value = getHeaderValue(newAuthorizationHeader)
 
         val nameValuePairs : Array[String] = value.split(",");
 
         nameValuePairs foreach(pair => {
             assertMatches(createNameValuePairPattern, pair)
         })
+    }
+
+     @Test
+    def value_contains_all_expected_oauth_parameters {
+        val all : List[NameValuePair] = parseHeaderValue(
+            getHeaderValue(newAuthorizationHeader)
+        );
+        
+        assertContainsName(
+            all,
+            "realm", "oauth_consumer_key", "oauth_signature_method",
+            "oauth_signature", "oauth_timestamp", "oauth_version"
+        )
     }
 
     @Test
@@ -74,25 +101,11 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
         newAuthorizationHeader(null) toString
     }
 
-    @Test
-    def value_contains_all_expected_oauth_parameters {
-        val headerValues = getHeaderValue(newAuthorizationHeader toString)
-
-        val all : List[NameValuePair] = parseHeaderValue(headerValues);
-
-        assertContainsName(
-            all, 
-            "realm", "oauth_consumer_key", "oauth_signature_method",
-            "oauth_signature", "oauth_timestamp", "oauth_version"
-        )
-    }
-
-
     private def newAuthorizationHeader : AuthorizationHeader = {
         newAuthorizationHeader(new org.coriander.oauth.uri.OAuthURLEncoder)
     }
 
-     private def newAuthorizationHeader(urlEncoder : org.coriander.oauth.uri.URLEncoder) :
+    private def newAuthorizationHeader(urlEncoder : org.coriander.oauth.uri.URLEncoder) :
         AuthorizationHeader = {
         new AuthorizationHeader(
             realm,
@@ -119,17 +132,6 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     // TEST: Parameters are comma-separated, and whitespace is okay
     // TEST: Realm is optional -- is it always added?
 
-    private def getHeaderValue(header : String) : String = {
-        // TODO: Consider regexp
-        val headerName = "Authorization: OAuth"
-        val indexOfEndOfHeaderName = header.indexOf(headerName)
-        val result = header.substring(indexOfEndOfHeaderName + 1 + headerName.length)
-
-        assertTrue("Header value must not be empty", result != "")
-
-        result
-    }
-
     private def createNameValuePairPattern : String = {
         "^" + anyLinearWhitespace + nameEqualsAnyQuotedString + anyLinearWhitespace + "$"
     }
@@ -138,5 +140,15 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     // We're using NameValuePair elsewhere -- only because of ParameterParser. See: TestBase.parseQuery.
     protected def parseHeaderValue(headerValue : String) : List[NameValuePair] = {
         parseNameValuePairs(headerValue, ",")
+    }
+
+    private def getHeaderValue(header : AuthorizationHeader) : String = {
+        val headerName = "OAuth"
+        val indexOfEndOfHeaderName = header.value.indexOf(headerName)
+        val result = header.value.substring(indexOfEndOfHeaderName + 1 + headerName.length)
+
+        assertTrue("Header value must not be empty", result != "")
+
+        result
     }
 }

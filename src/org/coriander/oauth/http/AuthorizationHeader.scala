@@ -11,14 +11,15 @@ class AuthorizationHeader(
     version     : String,
     urlEncoder  : org.coriander.oauth.uri.URLEncoder
 ) {
-    val headername = "Authorization"
-
+    val name = "Authorization"
+    val value = formatValue(createValue)
+    
     override def toString : String  = {
-        formatHeader(headername, "");
+         name + ": " + value
     }
 
-    private def formatHeader(name : String, value : String) : String = {
-        name + ": OAuth " + createValue
+    private def formatValue(value : String) : String = {
+        "OAuth " + value
     }
 
     private def createValue : String = {
@@ -26,12 +27,12 @@ class AuthorizationHeader(
         
         "realm=\""                  + urlEncoder.%%(realm) + "\"," +
         "oauth_consumer_key=\""     + urlEncoder.%%(consumerKey) + "\"," +
-        "oauth_token=\""            + urlEncoder.%%(tokenkey)  + "\"," +
-        "oauth_signature_method=\"" + urlEncoder.%%(algorithm)  + " \"," +
-        "oauth_signature=\""        + urlEncoder.%%(signature)  + "\"," +
-        "oauth_timestamp=\""        + urlEncoder.%%(timestamp)  + "\"," +
-        "oauth_nonce=\""            + urlEncoder.%%(nonce)  + "\"," +
-        "oauth_version=\""          + urlEncoder.%%(version)  + "\""
+        "oauth_token=\""            + urlEncoder.%%(tokenkey) + "\"," +
+        "oauth_signature_method=\"" + urlEncoder.%%(algorithm) + "\"," +
+        "oauth_signature=\""        + urlEncoder.%%(signature) + "\"," +
+        "oauth_timestamp=\""        + urlEncoder.%%(timestamp) + "\"," +
+        "oauth_nonce=\""            + urlEncoder.%%(nonce) + "\"," +
+        "oauth_version=\""          + urlEncoder.%%(version) + "\""
     }
 
     private def requireUrlEncoder {

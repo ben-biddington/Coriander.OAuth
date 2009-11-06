@@ -15,6 +15,8 @@ import scala.util.matching._
 import scala.collection.immutable._
 
 class TestBase extends Assert {
+    val queryParser = new org.coriander.QueryParser
+    
     protected def trimOAuth(nameValuePairs : List[NameValuePair]) :
         List[NameValuePair] = {
         nameValuePairs.filter(
@@ -23,14 +25,18 @@ class TestBase extends Assert {
         )
     }
 
-    protected def parseQuery(url : java.net.URI) : List[NameValuePair] = {
-        parseQuery(url.getQuery)
+    protected def getQueryParameter(url : String, name : String) : String = {
+        parseQuery(url).
+            find(item => item.getName() == name).
+            get.getValue;
+    }
+    
+    protected def parseQuery(uri : java.net.URI) : List[NameValuePair] = {
+        parseQuery(uri.getQuery)
     }
 
-    protected def parseQuery(url : String) : List[NameValuePair] = {
-        val result : java.util.List[_] = new ParameterParser().parse(url, '&')
-
-        result toArray() map((obj) => obj.asInstanceOf[NameValuePair]) toList
+    protected def parseQuery(query : String) : List[NameValuePair] = {
+        queryParser parse(query)
     }
 
     protected def parseNameValuePairs(value : String, delimiter : String) : List[NameValuePair] = {
@@ -42,6 +48,10 @@ class TestBase extends Assert {
         });
 
         result.reverse; // TODO: Pretty naff
+    }
+
+    protected def urlDecode(str : String) : String = {
+        java.net.URLDecoder.decode(str, "UTF-8")
     }
 
     protected def assertContainsName(
@@ -57,6 +67,44 @@ class TestBase extends Assert {
                 ),
                 containsName(list, expectedName),
                 is(true)
+            )
+        })
+    }
+
+    protected def assertContainsAll(
+        expectedList : List[NameValuePair],
+        actualList : List[NameValuePair]
+    ) {
+        assertContainsAll(expectedList, actualList, (expected, actual) => {
+            actual.getName     == expected.getName &&
+            actual.getValue    == expected.getValue
+        })
+    }
+
+     protected def assertContainsAllNames(
+        expectedList : List[NameValuePair],
+        actualList : List[NameValuePair]
+    ) {
+        assertContainsAll(expectedList, actualList, (expected, actual) => {
+            actual.getName     == expected.getName
+        })
+    }
+
+    private def assertContainsAll(
+        expected : List[NameValuePair],
+        actual : List[NameValuePair],
+        comparer: (=> NameValuePair, NameValuePair) => Boolean
+    ) {
+
+        expected.foreach(expectedPair => {
+            assertTrue(
+                "The actual list did not contain the expected item: " +
+                "<" + expectedPair.getName + "=" + expectedPair.getValue +">",
+                actual.exists(
+                   nvp => {
+                       comparer(expectedPair, nvp)
+                   }
+                )
             )
         })
     }

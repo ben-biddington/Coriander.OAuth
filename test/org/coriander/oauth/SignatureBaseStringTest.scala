@@ -19,6 +19,7 @@ import java.util.regex._
 import scala.actors.Actor._
 import org.jfugue._
 
+import org.coriander._
 import org.coriander.oauth._
 import org.coriander.oauth.timestamp._
 import org.coriander.oauth.nonce._
@@ -27,8 +28,8 @@ class SignatureBaseStringTest extends TestBase {
     val consumerCredential = new OAuthCredential("key", "secret")
 
     var aValidUri =  new java.net.URI("http://xxx/")
-    val aValidNonce = new SystemNonceFactory().createNonce
-    val aValidTimestamp = new SystemTimestampFactory().createTimestamp
+    val aValidNonce = new SystemNonceFactory createNonce
+    val aValidTimestamp = new SystemTimestampFactory createTimestamp
     var parameters : Map[String, String] = Map()
     var signatureBaseString : SignatureBaseString = null;
     val urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
@@ -198,9 +199,11 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     @Test
-    def result_excludes_default_ports_80_and_443() {
-        assetResultExcludesPort(80)
-        assetResultExcludesPort(443)
+    def result_excludes_default_port_80_for_http_and_443_for_https() {
+        assertResultExcludesPort("http", 80)
+        assertResultIncludesPort("http", 443)
+        assertResultExcludesPort("https", 443)
+        assertResultIncludesPort("https", 80)
     }
 
     @Test
@@ -263,9 +266,24 @@ class SignatureBaseStringTest extends TestBase {
         assertEquals("Actual does not match expected.", expected, actual)
     }
 
-    private def assetResultExcludesPort(port : Int) {
-        val expectedUriString = "http://xxx/"
-        val suppliedUriString = "http://xxx:" + port.toString + "/"
+    private def assertResultExcludesPort(scheme: String, port : Int) {
+        val expectedUriString = scheme + "://xxx/"
+        val suppliedUriString = scheme + "://xxx:" + port.toString + "/"
+
+        given_a_uri(new java.net.URI(suppliedUriString))
+
+        given_a_list_of_parameters
+
+        when_signature_base_string_is_created
+
+        val plainTextValue = urlDecode(signatureBaseString.toString)
+
+        assertStartsWith("^GET&" + expectedUriString + "&", plainTextValue)
+    }
+
+     private def assertResultIncludesPort(scheme: String, port : Int) {
+        val expectedUriString = scheme + "://xxx:" + port.toString + "/"
+        val suppliedUriString = expectedUriString
 
         given_a_uri(new java.net.URI(suppliedUriString))
 
@@ -336,36 +354,19 @@ class SignatureBaseStringTest extends TestBase {
         );
     }
 
-    private def getQueryParameter(url : String, name : String) : String = {
-        parseQuery(url).
-            find(item => item.getName() == name).
-            get.getValue;
-    }
-
-    // TODO: Consider moving elsewhere
     private def parseParameters(signatureBaseString : SignatureBaseString) : List[NameValuePair] = {
         val (method, url, parameters) = parse(signatureBaseString)
         parameters
     }
 
     // TODO: Consider moving elsewhere
-    private def parse(signatureBaseString : SignatureBaseString) :
-        Tuple3[String, String, List[NameValuePair]] = {
+    private def parse(signatureBaseString : SignatureBaseString) : Tuple3[String, String, List[NameValuePair]] = {
         val parts = signatureBaseString.toString().split("&")
 
         val method = parts(0)
         val url = parts(1)
         val encodedParams = parts(2)
         
-        (method, url, toNameValuePairs(urlDecode(encodedParams)))
+        (method, url, parseQuery(urlDecode(encodedParams)))
     }    
-
-    // TODO: Consider moving elsewhere
-    private def toNameValuePairs(parameterString : String) : List[NameValuePair] = {
-        parseNameValuePairs(parameterString, "&")
-    }
-
-    private def urlDecode(str : String) : String = {
-        java.net.URLDecoder.decode(str, "UTF-8")
-    }
 }

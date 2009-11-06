@@ -7,6 +7,8 @@ import java.net.URI
 import org.apache.http.protocol.HTTP.UTF_8
 import org.apache.commons.codec.binary.Base64.encodeBase64
 
+import org.coriander.oauth.uri._
+
 // OAuth, see: http://oauth.net/core/1.0/#anchor14
 // OAuth, see: http://oauth.net/core/1.0#sig_base_example
 class SignatureBaseString (
@@ -19,8 +21,9 @@ class SignatureBaseString (
 ) {
     val signatureMethod = "HMAC-SHA1"
     var value : String  = null
-    val defaultPorts = List(80, 443)
-    var urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder()
+    val defaultPorts = List[Port](new Port("http", 80), new Port("https", 443))
+    var urlEncoder = new OAuthURLEncoder()
+    var version  =  "1.0"
     
     def this(
         uri                 : URI,
@@ -40,12 +43,10 @@ class SignatureBaseString (
         return getSignatureBaseString(uri, queryParams)
     }
 
-    // See: http://www.docjar.com/docs/api/org/apache/commons/httpclient/util/ParameterFormatter.html
-    // OAuth, see: http://oauth.net/core/1.0/#anchor14
     def getSignatureBaseString(uri : URI, queryParams : Map[String, String]) : String = {
         val normalizedParams : String = normalize(queryParams ++ getOAuthParameters)
         
-        val requestUrl : String = uri.getScheme + "://" + uri.getHost + getPortString(uri) + uri.getPath
+        val requestUrl : String = uri.getScheme + "://" + getAuthority(uri) + uri.getPath
 
         val result = String format(
             "%1$s%2$s%3$s",
@@ -57,16 +58,18 @@ class SignatureBaseString (
         result
     }
 
-    private def getPortString(uri : URI) : String = {
-        val port = uri getPort
-        
-        if (port == -1) return ""
-
-        if (isDefaultPort(uri.getPort)) return "" else return ":" + uri.getPort.toString
+    private def getAuthority(uri : URI) : String = {
+        if (containsDefaultPort(uri))
+            return uri getHost
+        else
+            return uri getAuthority
     }
 
-    private def isDefaultPort(portNumber : Int) : Boolean = {
-        defaultPorts.contains(portNumber)
+    private def containsDefaultPort(uri : URI) : Boolean = {
+        defaultPorts exists((port) => {
+            port.scheme == uri.getScheme &&
+            port.number == uri.getPort
+        })
     }
 
     private def sort(queryParams : Map[String, String]) : SortedMap[String, String] = {
@@ -80,13 +83,13 @@ class SignatureBaseString (
     }
 
     private def getOAuthParameters() : Map[String, String] = {
-        return Map(
-            "oauth_consumer_key"        -> consumerCredential.key,
-            "oauth_signature_method"    -> signatureMethod,
-            "oauth_timestamp"           -> timestamp,
-            "oauth_nonce"               -> nonce.toString,
-            "oauth_version"             -> "1.0"
-        )
+        return new org.coriander.oauth.Parameters(
+            consumerCredential,
+            signatureMethod,
+            timestamp,
+            nonce,
+            version
+        ) toMap
     }
     
     private def %% (t: (String, String)) : (String, String) = {
