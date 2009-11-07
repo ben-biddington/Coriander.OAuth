@@ -7,8 +7,6 @@ import org.junit.Assert._
 import scala.util.matching._
 import org.mockito.Mockito._
 
-import org.apache.commons.httpclient.NameValuePair
-
 import org.coriander.oauth._
 import org.coriander.oauth.uri._
 import org.coriander.oauth.http.AuthorizationHeader
@@ -69,7 +67,7 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
 
      @Test
     def value_contains_all_expected_oauth_parameters {
-        val all : List[NameValuePair] = parseHeaderValue(
+        val all = parseHeaderValue(
             getHeaderValue(newAuthorizationHeader)
         );
         
@@ -136,9 +134,7 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
         "^" + anyLinearWhitespace + nameEqualsAnyQuotedString + anyLinearWhitespace + "$"
     }
 
-    // [!] Consider removing dependency on import org.apache.commons.httpclient.NameValuePair. 
-    // We're using NameValuePair elsewhere -- only because of ParameterParser. See: TestBase.parseQuery.
-    protected def parseHeaderValue(headerValue : String) : List[NameValuePair] = {
+    protected def parseHeaderValue(headerValue : String) : Map[String, String] = {
         parseNameValuePairs(headerValue, ",")
     }
 

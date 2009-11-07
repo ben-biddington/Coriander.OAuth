@@ -27,12 +27,12 @@ import org.coriander.oauth.nonce._
 class SignatureBaseStringTest extends TestBase {
     val consumerCredential = new OAuthCredential("key", "secret")
 
-    var aValidUri =  new java.net.URI("http://xxx/")
-    val aValidNonce = new SystemNonceFactory createNonce
-    val aValidTimestamp = new SystemTimestampFactory createTimestamp
-    var parameters : Map[String, String] = Map()
-    var signatureBaseString : SignatureBaseString = null;
-    val urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
+    var _aValidUri =  new java.net.URI("http://xxx/")
+    val _aValidNonce = new SystemNonceFactory createNonce
+    val _aValidTimestamp = new SystemTimestampFactory createTimestamp
+    var _parameters : Map[String, String] = Map()
+    var _signatureBaseString : SignatureBaseString = null;
+    val _urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
 
     var done = false
     val caller = self
@@ -44,9 +44,7 @@ class SignatureBaseStringTest extends TestBase {
 
         val result = newSignatureBaseString(Map("xxx" -> originalValue))
 
-        val actualValue = parseParameters(result).
-            find(item => item.getName() == "xxx").
-            get.getValue;
+        val actualValue = parseParameters(result)("xxx")
 
         assertEquals(expectedEncodedValue, actualValue)
     }
@@ -58,9 +56,7 @@ class SignatureBaseStringTest extends TestBase {
 
         val result = newSignatureBaseString(Map("xxx" -> originalValue))
 
-        val actualValue = parseParameters(result).
-            find(item => item.getName() == "xxx").
-            get.getValue;
+        val actualValue = parseParameters(result)("xxx")
 
         assertThat(
             "The result must conform to RFC3629 for percent-encoding",
@@ -73,23 +69,25 @@ class SignatureBaseStringTest extends TestBase {
         given_an_unsorted_list_of_parameters
         when_signature_base_string_is_created
 
-        var parametersExcludingOAuth : List[NameValuePair] = trimOAuth(
-            parseParameters(signatureBaseString)
+        var parametersExcludingOAuth = trimOAuth(
+            parseParameters(_signatureBaseString)
         )
 
-        val expectedList : List[NameValuePair] = List(
-            new NameValuePair("a", "a_value"),
-            new NameValuePair("b", "b_value"),
-            new NameValuePair("c", "c_value")
+        val expectedList = Map(
+            "a" -> "a_value",
+            "b" -> "b_value",
+            "c" -> "c_value"
         )
 
-        for (i <- 0 to expectedList.length - 1) {
-            assertThat(
-                "Sorting of resultant query parameters should match expected.",
-                parametersExcludingOAuth(i),
-                is(equalTo(expectedList(i)))
-            )
-        }
+        assertEquals(expectedList, parametersExcludingOAuth)
+
+//        for (i <- 0 to expectedList.length - 1) {
+//            assertThat(
+//                "Sorting of resultant query parameters should match expected.",
+//                parametersExcludingOAuth(i),
+//                is(equalTo(expectedList(i)))
+//            )
+//        }
     }
 
     @Test
@@ -97,26 +95,19 @@ class SignatureBaseStringTest extends TestBase {
         given_a_list_of_parameters
 
         val result = new SignatureBaseString(
-            aValidUri,
-            parameters,
+            _aValidUri,
+            _parameters,
             consumerCredential,
-            aValidNonce,
-            aValidTimestamp
+            _aValidNonce,
+            _aValidTimestamp
         )
 
-        val allParameters : List[NameValuePair] = parseParameters(result)
+        val allParameters : Map[String, String] = parseParameters(result)
 
-        parameters.foreach((nameValueTuple : Tuple2[String, String]) => {
-            assertThat(
-                String.format(
-                    "Expected the returned parameters to contain " +
-                    "parameter called '%1$s', with value '%2$s'",
-                    nameValueTuple._1,
-                    nameValueTuple._2
-                ),
-                contains(allParameters, nameValueTuple),
-                is(true)
-            )
+        _parameters.foreach(nameValueTuple => {
+            val (name, value) = nameValueTuple
+
+            assertThat(allParameters(name), is(equalTo(_parameters(name))))
         })
     }
 
@@ -126,7 +117,7 @@ class SignatureBaseStringTest extends TestBase {
         given_a_list_of_parameters
         when_signature_base_string_is_created
         
-        val allParameters = parseParameters(signatureBaseString)
+        val allParameters = parseParameters(_signatureBaseString)
 
         val requiredParameters = List(
             "oauth_consumer_key",
@@ -137,7 +128,7 @@ class SignatureBaseStringTest extends TestBase {
         )
 
         requiredParameters foreach(
-            requiredName => assertContainsName(allParameters, requiredName)
+            requiredName => assertTrue(allParameters.keys.contains(requiredName))
         )
     }
 
@@ -193,7 +184,7 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-        val plainTextValue = urlDecode(signatureBaseString.toString)
+        val plainTextValue = urlDecode(_signatureBaseString.toString)
 
         assertStartsWith("^GET&http://xxx:1337/&", plainTextValue)
     }
@@ -215,19 +206,19 @@ class SignatureBaseStringTest extends TestBase {
         when_signature_base_string_is_created
 
         assertThat(
-            signatureBaseString.toString,
-            containsString(urlEncoder.%%(aValidUri.getPath))
+            _signatureBaseString.toString,
+            containsString(_urlEncoder.%%(_aValidUri.getPath))
         )
     }
 
     @Test
     def when_I_create_an_instance_without_supplying_a_method_then_method_defaults_to_get() {
         val signatureBaseString = new SignatureBaseString(
-            aValidUri,
-            parameters,
+            _aValidUri,
+            _parameters,
             consumerCredential,
-            aValidNonce,
-            aValidTimestamp
+            _aValidNonce,
+            _aValidTimestamp
         )
 
         val expectedMethod = "GET"
@@ -276,7 +267,7 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-        val plainTextValue = urlDecode(signatureBaseString.toString)
+        val plainTextValue = urlDecode(_signatureBaseString.toString)
 
         assertStartsWith("^GET&" + expectedUriString + "&", plainTextValue)
     }
@@ -291,7 +282,7 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-        val plainTextValue = urlDecode(signatureBaseString.toString)
+        val plainTextValue = urlDecode(_signatureBaseString.toString)
 
         assertStartsWith("^GET&" + expectedUriString + "&", plainTextValue)
     }
@@ -305,11 +296,11 @@ class SignatureBaseStringTest extends TestBase {
     // TEST: This class only requires oauth_key, not an entire OAuthCredential
 
     private def given_a_uri(uri: java.net.URI) {
-        aValidUri = uri;
+        _aValidUri = uri;
     }
 
     private def given_a_list_of_parameters() {
-        parameters = Map(
+        _parameters = Map(
             "a" -> "a_value",
             "b" -> "b_value",
             "c" -> "c_value"
@@ -317,7 +308,7 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     private def given_an_unsorted_list_of_parameters() {
-        parameters = Map(
+        _parameters = Map(
             "c" -> "c_value",
             "b" -> "b_value",
             "a" -> "a_value"
@@ -329,38 +320,37 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     private def when_signature_base_string_is_created(method : String) {
-        signatureBaseString = createDefault(method)
+        _signatureBaseString = createDefault(method)
     }
 
     private def createDefault(method : String) : SignatureBaseString = {
          new SignatureBaseString(
             method,
-            aValidUri,
-            parameters,
+            _aValidUri,
+            _parameters,
             consumerCredential,
-            aValidNonce,
-            aValidTimestamp
+            _aValidNonce,
+            _aValidTimestamp
         );
     }
 
     private def newSignatureBaseString(parameters : Map[String, String]) :
         SignatureBaseString = {
         new SignatureBaseString(
-            aValidUri,
+            _aValidUri,
             parameters,
             consumerCredential,
-            aValidNonce,
-            aValidTimestamp
+            _aValidNonce,
+            _aValidTimestamp
         );
     }
 
-    private def parseParameters(signatureBaseString : SignatureBaseString) : List[NameValuePair] = {
+    private def parseParameters(signatureBaseString : SignatureBaseString) : Map[String, String] = {
         val (method, url, parameters) = parse(signatureBaseString)
         parameters
     }
 
-    // TODO: Consider moving elsewhere
-    private def parse(signatureBaseString : SignatureBaseString) : Tuple3[String, String, List[NameValuePair]] = {
+    private def parse(signatureBaseString : SignatureBaseString) : Tuple3[String, String, Map[String, String]] = {
         val parts = signatureBaseString.toString().split("&")
 
         val method = parts(0)

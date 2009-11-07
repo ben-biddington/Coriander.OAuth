@@ -9,8 +9,6 @@ import org.apache.commons.codec.binary.Base64.encodeBase64
 
 import org.coriander.oauth.uri._
 
-// OAuth, see: http://oauth.net/core/1.0/#anchor14
-// OAuth, see: http://oauth.net/core/1.0#sig_base_example
 class SignatureBaseString (
     method              : String,
     uri                 : URI,
@@ -21,7 +19,7 @@ class SignatureBaseString (
 ) {
     val signatureMethod = "HMAC-SHA1"
     var value : String  = null
-    val defaultPorts = List[Port](new Port("http", 80), new Port("https", 443))
+    val defaultPorts = List(new Port("http", 80), new Port("https", 443))
     var urlEncoder = new OAuthURLEncoder()
     var version  =  "1.0"
     
@@ -47,7 +45,7 @@ class SignatureBaseString (
         val normalizedParams : String = new org.coriander.oauth.Normalizer().
             normalize(queryParams ++ getOAuthParameters)
         
-        val requestUrl : String = uri.getScheme + "://" + getAuthority(uri) + uri.getPath
+        val requestUrl : String = uri.getScheme + "://" + selectAuthority(uri) + uri.getPath
 
         val result = String format(
             "%1$s%2$s%3$s",
@@ -59,7 +57,7 @@ class SignatureBaseString (
         result
     }
 
-    private def getAuthority(uri : URI) : String = {
+    private def selectAuthority(uri : URI) : String = {
         if (containsDefaultPort(uri))
             return uri getHost
         else

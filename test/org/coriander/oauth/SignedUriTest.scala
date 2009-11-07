@@ -27,26 +27,22 @@ class SignedUriTest extends TestBase {
 
     @Test
     def value_contains_all_of_the_original_parameters {
-        val expectedQueryParameters : List[NameValuePair] = List(
-            new NameValuePair("a", "a_value"),
-            new NameValuePair("b", "b_value"),
-            new NameValuePair("c", "c_value")
+        val expectedQueryParameters = Map(
+            "a" -> "a_value",
+            "b" -> "b_value",
+            "c" -> "c_value"
         )
 
         val uriWithParameters = new URI("http://xxx/?a=a_value&b=b_value&c=c_value")
 
-        give_a_signed_uri(uriWithParameters)
+        given_a_signed_uri(uriWithParameters)
 
         then_value_contains_all_query_parameters(expectedQueryParameters)
     }
 
     @Test
-    def value_contains_expected_oauth_paremeters() {
+    def value_contains_expected_oauth_parameters() {
         give_a_signed_uri
-    }
-
-    private def give_a_signed_uri {
-        give_a_signed_uri(anyUri)
 
         val requiredQueryParameters = List(
             "oauth_consumer_key",
@@ -59,15 +55,33 @@ class SignedUriTest extends TestBase {
         val actualQueryParameters = parseQuery(_instance.value getQuery)
 
         requiredQueryParameters foreach(
-            requiredName => assertContainsName(actualQueryParameters, requiredName)
+            requiredName => assertTrue(actualQueryParameters.contains(requiredName))
         )
     }
 
-    private def give_a_signed_uri(uri : URI) {
-        _instance = new SignedUri(uri, consumerCredential);
+    private def give_a_signed_uri {
+        given_a_signed_uri(anyUri)
     }
 
-    private def then_value_contains_all_query_parameters(expectedQueryParameters : List[NameValuePair]) {
+    private def given_a_signed_uri(uri : URI) {
+        val token = null
+        val signatureMethod = "HMAC-SHA1"
+        val timestamp = "any-timestamp"
+        val nonce = "any-nonce"
+        val version = "any-version"
+        
+        _instance = new SignedUri(
+            uri,
+            consumerCredential,
+            null,
+            signatureMethod,
+            timestamp,
+            nonce,
+            version
+        )
+    }
+
+    private def then_value_contains_all_query_parameters(expectedQueryParameters : Map[String, String]) {
         val actualQueryParameters = parseQuery(_instance.value getQuery)
 
         assertContainsAll(

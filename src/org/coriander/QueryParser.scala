@@ -6,30 +6,30 @@ import org.apache.commons.httpclient.util._
 class QueryParser {
     val DELIMITER = "&"
 
-    def parse(uri : java.net.URI) : List[NameValuePair] = {
+    def parse(uri : java.net.URI) : Map[String, String] = {
         parse(uri.getQuery)
     }
 
-    // TODO: Rename to parse
-    def parse(query : String) : List[NameValuePair] = {
+    def parse(query : String) : Map[String, String] = {
         parseNameValuePairs(query, DELIMITER)
     }
 
     private def parseNameValuePairs(
         value : String,
         delimiter : String
-    ) : List[NameValuePair] = {
-        var result : List[NameValuePair] = List[NameValuePair]()
+    ) : Map[String, String] = {
+
+        var result : Map[String, String] = Map()
 
         if (null == value)
             return result
 
-        value.split(delimiter).foreach((pair : String) => {
+        value split(delimiter) foreach((pair) => {
             val parts = pair.split("=");
-            result = new NameValuePair(parts(0) trim, parts(1) trim) :: result // TODO: This is prepending!
+            result += parts(0).trim -> parts(1).trim
         });
 
-        result.reverse; // TODO: Pretty naff
+        result
     }
 
     private def urlDecode(str : String) : String = {
