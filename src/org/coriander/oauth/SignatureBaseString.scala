@@ -42,10 +42,9 @@ class SignatureBaseString (
     }
 
     def getSignatureBaseString(uri : URI, queryParams : Map[String, String]) : String = {
-        val normalizedParams : String = new org.coriander.oauth.Normalizer().
-            normalize(queryParams ++ getOAuthParameters)
+        val normalizedParams = normalize(queryParams ++ getOAuthParameters)
         
-        val requestUrl : String = uri.getScheme + "://" + selectAuthority(uri) + uri.getPath
+        val requestUrl = uri.getScheme + "://" + selectAuthority(uri) + uri.getPath
 
         val result = String format(
             "%1$s%2$s%3$s",
@@ -89,6 +88,10 @@ class SignatureBaseString (
       if (null == str) return ""
 
       return urlEncoder.%%(str.toString)
+    }
+
+    private def normalize(params : Map[String, String]) : String = {
+        new Normalizer().normalize(params)
     }
 }
 

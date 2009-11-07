@@ -5,24 +5,24 @@ import java.net.URI
 // TODO: Consider combining consumer and token into single type, here and in
 // all other places that take these two args.
 class SignedUri(
-    val uri : URI,
-    val consumer : OAuthCredential,
-    val token : OAuthCredential,
-    val signatureMethod : String,
-    val timestamp : String,
-    val nonce : String,
-    val version : String
+    uri : URI,
+    consumer : OAuthCredential,
+    token : OAuthCredential,
+    signatureMethod : String,
+    timestamp : String,
+    nonce : String,
+    version : String
 ) {
     val _normalizer = new Normalizer()
-
+    val _queryParser = new QueryParser()
+    val _method = "GET"
+    
     def value() : URI = {
-        val queryParams : Map[String, String] = new QueryParser().parse(uri)
-
-        value(uri, queryParams)
+        value(uri, _queryParser.parse(uri))
     }
 
-    private def value(uri : URI, params : Map[String, String]) : URI = {
-        val oauthParams = new Parameters(
+    private def value(resource : URI, params : Map[String, String]) : URI = {
+        var oauthParams = new Parameters(
             consumer,
             signatureMethod,
             timestamp,
@@ -30,22 +30,30 @@ class SignedUri(
             version
         ) toMap
 
+        oauthParams += "oauth_signature" -> sign(resource, params)
+
         val normalizedParams = normalize(params ++ oauthParams)
 
         val signedUrl : String =
-            uri.getScheme + "://" +
-            uri.getAuthority +
-            uri.getPath + "?" +
+            resource.getScheme + "://" +
+            resource.getAuthority +
+            resource.getPath + "?" +
             normalizedParams
 
         return new URI(signedUrl)
     }
 
-    private def getParameters(uri : URI) : Map[String, String] = {
-        val temp = new QueryParser().parse(uri)
-        val result = Map()
+    private def sign(resource : URI, params : Map[String, String]) : String = {
+        val signatureBaseString = new SignatureBaseString(
+            _method,
+            uri,
+            params,
+            consumer,
+            nonce,
+            timestamp
+        )
 
-        return Map()
+        new Signature(consumer).sign(signatureBaseString toString)
     }
 
     private def normalize(nameValuePairs : Map[String, String]) : String = {

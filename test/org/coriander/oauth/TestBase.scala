@@ -13,8 +13,10 @@ import scala.util.matching._
 
 import scala.collection.immutable._
 
+import org.coriander.oauth.uri._
+
 class TestBase extends Assert {
-    val _queryParser = new org.coriander.QueryParser
+    val queryParser = new org.coriander.QueryParser
 
     protected def trimOAuth(nameValuePairs : Map[String, String]) : Map[String, String] = {
         nameValuePairs.filter(item => {
@@ -33,7 +35,7 @@ class TestBase extends Assert {
     }
 
     protected def parseQuery(query : String) : Map[String, String] = {
-        _queryParser parse(query)
+        queryParser parse(query)
     }
 
     protected def parseNameValuePairs(value : String, delimiter : String) : Map[String, String] = {
@@ -41,10 +43,16 @@ class TestBase extends Assert {
 
         value.split(delimiter).foreach((pair : String) => {
             val parts = pair.split("=");
-            result += parts(0).trim -> parts(1).trim
+            result += urlDecode(parts(0).trim) -> {
+                if (parts.length ==1) null else urlDecode(parts(1).trim)
+            }
         });
 
         result
+    }
+
+    protected def urlEncode(str : String) : String = {
+        new OAuthURLEncoder().encode(str)
     }
 
     protected def urlDecode(str : String) : String = {

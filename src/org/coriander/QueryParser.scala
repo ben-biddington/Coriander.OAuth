@@ -24,9 +24,11 @@ class QueryParser {
         if (null == value)
             return result
 
-        value split(delimiter) foreach((pair) => {
+        value.split(delimiter).foreach((pair : String) => {
             val parts = pair.split("=");
-            result += parts(0).trim -> parts(1).trim
+            result += urlDecode(parts(0).trim) -> {
+                if (parts.length ==1) null else urlDecode(parts(1).trim)
+            }
         });
 
         result

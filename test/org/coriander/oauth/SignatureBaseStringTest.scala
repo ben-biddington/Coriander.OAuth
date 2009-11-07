@@ -38,29 +38,15 @@ class SignatureBaseStringTest extends TestBase {
     val caller = self
     
     @Test
-    def given_a_parameter_containing_reserved_character_then_the_result_contains_url_encoded_parameter() {
-        val originalValue = "this value requires encoding"
-        val expectedEncodedValue = "this%20value%20requires%20encoding"
-
-        val result = newSignatureBaseString(Map("xxx" -> originalValue))
-
-        val actualValue = parseParameters(result)("xxx")
-
-        assertEquals(expectedEncodedValue, actualValue)
-    }
-    
-    @Test
-    def given_a_parameter_containing_reserved_character_then_result_is_RFC3629_percent_encoded() {
+    def parameters_appear_in_the_result_twice_RFC3629_percent_encoded() {
         val originalValue = "http://some-url?param=value"
-        val expectedEncodedValue = "http%3A%2F%2Fsome-url%3Fparam%3Dvalue"
+        val expectedEncodedValue = urlEncode(urlEncode(originalValue))
 
-        val result = newSignatureBaseString(Map("xxx" -> originalValue))
-
-        val actualValue = parseParameters(result)("xxx")
+        val result = newSignatureBaseString(Map("xxx" -> originalValue)) toString
 
         assertThat(
             "The result must conform to RFC3629 for percent-encoding",
-            actualValue, is(equalTo(expectedEncodedValue))
+            result, containsString(expectedEncodedValue)
         )
     }
 
@@ -80,14 +66,6 @@ class SignatureBaseStringTest extends TestBase {
         )
 
         assertEquals(expectedList, parametersExcludingOAuth)
-
-//        for (i <- 0 to expectedList.length - 1) {
-//            assertThat(
-//                "Sorting of resultant query parameters should match expected.",
-//                parametersExcludingOAuth(i),
-//                is(equalTo(expectedList(i)))
-//            )
-//        }
     }
 
     @Test

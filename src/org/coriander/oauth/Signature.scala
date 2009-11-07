@@ -7,6 +7,8 @@ import java.net.URI
 import org.apache.http.protocol.HTTP.UTF_8
 import org.apache.commons.codec.binary.Base64.encodeBase64
 
+import org.coriander.oauth.uri._
+
 class Signature(
     urlEncoder              : org.coriander.oauth.uri.URLEncoder,
     consumerCredential      : OAuthCredential,
@@ -28,6 +30,10 @@ class Signature(
         consumerCredential  : OAuthCredential
     ) {
         this(urlEncoder, consumerCredential, null)
+    }
+
+    def this(consumerCredential  : OAuthCredential) {
+        this(new OAuthURLEncoder(), consumerCredential)
     }
     
     val DEFAULT_ALGORITHM = "HMacSha1"
