@@ -55,20 +55,20 @@ class NormalizerTest extends TestBase {
 
     @Test
     def normalize_includes_parameters_with_no_value {
-        val anyParameters = Map(
-            "b" -> null
-        )
+        val singleParameter = Map("b" -> null)
         
         val expected = "b="
 
-        val actual = new Normalizer() normalize(anyParameters)
+        val actual = new Normalizer() normalize(singleParameter)
 
         assertThat(actual, is(equalTo(expected)));
     }
 
     private def newMockURLEncoder : org.coriander.oauth.uri.URLEncoder = {
         var mockedURLEncoder = mock(classOf[org.coriander.oauth.uri.URLEncoder])
-        when(mockedURLEncoder.%%("any-string")).thenReturn("stubbed-escaped-value")
+        
+        when(mockedURLEncoder.%%("any-string")).
+        thenReturn("stubbed-escaped-value")
 
         mockedURLEncoder
     }

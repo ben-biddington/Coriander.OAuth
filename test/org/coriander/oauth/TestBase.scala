@@ -71,6 +71,15 @@ class TestBase extends Assert {
         })
     }
 
+    protected def assertContainsAllNames(
+        expectedList : List[NameValuePair],
+        actualList : List[NameValuePair]
+    ) {
+        assertContainsAll(expectedList, actualList, (expected, actual) => {
+            actual.getName     == expected.getName
+        })
+    }
+
     protected def assertContainsAll(
         expectedList : List[NameValuePair],
         actualList : List[NameValuePair]
@@ -80,23 +89,14 @@ class TestBase extends Assert {
             actual.getValue    == expected.getValue
         })
     }
-
-     protected def assertContainsAllNames(
-        expectedList : List[NameValuePair],
-        actualList : List[NameValuePair]
-    ) {
-        assertContainsAll(expectedList, actualList, (expected, actual) => {
-            actual.getName     == expected.getName
-        })
-    }
-
+    
     private def assertContainsAll(
         expected : List[NameValuePair],
         actual : List[NameValuePair],
         comparer: (=> NameValuePair, NameValuePair) => Boolean
     ) {
 
-        expected.foreach(expectedPair => {
+        expected foreach(expectedPair => {
             assertTrue(
                 "The actual list did not contain the expected item: " +
                 "<" + expectedPair.getName + "=" + expectedPair.getValue +">",
