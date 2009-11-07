@@ -14,24 +14,37 @@ class QueryParser {
         parseNameValuePairs(query, DELIMITER)
     }
 
-    private def parseNameValuePairs(
-        value : String,
-        delimiter : String
-    ) : Map[String, String] = {
+    private def parseNameValuePairs(value : String, delimiter : String) : Map[String, String] = {
 
         var result : Map[String, String] = Map()
 
-        if (null == value)
+        if (null == value || value.trim == "")
             return result
 
-        value.split(delimiter).foreach((pair : String) => {
-            val parts = pair.split("=");
-            result += urlDecode(parts(0).trim) -> {
-                if (parts.length ==1) null else urlDecode(parts(1).trim)
+        value split(delimiter) foreach(pair => {
+            val temp = parseParameter(pair)
+            
+            if (temp._1 != null) {
+                result += parseParameter(pair)
             }
         });
 
         result
+    }
+
+    private def parseParameter(parameter : String) : Tuple2[String, String] = {
+        val parts = parameter split("=");
+
+        val name = parts(0).trim
+
+        if (name.length == 0) {
+            return (null, null)
+        }
+        
+        (
+            urlDecode(name),
+            if (parts.length == 1) null else urlDecode(parts(1).trim)
+        )
     }
 
     private def urlDecode(str : String) : String = {
