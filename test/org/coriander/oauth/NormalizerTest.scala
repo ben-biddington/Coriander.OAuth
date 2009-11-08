@@ -64,6 +64,19 @@ class NormalizerTest extends TestBase {
         assertThat(actual, is(equalTo(expected)));
     }
 
+    @Test
+    def when_a_parameter_value_contains_comma_it_is_treated_as_multiple_values_for_same_parameter_name() {
+        val duplicates = Map(
+            "a" -> "zzz,xxx,yyy"
+        )
+
+        val expected = "a=xxx&a=yyy&a=zzz"
+        val actual = new Normalizer() normalize(duplicates)
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    // TEST: How do we handle parameters with the same name?
+
     private def newMockURLEncoder : org.coriander.oauth.uri.URLEncoder = {
         var mockedURLEncoder = mock(classOf[org.coriander.oauth.uri.URLEncoder])
         

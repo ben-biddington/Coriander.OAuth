@@ -68,6 +68,9 @@ class QueryParserTest {
             ))
     }
 
+    // TEST: how does it handle multiple values for the same name?
+    // e.g., a=1&a=2&a=3
+
     private def when_string_parsed(query : String) {
         result = new QueryParser().parse(query)
     }
