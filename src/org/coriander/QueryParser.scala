@@ -22,10 +22,18 @@ class QueryParser {
             return result
 
         value split(delimiter) foreach(pair => {
-            val temp = parseParameter(pair)
+            val (name, value) : Tuple2[String, String] = parseParameter(pair)
             
-            if (temp._1 != null) {
-                result += parseParameter(pair)
+            if (name != null) {
+                if (result.contains(name)) {
+                    val updatedValue : String = result(name) + "," + value
+                    
+                    result -= name
+                    
+                    result += Tuple2(name, updatedValue)
+                } else {
+                    result += Tuple2(name, value)
+                }
             }
         });
 
@@ -35,11 +43,10 @@ class QueryParser {
     private def parseParameter(parameter : String) : Tuple2[String, String] = {
         val parts = parameter split("=");
 
-        val name = parts(0).trim
+        val name = parts(0) trim
 
-        if (name.length == 0) {
+        if (name.length == 0)
             return (null, null)
-        }
         
         (
             urlDecode(name),

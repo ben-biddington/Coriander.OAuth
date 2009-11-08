@@ -57,6 +57,17 @@ class QueryParserTest {
         then_result_equals(Map())
     }
 
+    @Test
+    def parse_collects_parameters_with_the_same_name() {
+        val value = "a=value&a=value-1"
+
+        when_string_parsed(value)
+
+        then_result_equals(Map(
+            "a" -> "value,value-1"
+            ))
+    }
+
     private def when_string_parsed(query : String) {
         result = new QueryParser().parse(query)
     }
