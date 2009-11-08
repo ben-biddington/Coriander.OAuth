@@ -8,11 +8,11 @@ import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
 
-import org.coriander.QueryString
+import org.coriander.Query
 import org.coriander.NameValuePair
 import org.coriander.oauth.tests.TestBase
 
-class QueryStringTest extends TestBase {
+class QueryTest extends TestBase {
 
     val AN_EMPTY_LIST : List[NameValuePair] = List()
 
@@ -26,7 +26,7 @@ class QueryStringTest extends TestBase {
             new NameValuePair(key, "yyy")
         )
 
-        val actualList = new QueryString(expectedList) get(key)
+        val actualList = new Query(expectedList) get(key)
 
         assertThat(actualList, is(equalTo(actualList)))
     }
@@ -34,20 +34,20 @@ class QueryStringTest extends TestBase {
     @Test
     def given_default_instance_then_get_returns_empty_list() {
         assertThat(
-            new QueryString().get("xxx"), is(equalTo(AN_EMPTY_LIST))
+            new Query().get("xxx"), is(equalTo(AN_EMPTY_LIST))
         )
     }
 
     @Test
     def contains_returns_false_when_parameter_does_not_exist_with_supplied_name() {
         assertThat(
-            new QueryString().contains("xxx"), is(false)
+            new Query().contains("xxx"), is(false)
         )
     }
 
     @Test
     def contains_returns_true_when_parameter_exists_with_supplied_name() {
-        val queryStringContainingOneItem = new QueryString(
+        val queryStringContainingOneItem = new Query(
             List(new NameValuePair("xxx", null))
         )
         

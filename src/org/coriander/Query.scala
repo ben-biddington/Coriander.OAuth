@@ -1,6 +1,6 @@
 package org.coriander
 
-class QueryString(val nameValuePairs : List[NameValuePair]) {
+class Query(val nameValuePairs : List[NameValuePair]) {
     def this() {
         this(List())
     }
