@@ -16,7 +16,6 @@ class QueryTest extends TestBase {
 
     val AN_EMPTY_LIST : List[NameValuePair] = List()
 
-
     @Test
     def given_duplicates_then_get_returns_them_all {
         val key = "a"
@@ -61,7 +60,8 @@ class QueryTest extends TestBase {
         assertThat(new Query().size, is(equalTo(0)))
     }
 
-    @Test def increment_and_assign_returns_a_new_instance {
+    @Test
+    def increment_and_assign_returns_a_new_instance {
         val query = new Query(List(new NameValuePair("a", "b")))
 
         val incremented = query += new NameValuePair("c", "d")
@@ -74,6 +74,60 @@ class QueryTest extends TestBase {
         assertThat(
             "Expected that an item shoud have been added.",
             incremented.size, is(equalTo(2))
+        )
+    }
+
+    @Test
+    def toString_returns_ampersand_delimited_list {
+        val expected = "a=aaa%3F&b=bbb%3A%2F%2F"
+        
+        val actual = Query(
+            NameValuePair().called("a").withValue("aaa?"),
+            NameValuePair().called("b").withValue("bbb://")
+        ) toString
+
+        assertThat(actual, is(equalTo(expected)))
+    }
+}
+
+class QueryCompanionTest extends TestBase {
+    @Test
+    def apply_splat_returns_as_expected {
+        val actual = Query(new NameValuePair("x", "y"))
+
+        assertThat(
+            "Empty splat should be converted to empty query.",
+            actual.size, is(equalTo(1))
+        )
+    }
+
+    @Test
+    def apply_splat_returns_empty_when_splat_is_empty {
+        val actual = Query()
+
+        assertThat(
+            "Splat should be converted to query with correct number of entries.",
+            actual.size, is(equalTo(0))
+        )
+    }
+
+    @Test
+    def from_tuple_splat_returns_empty_when_map_argument_is_empty {
+        val actual = Query.from()
+
+        assertThat(
+            "Empty map should be converted to empty query.",
+            actual.size, is(equalTo(0))
+        )
+    }
+
+    @Test
+    def from_tuple_splat_returns_as_expected {
+        val actual = Query.from("a" -> "aaa", "b" -> "bbb")
+
+        assertThat(
+            "Map should be converted to query with correct number of entries.",
+            actual.size, is(equalTo(2))
         )
     }
 }

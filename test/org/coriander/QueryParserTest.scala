@@ -37,17 +37,17 @@ class QueryParserTest extends TestBase {
 
         when_string_parsed(value)
 
-        then_result_equals(new Query(List(new NameValuePair("a", "any-value"))))
+        then_result_equals(Query.from("a" -> "any-value"))
     }
 
     @Test
     def parse_multiple_parameters_returns_as_expected {
         val value = "a=any-value&b=any-value-1"
 
-        val expectedQuery = new Query(List(
-            new NameValuePair("a", "any-value"),
-            new NameValuePair("b", "any-value-1")
-        ))
+        val expectedQuery = Query.from(
+            "a" -> "any-value",
+            "b" -> "any-value-1"
+        )
 
         when_string_parsed(value)
 
@@ -69,11 +69,11 @@ class QueryParserTest extends TestBase {
 
         when_string_parsed(value)
 
-        val expected = new Query(List(
-            new NameValuePair("a", "value"),
-            new NameValuePair("a", "value-1"),
-            new NameValuePair("a", "value-2")
-        ))
+        val expected = Query.from(
+            "a" -> "value",
+            "a" -> "value-1",
+            "a" -> "value-2"
+        )
 
         then_result_equals(expected)
     }

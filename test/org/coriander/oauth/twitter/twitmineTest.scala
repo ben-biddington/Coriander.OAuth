@@ -38,7 +38,7 @@ class twitmineTest extends TestBase {
     var signedUri : java.net.URI = null
     var httpStatus : Int = 0
 
-    @Test
+    @Test @Ignore
     def given_an_invalid_consumer_credential_then_twitmine_get_request_token_returns_unauthorized() {
         given_an_invalid_credential
 

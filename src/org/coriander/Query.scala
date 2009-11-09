@@ -32,16 +32,16 @@ class Query(val nameValuePairs : List[NameValuePair]) {
         return  nameValuePairs.size
     }
 
+    def map(mapper : NameValuePair => NameValuePair) : Query = {
+        new Query(nameValuePairs.map(mapper))
+    }
+    
     def sort : Query = {
          new Query(
              nameValuePairs.sort(
                 (left, right) => left.name.compareToIgnoreCase(right.name) < 0
             )
         )
-    }
-
-    def map(mapper : NameValuePair => NameValuePair) : Query = {
-        new Query(nameValuePairs.map(mapper))
     }
 
     def += (nameValuePair : NameValuePair) : Query = {
@@ -70,6 +70,23 @@ class Query(val nameValuePairs : List[NameValuePair]) {
 }
 
 object Query {
+    def apply[NameValuePair](pairs : org.coriander.NameValuePair*) : Query = {
+        new Query(pairs.toList)
+    }
+
+    def from(tupleSplat : Tuple2[String, String]*) : Query = {
+
+        var temp : List[NameValuePair] = List()
+        
+        tupleSplat.foreach(tuple => {
+            val (name, value) = tuple
+
+            temp += new NameValuePair(name, value)
+        })
+
+        new Query(temp)
+    }
+    
     def copy(query : Query) : Query = {
         var result = new Query()
 
