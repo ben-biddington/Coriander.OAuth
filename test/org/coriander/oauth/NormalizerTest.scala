@@ -21,57 +21,47 @@ class NormalizerTest extends TestBase {
 
     @Test
     def normalize_returns_string_containing_all_supplied_parameters_sorted_by_name {
-        val anyParameters = Map(
-            "b" -> "any-value",
-            "c" -> "any-value",
-            "a" -> "any-value"
-        )
+        val anyQuery = new Query(List(
+            new NameValuePair("b", "any-value"),
+            new NameValuePair("c", "any-value"),
+            new NameValuePair("a", "any-value")
+        ))
 
         val expected = "a=any-value&b=any-value&c=any-value"
 
-        val actual = new Normalizer() normalize(anyParameters)
+        val actual = new Normalizer() normalize(anyQuery)
 
         assertThat(actual, is(equalTo(expected)));
     }
 
     @Test
     def normalize_url_encodes_each_name_and_value {
-        val anyParameters = Map(
-            "b" -> "any-value",
-            "c" -> "any-value-1",
-            "a" -> "any-value-2"
-        )
+        val anyQuery = new Query(List(
+            new NameValuePair("b", "any-value"),
+            new NameValuePair("c", "any-value-1"),
+            new NameValuePair("a", "any-value-2")
+        ))
 
         val mockURLEncoder = newMockURLEncoder
 
-        val actual = new Normalizer(mockURLEncoder) normalize(anyParameters)
+        val actual = new Normalizer(mockURLEncoder) normalize(anyQuery)
 
-        anyParameters foreach(entry => {
-            val (key, value) = entry
-            verify(mockURLEncoder, times(1)).%%(key)
-            verify(mockURLEncoder, times(1)).%%(value)
+        anyQuery foreach(pair => {
+            verify(mockURLEncoder, times(1)).%%(pair.name)
+            verify(mockURLEncoder, times(1)).%%(pair.value)
         })
     }
 
     @Test
     def normalize_includes_parameters_with_no_value {
-        val singleParameter = Map("b" -> null)
+        val singleParameter = new Query(List(
+            new NameValuePair("b", null)
+        ))
         
         val expected = "b="
 
         val actual = new Normalizer() normalize(singleParameter)
 
-        assertThat(actual, is(equalTo(expected)));
-    }
-
-    @Test
-    def when_a_parameter_value_contains_comma_it_is_treated_as_multiple_values_for_same_parameter_name() {
-        val duplicates = Map(
-            "a" -> "zzz,xxx,yyy"
-        )
-
-        val expected = "a=xxx&a=yyy&a=zzz"
-        val actual = new Normalizer() normalize(duplicates)
         assertThat(actual, is(equalTo(expected)));
     }
 

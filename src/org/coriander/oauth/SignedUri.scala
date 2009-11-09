@@ -13,50 +13,65 @@ class SignedUri(
     nonce : String,
     version : String
 ) {
-    val _normalizer = new Normalizer()
-    val _queryParser = new QueryParser()
-    val _method = "GET"
+    val normalizer = new Normalizer()
+    val queryParser = new QueryParser()
+    val method = "GET"
     
     def value() : URI = {
-        value(uri, _queryParser.parse(uri))
+        value(uri, queryParser.parse(uri))
     }
 
-    private def value(resource : URI, params : Map[String, String]) : URI = {
-        var oauthParams = new Parameters(
+    private def value(resource : URI, query : Query) : URI = {
+        var oauthParams = getOAuthParams + "oauth_signature" -> sign(resource, query)
+
+        var parameters : List[NameValuePair] = List()
+
+        oauthParams.foreach(item => {
+            val (name, value) = item
+            
+            parameters += new NameValuePair(name, value)
+        })
+
+        // TODO: The following causes duplicates, but we need it
+        query.foreach(nvp => {parameters += nvp})
+
+        val normalizedParams : String = normalize(new Query(parameters))
+
+        val signedUrl : String =
+            resource.getScheme + "://" +
+            resource.getAuthority +
+            resource.getPath + "?" +
+            normalizedParams.toString
+
+        return new URI(signedUrl)
+    }
+
+    private def getOAuthParams() : Map[String, String] = {
+        new Parameters(
             consumer,
             signatureMethod,
             timestamp,
             nonce,
             version
         ) toMap
-
-        oauthParams += "oauth_signature" -> sign(resource, params)
-
-        val normalizedParams = normalize(params ++ oauthParams)
-
-        val signedUrl : String =
-            resource.getScheme + "://" +
-            resource.getAuthority +
-            resource.getPath + "?" +
-            normalizedParams
-
-        return new URI(signedUrl)
     }
 
-    private def sign(resource : URI, params : Map[String, String]) : String = {
+    private def sign(resource : URI, query : Query) : String = {
         val signatureBaseString = new SignatureBaseString(
-            _method,
+            method,
             uri,
-            params,
+            query,
             consumer,
             nonce,
             timestamp
         )
 
-        new Signature(consumer).sign(signatureBaseString toString)
+        val result = new Signature(consumer).sign(signatureBaseString toString)
+
+        result
     }
 
-    private def normalize(nameValuePairs : Map[String, String]) : String = {
-        _normalizer.normalize(nameValuePairs)
+    private def normalize(query : Query) : String = {
+        normalizer.normalize(query)
     }
 }

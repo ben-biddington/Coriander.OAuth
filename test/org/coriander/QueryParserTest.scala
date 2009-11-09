@@ -8,11 +8,15 @@ import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
 
+import org.coriander.oauth.tests.TestBase
+
 import org.coriander.QueryParser
+import org.coriander.Query
+import org.coriander.NameValuePair
 
-class QueryParserTest {
+class QueryParserTest extends TestBase {
 
-    var result : Map[String, String] = null
+    var result : Query = null
 
     @Before
     def setUp { }
@@ -24,7 +28,7 @@ class QueryParserTest {
     def parse_returns_empty_when_query_argument_is_empty {
         when_string_parsed("")
 
-        then_result_equals(Map())
+        then_result_equals(new Query())
     }
 
     @Test
@@ -33,19 +37,21 @@ class QueryParserTest {
 
         when_string_parsed(value)
 
-        then_result_equals(Map("a" -> "any-value"))
+        then_result_equals(new Query(List(new NameValuePair("a", "any-value"))))
     }
 
     @Test
     def parse_multiple_parameters_returns_as_expected {
         val value = "a=any-value&b=any-value-1"
-       
+
+        val expectedQuery = new Query(List(
+            new NameValuePair("a", "any-value"),
+            new NameValuePair("b", "any-value-1")
+        ))
+
         when_string_parsed(value)
 
-        then_result_equals(Map(
-            "a" -> "any-value",
-            "b" -> "any-value-1"
-        ))
+        then_result_equals(expectedQuery)
     }
 
     @Test
@@ -54,30 +60,45 @@ class QueryParserTest {
 
         when_string_parsed(value)
 
-        then_result_equals(Map())
+        then_result_equals(new Query())
     }
 
     @Test
-    def parse_collects_parameters_with_the_same_name() {
-        val value = "a=value&a=value-1"
+    def parse_preserves_parameters_with_the_same_name() {
+        val value = "a=value&a=value-1&a=value-2"
 
         when_string_parsed(value)
 
-        then_result_equals(Map(
-            "a" -> "value,value-1"
-            ))
-    }
+        val expected = new Query(List(
+            new NameValuePair("a", "value"),
+            new NameValuePair("a", "value-1"),
+            new NameValuePair("a", "value-2")
+        ))
 
-    // TEST: how does it handle multiple values for the same name?
-    // e.g., a=1&a=2&a=3
+        then_result_equals(expected)
+    }
 
     private def when_string_parsed(query : String) {
         result = new QueryParser().parse(query)
     }
 
-    private def then_result_equals(expected : Map[String, String]) {
+    private def then_result_equals(expected : Query) {
         then_result_has_length(expected.size)
-        assertEquals(expected, result)
+
+        expected.foreach(nameValuePair => {
+            val name = nameValuePair.name
+
+            assertTrue(
+                "The result does not contain parameter with name " +
+                "<" + name + ">",
+                result.contains(name)
+            )
+
+            val expectedValues = expected.get(name)
+            val actualValues = result.get(name)
+            
+            assertAreEqual_rename_me(expectedValues, actualValues)
+        })
     }
     
     private def then_result_has_length(expectedCount : Int) {

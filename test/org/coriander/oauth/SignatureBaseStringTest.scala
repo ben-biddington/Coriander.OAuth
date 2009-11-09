@@ -10,8 +10,6 @@ import org.hamcrest._
 import org.hamcrest.Matcher._
 import org.hamcrest.CoreMatchers._
 import org.junit._
-import org.apache.commons.httpclient._
-import org.apache.commons.httpclient.util._
 import org.junit.rules._
 import scala.collection.immutable._
 import scala.util.matching.Regex._
@@ -27,10 +25,10 @@ import org.coriander.oauth.nonce._
 class SignatureBaseStringTest extends TestBase {
     val consumerCredential = new OAuthCredential("key", "secret")
 
-    var _aValidUri =  new java.net.URI("http://xxx/")
-    val _aValidNonce = new SystemNonceFactory createNonce
-    val _aValidTimestamp = new SystemTimestampFactory createTimestamp
-    var _parameters : Map[String, String] = Map()
+    var aValidUri =  new java.net.URI("http://xxx/")
+    val aValidNonce = new SystemNonceFactory createNonce
+    val aValidTimestamp = new SystemTimestampFactory createTimestamp
+    var query : Query = new Query
     var _signatureBaseString : SignatureBaseString = null;
     val _urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
 
@@ -42,7 +40,9 @@ class SignatureBaseStringTest extends TestBase {
         val originalValue = "http://some-url?param=value"
         val expectedEncodedValue = urlEncode(urlEncode(originalValue))
 
-        val result = newSignatureBaseString(Map("xxx" -> originalValue)) toString
+        val query = new Query(List(new NameValuePair("xxx", originalValue)))
+
+        val result = newSignatureBaseString(query) toString
 
         assertThat(
             "The result must conform to RFC3629 for percent-encoding",
@@ -55,17 +55,19 @@ class SignatureBaseStringTest extends TestBase {
         given_an_unsorted_list_of_parameters
         when_signature_base_string_is_created
 
-        var parametersExcludingOAuth = trimOAuth(
+        var queryExcludingOAuth = trimOAuth(
             parseParameters(_signatureBaseString)
         )
 
-        val expectedList = Map(
-            "a" -> "a_value",
-            "b" -> "b_value",
-            "c" -> "c_value"
+        val expectedQuery = new Query(
+            List(
+                new NameValuePair("a", "a_value"),
+                new NameValuePair("b", "b_value"),
+                new NameValuePair("c", "c_value")
+            )
         )
 
-        assertEquals(expectedList, parametersExcludingOAuth)
+        assertAreEqual(expectedQuery, queryExcludingOAuth)
     }
 
     @Test
@@ -73,25 +75,23 @@ class SignatureBaseStringTest extends TestBase {
         given_a_list_of_parameters
 
         val result = new SignatureBaseString(
-            _aValidUri,
-            _parameters,
+            aValidUri,
+            query,
             consumerCredential,
-            _aValidNonce,
-            _aValidTimestamp
+            aValidNonce,
+            aValidTimestamp
         )
 
-        val allParameters : Map[String, String] = parseParameters(result)
+        val allParameters : Query = parseParameters(result)
 
-        _parameters.foreach(nameValueTuple => {
-            val (name, value) = nameValueTuple
-
-            assertThat(allParameters(name), is(equalTo(_parameters(name))))
+        query.foreach(nameValuePair => {
+            assertTrue(allParameters.contains(nameValuePair.name))
         })
     }
 
     // See: http://oauth.net/core/1.0/#anchor13
     @Test
-    def result_contains_all_expected_oauth_parameters() {
+    def result_contains_all_expected_oauthparameters() {
         given_a_list_of_parameters
         when_signature_base_string_is_created
         
@@ -106,7 +106,7 @@ class SignatureBaseStringTest extends TestBase {
         )
 
         requiredParameters foreach(
-            requiredName => assertTrue(allParameters.keys.contains(requiredName))
+            requiredName => assertTrue(allParameters.contains(requiredName))
         )
     }
 
@@ -185,18 +185,18 @@ class SignatureBaseStringTest extends TestBase {
 
         assertThat(
             _signatureBaseString.toString,
-            containsString(_urlEncoder.%%(_aValidUri.getPath))
+            containsString(_urlEncoder.%%(aValidUri.getPath))
         )
     }
 
     @Test
     def when_I_create_an_instance_without_supplying_a_method_then_method_defaults_to_get() {
         val signatureBaseString = new SignatureBaseString(
-            _aValidUri,
-            _parameters,
+            aValidUri,
+            query,
             consumerCredential,
-            _aValidNonce,
-            _aValidTimestamp
+            aValidNonce,
+            aValidTimestamp
         )
 
         val expectedMethod = "GET"
@@ -226,7 +226,7 @@ class SignatureBaseStringTest extends TestBase {
         val actual = new SignatureBaseString(
             "get",
             new java.net.URI("http://xxx/"),
-            Map(),
+            new Query(),
             new OAuthCredential("key", "secret"),
             "ddb61ca14d02e9ef7b55cc5c1f88616f",
             "1252500234"
@@ -274,23 +274,23 @@ class SignatureBaseStringTest extends TestBase {
     // TEST: This class only requires oauth_key, not an entire OAuthCredential
 
     private def given_a_uri(uri: java.net.URI) {
-        _aValidUri = uri;
+        aValidUri = uri;
     }
 
     private def given_a_list_of_parameters() {
-        _parameters = Map(
-            "a" -> "a_value",
-            "b" -> "b_value",
-            "c" -> "c_value"
-        )
+        query = new Query(List(
+            new NameValuePair("a", "a_value"),
+            new NameValuePair("b", "b_value"),
+            new NameValuePair("c", "c_value")
+        ))
     }
 
     private def given_an_unsorted_list_of_parameters() {
-        _parameters = Map(
-            "c" -> "c_value",
-            "b" -> "b_value",
-            "a" -> "a_value"
-        )
+        query = new Query(List(
+            new NameValuePair("c", "c_value"),
+            new NameValuePair("b", "b_value"),
+            new NameValuePair("a", "a_value")
+        ))
     } 
 
     private def when_signature_base_string_is_created() {
@@ -304,37 +304,39 @@ class SignatureBaseStringTest extends TestBase {
     private def createDefault(method : String) : SignatureBaseString = {
          new SignatureBaseString(
             method,
-            _aValidUri,
-            _parameters,
+            aValidUri,
+            query,
             consumerCredential,
-            _aValidNonce,
-            _aValidTimestamp
+            aValidNonce,
+            aValidTimestamp
         );
     }
 
-    private def newSignatureBaseString(parameters : Map[String, String]) :
+    private def newSignatureBaseString(query : Query) :
         SignatureBaseString = {
         new SignatureBaseString(
-            _aValidUri,
-            parameters,
+            aValidUri,
+            query,
             consumerCredential,
-            _aValidNonce,
-            _aValidTimestamp
+            aValidNonce,
+            aValidTimestamp
         );
     }
 
-    private def parseParameters(signatureBaseString : SignatureBaseString) : Map[String, String] = {
-        val (method, url, parameters) = parse(signatureBaseString)
-        parameters
+    private def parseParameters(signatureBaseString : SignatureBaseString) : Query = {
+        val (method, url, query) = parse(signatureBaseString)
+        query
     }
 
-    private def parse(signatureBaseString : SignatureBaseString) : Tuple3[String, String, Map[String, String]] = {
+    private def parse(signatureBaseString : SignatureBaseString) : Tuple3[String, String, Query] = {        
         val parts = signatureBaseString.toString().split("&")
 
         val method = parts(0)
         val url = parts(1)
         val encodedParams = parts(2)
+
+        val query = parseQuery(urlDecode(encodedParams))
         
-        (method, url, parseQuery(urlDecode(encodedParams)))
+        (method, url, query )
     }    
 }

@@ -66,22 +66,41 @@ class SignedUriTest extends TestBase {
 
     @Test
     def value_contains_all_of_the_original_parameters {
-        val expectedQueryParameters = Map(
-            "a" -> "a_value",
-            "b" -> "b_value",
-            "c" -> "c_value"
+        val expectedQuery = new Query(
+            List(
+                new NameValuePair("a", "a_value"),
+                new NameValuePair("b", "b_value"),
+                new NameValuePair("c", "c_value")
+            )
         )
 
         val uriWithParameters = new URI("http://xxx/?a=a_value&b=b_value&c=c_value")
 
         given_a_signed_uri(uriWithParameters)
 
-        then_value_contains_all_query_parameters(expectedQueryParameters)
+        then_value_contains_all_query_parameters(expectedQuery)
+    }
+
+    @Test
+    def xxx {
+        var parameters : List[NameValuePair] = List(new NameValuePair("c", "c"))
+
+        val oauthParams = Map("name" -> "value", "another_name" -> "value")
+
+        oauthParams.foreach(item => {
+            val (name, value) = item
+
+            parameters += new NameValuePair(name, value)
+        })
+
+        val query = new Query()
+ 
+        query.foreach(nvp => {parameters += nvp})
     }
 
     @Test
     def value_contains_expected_oauth_parameters() {
-        give_a_signed_uri
+        given_a_signed_uri(new URI("http://abcdefg/"))
 
         val requiredQueryParameters = List(
             "oauth_consumer_key",
@@ -92,13 +111,25 @@ class SignedUriTest extends TestBase {
             "oauth_signature"
         )
 
-        val actualQueryParameters = parseQuery(instance.value getQuery)
+        val signedUri : URI = instance.value
+
+        val actualQuery : Query = parseQuery(signedUri getQuery)
 
         requiredQueryParameters foreach(
-            requiredName =>
-            assertTrue(
-            "The value <" + actualQueryParameters + "> should contain <" + requiredName + "> query parameter.",
-            actualQueryParameters.contains(requiredName))
+            requiredName => {
+                assertTrue(
+                    "The query <" + actualQuery.toString + "> " +
+                    "should contain <" + requiredName + "> query parameter.",
+                    actualQuery.contains(requiredName)
+                )
+
+                assertThat(
+                    "Expected each oauth parameter to appear exactly once. " +
+                    "The <" + requiredName + "> parameter appears " +
+                    "<" + actualQuery.get(requiredName).size + "> times",
+                    actualQuery.get(requiredName).size, is(equalTo(1))
+                )
+            }
         )
     }
 
@@ -122,10 +153,12 @@ class SignedUriTest extends TestBase {
         val expectedSignedUrl = "http://xxx/?oauth_version=1.0&oauth_nonce=ea757706c42e2b14a7a8999acdc71089&oauth_timestamp=1257608197&oauth_consumer_key=key&oauth_signature_method=HMAC-SHA1&oauth_signature=RO8XXXVxGl1kzYs%2FC7ueQzo974k%3D"
         val expecteSignature = "RO8XXXVxGl1kzYs/C7ueQzo974k="
 
-        val expectedParams = parseQuery(new URI(expectedSignedUrl))
-        val actualParams = parseQuery(signedUri.value)
+        val expectedParams : Query = parseQuery(new URI(expectedSignedUrl))
+        val actualParams : Query = parseQuery(signedUri.value)
        
-        assertContainsAll(expectedParams, actualParams)
+        expectedParams.foreach(nameValuePair => {
+            assertTrue(actualParams.contains(nameValuePair.name))
+        })
     }
 
     private def give_a_signed_uri {
@@ -150,7 +183,7 @@ class SignedUriTest extends TestBase {
         )
     }
 
-    private def then_value_contains_all_query_parameters(expectedQueryParameters : Map[String, String]) {
+    private def then_value_contains_all_query_parameters(expectedQueryParameters : Query) {
         val actualQueryParameters = parseQuery(instance.value getQuery)
 
         assertContainsAll(

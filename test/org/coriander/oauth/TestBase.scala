@@ -14,27 +14,28 @@ import scala.util.matching._
 import scala.collection.immutable._
 
 import org.coriander.oauth.uri._
+import org.coriander.Query
+import org.coriander.NameValuePair
 
 class TestBase extends Assert {
     val queryParser = new org.coriander.QueryParser
 
-    protected def trimOAuth(nameValuePairs : Map[String, String]) : Map[String, String] = {
-        nameValuePairs.filter(item => {
-                val (name, value) = item
-                false == name.startsWith("oauth_")
-            }
-        )
+    protected def trimOAuth(query : Query) : Query = {
+        query.filter(item => {
+            false == item.name.startsWith("oauth_")
+        })
     }
 
+    // TODO: Should return list of values (maybe)
     protected def getQueryParameter(url : String, name : String) : String = {
-        parseQuery(url)(name)
+        parseQuery(url).get(name)(0).value
     }
     
-    protected def parseQuery(uri : java.net.URI) : Map[String, String] = {
+    protected def parseQuery(uri : java.net.URI) : Query = {
         parseQuery(uri.getQuery)
     }
 
-    protected def parseQuery(query : String) : Map[String, String] = {
+    protected def parseQuery(query : String) : Query = {
         queryParser parse(query)
     }
 
@@ -85,6 +86,7 @@ class TestBase extends Assert {
         })
     }
 
+    // DEPRECATED
     protected def assertContainsAll(
         expectedList : Map[String, String],
         actualList : Map[String, String]
@@ -92,6 +94,16 @@ class TestBase extends Assert {
         assertContainsAll(expectedList, actualList, (expected, actual) => {
             actual._1   == expected._1 &&
             actual._2   == expected._2
+        })
+    }
+
+    protected def assertContainsAll(expected: Query, actual : Query) {
+        expected.foreach(pair => {
+            assertTrue(
+                "The query <" + actual.toString + "> should " +
+                "contain the parameter with name <" + pair.name + ">", 
+                actual.contains(pair.name)
+            )
         })
     }
     
@@ -124,7 +136,7 @@ class TestBase extends Assert {
         )
     }
 
-     protected def assertStartsWith(pattern : String, value : String) {
+    protected def assertStartsWith(pattern : String, value : String) {
         val hasMatch = false == (new Regex(pattern).findPrefixOf(value).isEmpty)
 
         assertTrue(
@@ -132,5 +144,21 @@ class TestBase extends Assert {
             "does not start with <" + pattern +">",
             hasMatch
         )
+    }
+
+    protected def assertAreEqual(expected : Query, actual : Query) {
+        assertThat("The supplied query has unexpected size.", actual.size, is(equalTo(actual.size)))
+
+        expected.foreach(pair => {
+            assertTrue("The pair with name <" + pair.name + "> is missing.", actual.contains(pair.name))
+            assertAreEqual_rename_me(expected.get(pair.name), actual.get(pair.name))
+        })
+    }
+
+    protected def assertAreEqual_rename_me(expected : List[NameValuePair], actual : List[NameValuePair]) {
+        for (i <- 0 until expected.length - 1) {
+            assertThat(expected(i).name, is(equalTo(actual(i).name)))
+            assertThat(expected(i).value, is(equalTo(actual(i).value)))
+        }
     }
 }

@@ -8,15 +8,13 @@ class Normalizer(val urlEncoder : URLEncoder) {
         this(new OAuthURLEncoder())
     }
 
-    def normalize(params : Map[String, String]) : String = {
-        sort(params) map {
-            case (name, value) => { 
-                urlEncoder.%%(name) + "=" + urlEncoder.%%(value)
-            }
-        } mkString "&"
-    }
-    
-    private def sort(queryParams : Map[String, String]) : SortedMap[String, String] = {
-        return new TreeMap[String, String] ++ queryParams
+    def normalize(query : Query) : String = {
+        var pairs : List[String] = List()
+
+        query.sort.foreach(nameValuePair =>
+            pairs += urlEncoder.%%(nameValuePair.name) + "=" + urlEncoder.%%(nameValuePair.value)
+        )
+
+        pairs.mkString("&")
     }
 }

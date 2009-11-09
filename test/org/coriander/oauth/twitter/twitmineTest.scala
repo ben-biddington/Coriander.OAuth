@@ -1,4 +1,4 @@
-package org.coriander.oauth.twitter.tests
+package org.coriander.oauth.twitter.integration.tests
 
 import org.junit._
 import org.junit.After
@@ -50,11 +50,13 @@ class twitmineTest extends TestBase {
         )
     }
 
-    @Ignore("Need input method for valid credential") @Test
+    @Test @Ignore("Credential issues")
     def given_a_valid_consumer_credential_then_twitmine_get_request_token_returns_ok() {
         given_a_valid_credential
 
         when_a_request_token_is_requested
+
+        println(signedUri.toString)
 
         assertThat(
             "Supplying valid credential should result in 200 status returned.",
@@ -63,7 +65,10 @@ class twitmineTest extends TestBase {
     }
 
     private def given_a_valid_credential {
-        given_an_invalid_credential
+        consumerCredential = new OAuthCredential(
+            "invalid-on-purpose",
+            "also-invalid-on-purpose"
+        )
     }
     
     private def given_an_invalid_credential {

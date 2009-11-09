@@ -1,54 +1,43 @@
 package org.coriander
 
-import org.apache.commons.httpclient._
-import org.apache.commons.httpclient.util._
-
 class QueryParser {
     val DELIMITER = "&"
 
-    def parse(uri : java.net.URI) : Map[String, String] = {
+    def parse(uri : java.net.URI) : Query = {
         parse(uri.getQuery)
     }
 
-    def parse(query : String) : Map[String, String] = {
+    def parse(query : String) : Query = {
         parseNameValuePairs(query, DELIMITER)
     }
 
-    private def parseNameValuePairs(value : String, delimiter : String) : Map[String, String] = {
+    private def parseNameValuePairs(value : String, delimiter : String) : Query = {
 
-        var result : Map[String, String] = Map()
+        var temp : List[NameValuePair] = List()
 
         if (null == value || value.trim == "")
-            return result
+            return new Query()
 
         value split(delimiter) foreach(pair => {
-            val (name, value) : Tuple2[String, String] = parseParameter(pair)
+            val nameAndValue = parseNameValuePair(pair)
             
-            if (name != null) {
-                if (result.contains(name)) {
-                    val updatedValue : String = result(name) + "," + value
-                    
-                    result -= name
-                    
-                    result += Tuple2(name, updatedValue)
-                } else {
-                    result += Tuple2(name, value)
-                }
+            if (nameAndValue != null) {
+                temp += nameAndValue
             }
         });
 
-        result
+        new Query(temp)
     }
 
-    private def parseParameter(parameter : String) : Tuple2[String, String] = {
+    private def parseNameValuePair(parameter : String) : NameValuePair = {
         val parts = parameter split("=");
 
         val name = parts(0) trim
 
         if (name.length == 0)
-            return (null, null)
-        
-        (
+            return null
+
+        new NameValuePair(
             urlDecode(name),
             if (parts.length == 1) null else urlDecode(parts(1).trim)
         )

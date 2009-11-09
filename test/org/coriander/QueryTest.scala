@@ -55,4 +55,25 @@ class QueryTest extends TestBase {
             queryStringContainingOneItem.contains("xxx"), is(true)
         )
     }
+
+    @Test
+    def size_returns_zero_for_empty_query() {
+        assertThat(new Query().size, is(equalTo(0)))
+    }
+
+    @Test def increment_and_assign_returns_a_new_instance {
+        val query = new Query(List(new NameValuePair("a", "b")))
+
+        val incremented = query += new NameValuePair("c", "d")
+
+        assertTrue(
+            "Query should be immutable. The += operation should return a new instance.",
+            incremented != query
+        )
+
+        assertThat(
+            "Expected that an item shoud have been added.",
+            incremented.size, is(equalTo(2))
+        )
+    }
 }

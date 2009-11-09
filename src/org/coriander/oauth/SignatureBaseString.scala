@@ -12,7 +12,7 @@ import org.coriander.oauth.uri._
 class SignatureBaseString (
     method              : String,
     uri                 : URI,
-    queryParams         : Map[String, String],
+    query               : Query,
     consumerCredential  : OAuthCredential,
     nonce               : String,
     timestamp           : String
@@ -25,12 +25,12 @@ class SignatureBaseString (
     
     def this(
         uri                 : URI,
-        queryParams         : Map[String, String],
+        query               : Query,
         consumerCredential  : OAuthCredential,
         nonce               : String,
         timestamp           : String
     ) {
-        this("get", uri, queryParams, consumerCredential, nonce, timestamp)
+        this("get", uri, query, consumerCredential, nonce, timestamp)
     }
 
     override def toString() : String = {
@@ -38,11 +38,19 @@ class SignatureBaseString (
     }
     
     def getSignatureBaseString() : String = {
-        return getSignatureBaseString(uri, queryParams)
+        return getSignatureBaseString(uri, query)
     }
 
-    def getSignatureBaseString(uri : URI, queryParams : Map[String, String]) : String = {
-        val normalizedParams = normalize(queryParams ++ getOAuthParameters)
+    def getSignatureBaseString(uri : URI, query : Query) : String = {
+
+        var tempQuery = Query.copy(query)
+        
+        getOAuthParameters.foreach(item => {
+            val (name, value) = item
+            tempQuery = tempQuery += new NameValuePair(name, value)
+        })
+
+        val normalizedParams = normalize(tempQuery)
         
         val requestUrl = uri.getScheme + "://" + selectAuthority(uri) + uri.getPath
 
@@ -90,8 +98,8 @@ class SignatureBaseString (
       return urlEncoder.%%(str.toString)
     }
 
-    private def normalize(params : Map[String, String]) : String = {
-        new Normalizer().normalize(params)
+    private def normalize(query : Query) : String = {
+        new Normalizer().normalize(query)
     }
 }
 
