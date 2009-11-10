@@ -1,7 +1,9 @@
 package org.coriander.oauth
 
 import org.coriander.oauth.uri._
-import org.coriander.Query
+import collection.mutable.ListBuffer
+
+import org.coriander.{NameValuePair, Query}
 
 class Normalizer(val urlEncoder : URLEncoder) {
     def this() {
@@ -9,12 +11,14 @@ class Normalizer(val urlEncoder : URLEncoder) {
     }
 
     def normalize(query : Query) : String = {
-        var pairs : List[String] = List()
+        var pairs : ListBuffer[String] = new ListBuffer[String]() 
 
-        query.sort.foreach(nameValuePair =>
-            pairs += urlEncoder.%%(nameValuePair.name) + "=" + urlEncoder.%%(nameValuePair.value)
-        )
+        query.sort.foreach(nameValuePair => pairs += toString(nameValuePair))
 
-        pairs.mkString("&")
+        pairs.toList.mkString("&")
     }
+
+	private def toString(nameValuePair : NameValuePair) : String = {
+		urlEncoder.%%(nameValuePair.name) + "=" + urlEncoder.%%(nameValuePair.value)
+	}
 }

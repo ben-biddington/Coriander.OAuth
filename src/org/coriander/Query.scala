@@ -1,5 +1,7 @@
 package org.coriander
 
+import collection.mutable.ListBuffer
+
 class Query(val nameValuePairs : List[NameValuePair]) {
     val urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
     val DELIMITER = "&"
@@ -27,7 +29,7 @@ class Query(val nameValuePairs : List[NameValuePair]) {
     }
 
     def size : Int = {
-        return  nameValuePairs.size
+        return nameValuePairs.size
     }
 
     def map(mapper : NameValuePair => NameValuePair) : Query = {
@@ -35,10 +37,10 @@ class Query(val nameValuePairs : List[NameValuePair]) {
     }
     
     def sort : Query = {
-         new Query(
-             nameValuePairs.sort(
+		new Query(
+			 nameValuePairs.sort(
                 (left, right) => left.name.compareToIgnoreCase(right.name) < 0
-            )
+			)
         )
     }
 
@@ -58,7 +60,7 @@ class Query(val nameValuePairs : List[NameValuePair]) {
     }
 
     private def append(nameValuePair : NameValuePair) : List[NameValuePair] = {
-        val result = nameValuePairs + nameValuePair
+        val result = nameValuePairs ::: List(nameValuePair)
         result
     }
 
@@ -74,7 +76,7 @@ object Query {
 
     def from(tupleSplat : Tuple2[String, String]*) : Query = {
 
-        var temp : List[NameValuePair] = List()
+        var temp : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
         
         tupleSplat.foreach(tuple => {
             val (name, value) = tuple
@@ -82,7 +84,7 @@ object Query {
             temp += new NameValuePair(name, value)
         })
 
-        new Query(temp)
+        new Query(temp.toList)
     }
     
     def copy(query : Query) : Query = {

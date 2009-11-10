@@ -1,5 +1,7 @@
 package org.coriander
 
+import collection.mutable.ListBuffer
+
 class QueryParser {
     val DELIMITER = "&"
 
@@ -12,8 +14,7 @@ class QueryParser {
     }
 
     private def parseNameValuePairs(value : String, delimiter : String) : Query = {
-
-        var temp : List[NameValuePair] = List()
+        var buffer : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
 
         if (null == value || value.trim == "")
             return new Query()
@@ -22,11 +23,11 @@ class QueryParser {
             val nameAndValue = parseNameValuePair(pair)
             
             if (nameAndValue != null) {
-                temp += nameAndValue
+                buffer += nameAndValue
             }
         });
 
-        new Query(temp)
+        new Query(buffer toList)
     }
 
     private def parseNameValuePair(parameter : String) : NameValuePair = {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager" verified="true">
-    <list default="true" readonly="true" id="70782b91-a515-451e-9225-425911f285e7" name="Default" comment="" />
+    <list default="true" id="70782b91-a515-451e-9225-425911f285e7" name="Default" comment="" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="scala-oauth.iws" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -65,46 +65,10 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Query.scala" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Query.scala" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/coriander/Query.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="17" selection-start="216" selection-end="216" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="NameValuePair.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/coriander/NameValuePair.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="0" selection-start="370" selection-end="370" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TestBase.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/org/coriander/oauth/TestBase.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="110" column="37" selection-start="3163" selection-end="3163" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SignedUriTest.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/org/coriander/oauth/SignedUriTest.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="98" column="59" selection-start="2824" selection-end="2824" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Normalizer.scala" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/coriander/oauth/Normalizer.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="55" selection-start="285" selection-end="285" vertical-scroll-proportion="0.3846154">
+            <state line="88" column="23" selection-start="2214" selection-end="2214" vertical-scroll-proportion="0.5069444">
               <folding />
             </state>
           </provider>
@@ -122,10 +86,14 @@
       <list>
         <option value="$PROJECT_DIR$/src/Example.scala" />
         <option value="$PROJECT_DIR$/test/ExampleTest.scala" />
-        <option value="$PROJECT_DIR$/src/org/coriander/Query.scala" />
         <option value="$PROJECT_DIR$/test/org/coriander/oauth/TestBase.scala" />
         <option value="$PROJECT_DIR$/test/org/coriander/oauth/SignedUriTest.scala" />
+        <option value="$PROJECT_DIR$/src/org/coriander/oauth/uri/Port.scala" />
+        <option value="$PROJECT_DIR$/test/org/coriander/oauth/NormalizerTest.scala" />
         <option value="$PROJECT_DIR$/src/org/coriander/oauth/Normalizer.scala" />
+        <option value="$PROJECT_DIR$/src/org/coriander/QueryParser.scala" />
+        <option value="$PROJECT_DIR$/src/org/coriander/oauth/SignedUri.scala" />
+        <option value="$PROJECT_DIR$/src/org/coriander/Query.scala" />
       </list>
     </option>
   </component>
@@ -164,6 +132,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Favorites" />
+      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -207,8 +177,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Favorites" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -224,9 +192,9 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -444,10 +412,39 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
-    <list size="3">
+    <configuration default="false" name="NormalizerTest.normalize_returns_string_containing_all_supplied_parameters_sorted_by_name" type="JUnit" factoryName="JUnit">
+      <extension name="snapshooter" />
+      <module name="scala-oauth" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="org.coriander.oauth" />
+      <option name="MAIN_CLASS_NAME" value="org.coriander.oauth.tests.NormalizerTest" />
+      <option name="METHOD_NAME" value="normalize_returns_string_containing_all_supplied_parameters_sorted_by_name" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="4970" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="JUnit.All in scala-oauth" />
       <item index="1" class="java.lang.String" itemvalue="JUnit.QueryTest" />
       <item index="2" class="java.lang.String" itemvalue="JUnit.SignedUriTest.value_preserves_uri_scheme" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.NormalizerTest.normalize_returns_string_containing_all_supplied_parameters_sorted_by_name" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -475,24 +472,24 @@
     <frame x="-4" y="-4" width="1288" height="1004" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.46153846" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="true" internal_type="SLIDING" type="FLOATING" visible="false" weight="0.51282054" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" x="1325" y="258" width="1236" height="440" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.46055683" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="true" internal_type="SLIDING" type="FLOATING" visible="false" weight="0.51282054" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="1315" y="247" width="1236" height="440" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928804" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39967638" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21116506" sideWeight="0.530303" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.32867134" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928804" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39902675" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2108678" sideWeight="0.5313225" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="true" weight="0.32830626" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsManagerConfiguration">
@@ -528,37 +525,61 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/coriander/Query.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="17" selection-start="216" selection-end="216" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/coriander/NameValuePair.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="0" selection-start="370" selection-end="370" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="14" column="0" selection-start="370" selection-end="370" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/org/coriander/oauth/TestBase.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="110" column="37" selection-start="3163" selection-end="3163" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="110" column="37" selection-start="3163" selection-end="3163" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/org/coriander/oauth/SignedUriTest.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="98" column="59" selection-start="2824" selection-end="2824" vertical-scroll-proportion="0.0">
+        <state line="153" column="77" selection-start="4711" selection-end="4711" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/coriander/oauth/uri/Port.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="0" selection-start="33" selection-end="33" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/org/coriander/oauth/NormalizerTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="59" column="59" selection-start="1640" selection-end="1640" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/coriander/oauth/Normalizer.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="55" selection-start="285" selection-end="285" vertical-scroll-proportion="0.3846154">
+        <state line="5" column="84" selection-start="143" selection-end="143" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/coriander/QueryParser.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="68" selection-start="494" selection-end="494" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/coriander/oauth/SignedUri.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="71" selection-start="1222" selection-end="1222" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/coriander/Query.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="88" column="23" selection-start="2214" selection-end="2214" vertical-scroll-proportion="0.5069444">
           <folding />
         </state>
       </provider>

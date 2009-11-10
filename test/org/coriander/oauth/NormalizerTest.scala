@@ -10,6 +10,7 @@ import org.hamcrest.core.IsEqual._
 import org.mockito.Mockito._
 
 import org.coriander.oauth.Normalizer
+import org.coriander.{NameValuePair, Query}
 
 class NormalizerTest extends TestBase {
 
@@ -54,9 +55,9 @@ class NormalizerTest extends TestBase {
 
     @Test
     def normalize_includes_parameters_with_no_value {
-        val singleParameter = new Query(List(
-            new NameValuePair("b", null)
-        ))
+        val singleParameter = Query.from("b" -> null)
+
+		assertEquals(singleParameter.size, 1)
         
         val expected = "b="
 

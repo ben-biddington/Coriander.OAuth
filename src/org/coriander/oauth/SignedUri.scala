@@ -1,7 +1,8 @@
 package org.coriander.oauth
 
 import java.net.URI
-
+import org.coriander.{NameValuePair, QueryParser, Query}
+import collection.mutable.ListBuffer
 // TODO: Consider combining consumer and token into single type, here and in
 // all other places that take these two args.
 class SignedUri(
@@ -22,9 +23,9 @@ class SignedUri(
     }
 
     private def value(resource : URI, query : Query) : URI = {
-        var oauthParams = getOAuthParams + "oauth_signature" -> sign(resource, query)
+        var oauthParams = getOAuthParams + ("oauth_signature" -> sign(resource, query))
 
-        var parameters : List[NameValuePair] = List()
+        var parameters : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
 
         oauthParams.foreach(item => {
             val (name, value) = item
@@ -35,7 +36,7 @@ class SignedUri(
         // TODO: The following causes duplicates, but we need it
         query.foreach(nvp => {parameters += nvp})
 
-        val normalizedParams : String = normalize(new Query(parameters))
+        val normalizedParams : String = normalize(new Query(parameters.toList))
 
         val signedUrl : String =
             resource.getScheme + "://" +
