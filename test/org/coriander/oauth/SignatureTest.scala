@@ -14,7 +14,7 @@ import scala.collection.immutable._
 import org.coriander.oauth._
 
 // See: http://www.infoq.com/news/2009/07/junit-4.7-rules#
-// For signaure examples, see: http://term.ie/oauth/example/client.php
+// For signature examples, see: http://term.ie/oauth/example/client.php
 class SignatureTest extends TestBase {
 
     val validConsumerCredential = new OAuthCredential("key", "secret")

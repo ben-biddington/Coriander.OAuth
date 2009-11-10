@@ -9,7 +9,9 @@ import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
 
-import java.io._;
+import java.io._
+import org.coriander.oauth.{SignedUri, OAuthCredential}
+
 
 import org.apache.commons.httpclient._;
 import org.apache.commons.httpclient.methods._;
