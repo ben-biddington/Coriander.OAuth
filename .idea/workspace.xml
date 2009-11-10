@@ -11,6 +11,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="Commander">
+    <leftPanel />
+    <rightPanel />
+    <splitter proportion="0.5" />
+  </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
     <option name="REVERSE_PATCH" value="false" />
@@ -81,7 +86,7 @@
       <file leaf-file-name="TestBase.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/org/coriander/oauth/TestBase.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="71" column="32" selection-start="2030" selection-end="2030" vertical-scroll-proportion="0.0">
+            <state line="110" column="37" selection-start="3163" selection-end="3163" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -90,7 +95,7 @@
       <file leaf-file-name="SignedUriTest.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/org/coriander/oauth/SignedUriTest.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="95" column="18" selection-start="2757" selection-end="2757" vertical-scroll-proportion="0.0">
+            <state line="98" column="59" selection-start="2824" selection-end="2824" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -99,7 +104,7 @@
       <file leaf-file-name="Normalizer.scala" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/coriander/oauth/Normalizer.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="0" selection-start="476" selection-end="476" vertical-scroll-proportion="0.77922076">
+            <state line="11" column="55" selection-start="285" selection-end="285" vertical-scroll-proportion="0.3846154">
               <folding />
             </state>
           </provider>
@@ -474,14 +479,14 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2773893" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.46153846" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.51282054" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="true" internal_type="SLIDING" type="FLOATING" visible="false" weight="0.51282054" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" x="1325" y="258" width="1236" height="440" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21116506" sideWeight="0.47902098" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928804" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39967638" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21116506" sideWeight="0.530303" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.32867134" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -539,21 +544,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/org/coriander/oauth/TestBase.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="32" selection-start="2030" selection-end="2030" vertical-scroll-proportion="0.0">
+        <state line="110" column="37" selection-start="3163" selection-end="3163" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/org/coriander/oauth/SignedUriTest.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="95" column="18" selection-start="2757" selection-end="2757" vertical-scroll-proportion="0.0">
+        <state line="98" column="59" selection-start="2824" selection-end="2824" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/coriander/oauth/Normalizer.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="0" selection-start="476" selection-end="476" vertical-scroll-proportion="0.77922076">
+        <state line="11" column="55" selection-start="285" selection-end="285" vertical-scroll-proportion="0.3846154">
           <folding />
         </state>
       </provider>

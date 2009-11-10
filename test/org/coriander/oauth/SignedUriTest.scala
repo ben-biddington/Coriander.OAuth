@@ -83,22 +83,11 @@ class SignedUriTest extends TestBase {
         then_value_contains_all_query_parameters(expectedQuery)
     }
 
-    @Test
-    def xxx {
-        var parameters : List[NameValuePair] = List(new NameValuePair("c", "c"))
+	@Test
+	def testing_increment_operator_replacement {
+		val list : List[NameValuePair] = List(new NameValuePair("a", "b"));
 
-        val oauthParams = Map("name" -> "value", "another_name" -> "value")
-
-        oauthParams.foreach(item => {
-            val (name, value) = item
-
-            parameters += new NameValuePair(name, value)
-        })
-
-        val query = new Query()
- 
-        query.foreach(nvp => parameters ::: List(nvp))
-    }
+	}
 
     @Test
     def value_contains_expected_oauth_parameters() {
