@@ -8,6 +8,8 @@ import org.junit.Assert._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
+import org.coriander.oauth._
+import org.coriander.{Query, NameValuePair}
 
 class SignedUriTest extends TestBase {
 
@@ -95,7 +97,7 @@ class SignedUriTest extends TestBase {
 
         val query = new Query()
  
-        query.foreach(nvp => {parameters += nvp})
+        query.foreach(nvp => parameters ::: List(nvp))
     }
 
     @Test

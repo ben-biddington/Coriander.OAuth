@@ -1,7 +1,7 @@
 package org.coriander.oauth
 
 import org.coriander.oauth.uri._
-import scala.collection.immutable._
+import org.coriander.Query
 
 class Normalizer(val urlEncoder : URLEncoder) {
     def this() {

@@ -69,7 +69,7 @@ class TestBase extends Assert {
                 String.format(
                     "Expected the list to contain " +
                     "parameter called <%1$s>, but it does not.",
-                    expectedName,
+                    expectedName
                 ),
                 list.keys.contains(expectedName),
                 is(true)

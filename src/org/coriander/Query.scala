@@ -1,7 +1,5 @@
 package org.coriander
 
-import scala.collection.mutable.Buffer
-
 class Query(val nameValuePairs : List[NameValuePair]) {
     val urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
     val DELIMITER = "&"
