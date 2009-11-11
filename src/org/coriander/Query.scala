@@ -49,14 +49,14 @@ class Query(val nameValuePairs : List[NameValuePair]) {
     }
 
     override def toString : String = {
-        var result = ""
+        var result : StringBuffer = new StringBuffer()
 
         nameValuePairs.foreach(pair => {
-            result += { if (result != "") DELIMITER else "" }
-            result += urlEncode(pair.name) + "=" + urlEncode(pair.value)
+            result.append(if (result.length > 0) DELIMITER else "")
+            result.append(urlEncode(pair.name) + "=" + urlEncode(pair.value))
         })
 
-        result
+        result toString
     }
 
     private def append(nameValuePair : NameValuePair) : List[NameValuePair] = {
