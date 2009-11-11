@@ -337,6 +337,6 @@ class SignatureBaseStringTest extends TestBase {
 
         val query = parseQuery(urlDecode(encodedParams))
         
-        (method, url, query )
+        (method, url, query)
     }    
 }
