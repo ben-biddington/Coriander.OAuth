@@ -53,8 +53,8 @@ class QueryCompanionTest extends TestBase {
         )
     }
 
-	@Test { val expected=classOf[Exception] }
-	def given_a_null_reference_then_copy_throws_argument_exception {
-		Query.copy(null)
-	}
+    @Test { val expected=classOf[Exception] }
+    def given_a_null_reference_then_copy_throws_argument_exception {
+        Query.copy(null)
+    }
 }

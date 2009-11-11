@@ -8,56 +8,70 @@ import org.junit._
 
 import org.coriander.oauth.uri.URLEncoder
 
-class OAuthURLEncoderTest {
+class OAuthURLEncoderTest extends TestBase {
 
     // See: http://oauth.net/core/1.0, S 5.1 Parameter Encoding
     // unreserved characters = ALPHA, DIGIT, '-', '.', '_', '~'
 
-    // TEST: non-reserved characters are left alone
     val urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
 
     @Test
-    def null_returns_empty() {
+    def null_returns_empty {
         val result = urlEncoder %%(null)
 
-        Assert assertEquals("", result)
+        assertEquals("", result)
     }
     
     @Test
-    def space_is_percent_encoded() {
+    def space_is_percent_encoded {
         val result = urlEncoder %%(" ")
 
-        Assert assertEquals("%20", result)
+        assertEquals("%20", result)
     }
 
     @Test
-    def tilda_is_not_encoded() {
+    def tilda_is_not_encoded {
         val result = urlEncoder %%("~")
 
-        Assert assertEquals("~", result)
+        assertEquals("~", result)
     }
 
     @Test
-    def period_is_not_encoded() {
+    def period_is_not_encoded {
         val result = urlEncoder %%(".")
 
-        Assert assertEquals(".", result)
+        assertEquals(".", result)
     }
 
     @Test
-    def dash_is_not_encoded() {
+    def dash_is_not_encoded {
         val result = urlEncoder %%("-")
 
-        Assert assertEquals("-", result)
+        assertEquals("-", result)
     }
 
     @Test
-    def underscore_is_not_encoded() {
+    def underscore_is_not_encoded {
         val result = urlEncoder %%("_")
 
-        Assert assertEquals("_", result)
+        assertEquals("_", result)
     }
 
-    // TEST: alphabet characters not encoded
-    // TEST: numeric characters not encoded
+    @Test
+    def digits_are_not_encoded {
+        val allDigits = "0123456789"
+        val result = urlEncoder %%(allDigits)
+
+        assertEquals(allDigits, result)
+    }
+
+    @Test
+    def alphabet_characters_are_not_encoded {
+        val someAlphabetCharacters = "abc"
+        val result = urlEncoder %%(someAlphabetCharacters)
+
+        assertEquals(someAlphabetCharacters, result)
+    }
+
+    // TEST: percent encoding is uppercase
 }
