@@ -1,2 +1,3 @@
 build
-out.idea/workspace.xml
+out/*
+.idea/workspace.xml
