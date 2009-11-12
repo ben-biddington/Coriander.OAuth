@@ -50,6 +50,7 @@ class SignedUri(
     private def getOAuthParams() : Map[String, String] = {
         new Parameters(
             consumer,
+			token,
             signatureMethod,
             timestamp,
             nonce,
@@ -63,6 +64,7 @@ class SignedUri(
             uri,
             query,
             consumer,
+			token,
             nonce,
             timestamp
         )

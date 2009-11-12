@@ -15,6 +15,7 @@ class SignatureBaseString (
     uri                 : URI,
     query               : Query,
     consumerCredential  : OAuthCredential,
+	token 				: OAuthCredential,
     nonce               : String,
     timestamp           : String
 ) {
@@ -28,10 +29,11 @@ class SignatureBaseString (
         uri                 : URI,
         query               : Query,
         consumerCredential  : OAuthCredential,
+		token 				: OAuthCredential,
         nonce               : String,
         timestamp           : String
     ) {
-        this("get", uri, query, consumerCredential, nonce, timestamp)
+        this("get", uri, query, consumerCredential, token, nonce, timestamp)
     }
 
     override def toString() : String = {
@@ -45,7 +47,7 @@ class SignatureBaseString (
     def getSignatureBaseString(uri : URI, query : Query) : String = {
 
         var tempQuery = Query.copy(query)
-        
+
         getOAuthParameters.foreach(item => {
             val (name, value) = item
             tempQuery = tempQuery += new NameValuePair(name, value)
@@ -82,6 +84,7 @@ class SignatureBaseString (
     private def getOAuthParameters() : Map[String, String] = {
         return new org.coriander.oauth.Parameters(
             consumerCredential,
+			token,
             signatureMethod,
             timestamp,
             nonce,

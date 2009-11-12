@@ -25,7 +25,7 @@ class AuthorizationHeader(
     private def createValue : String = {
         requireUrlEncoder
         
-        "realm=\""                  + urlEncoder.%%(realm) + "\"," +
+        "realm=\""                  + realm + "\"," +
         "oauth_consumer_key=\""     + urlEncoder.%%(consumerKey) + "\"," +
         "oauth_token=\""            + urlEncoder.%%(tokenkey) + "\"," +
         "oauth_signature_method=\"" + urlEncoder.%%(algorithm) + "\"," +

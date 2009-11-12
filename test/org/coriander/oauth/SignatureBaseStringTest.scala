@@ -8,7 +8,8 @@ import org.junit.matchers._
 import org.junit.matchers.JUnitMatchers._
 import org.hamcrest._
 import org.hamcrest.Matcher._
-import org.hamcrest.CoreMatchers._
+import org.hamcrest.core.Is._
+import org.hamcrest.core.IsEqual._
 import org.junit._
 import org.junit.rules._
 import scala.collection.immutable._
@@ -21,10 +22,11 @@ import org.coriander._
 import org.coriander.oauth._
 import org.coriander.oauth.timestamp._
 import org.coriander.oauth.nonce._
+import java.net.URI
 
 class SignatureBaseStringTest extends TestBase {
     val consumerCredential = new OAuthCredential("key", "secret")
-
+	
     var aValidUri =  new java.net.URI("http://xxx/")
     val aValidNonce = new SystemNonceFactory createNonce
     val aValidTimestamp = new SystemTimestampFactory createTimestamp
@@ -78,6 +80,7 @@ class SignatureBaseStringTest extends TestBase {
             aValidUri,
             query,
             consumerCredential,
+			null,
             aValidNonce,
             aValidTimestamp
         )
@@ -195,6 +198,7 @@ class SignatureBaseStringTest extends TestBase {
             aValidUri,
             query,
             consumerCredential,
+			null,
             aValidNonce,
             aValidTimestamp
         )
@@ -225,15 +229,52 @@ class SignatureBaseStringTest extends TestBase {
 
         val actual = new SignatureBaseString(
             "get",
-            new java.net.URI("http://xxx/"),
+            new URI("http://xxx/"),
             new Query(),
             new OAuthCredential("key", "secret"),
+			null,
             "ddb61ca14d02e9ef7b55cc5c1f88616f",
             "1252500234"
         ) toString;
 
         assertEquals("Actual does not match expected.", expected, actual)
     }
+
+	// See: http://oauth.net/core/1.0a#RFC2617, Appendix A.5.1.  Generating Signature Base String
+	@Test
+	def an_example_with_token {
+		val expected = "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg" +
+				"%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26" +
+				"oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26" +
+				"oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal"
+				
+		val timestamp = "1191242096"
+		val nonce = "kllo9940pd9333jh"
+		val version = "1.0"
+
+		val consumer = new OAuthCredential("dpf43f3p2l4k3l03", "kd94hf93k423kf44")
+		val token = new OAuthCredential("nnch734d00sl2jdk", "pfkkdhi9sl3r4s00")
+
+		val uri : URI = new URI("http://photos.example.net/photos")
+		val query = new QueryParser().
+				parse("file=vacation.jpg&size=original").
+				filter(nvp => false == nvp.name.startsWith("oauth_"))
+
+		val signatureBaseString = new SignatureBaseString(uri, query, consumer, token, nonce, timestamp)
+
+		assertThat(
+			signatureBaseString toString,
+			is(equalTo(expected))
+		)
+	}
+
+	// TEST: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
+    // TEST: When URL contains ending slash, then it is included in the result
+    // TEST: When URL contains query string, then it is excluded in the result
+    // TEST: When I create 2 instances, then each has a different timestamp value
+    // TEST: I can supply timestamp behaviour (or value) to create a SignatureBaseString instance
+    // TEST: I can supply nonce behaviour (or value) to create a SignatureBaseString instance
+    // TEST: This class only requires oauth_key, not an entire OAuthCredential
 
     private def assertResultExcludesPort(scheme: String, port : Int) {
         val expectedUriString = scheme + "://xxx/"
@@ -264,14 +305,6 @@ class SignatureBaseStringTest extends TestBase {
 
         assertStartsWith("^GET&" + expectedUriString + "&", plainTextValue)
     }
-    
-    // TEST: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
-    // TEST: When URL contains ending slash, then it is included in the result
-    // TEST: When URL contains query string, then it is excluded in the result
-    // TEST: When I create 2 instances, then each has a different timestamp value
-    // TEST: I can supply timestamp behaviour (or value) to create a SignatureBaseString instance
-    // TEST: I can supply nonce behaviour (or value) to create a SignatureBaseString instance
-    // TEST: This class only requires oauth_key, not an entire OAuthCredential
 
     private def given_a_uri(uri: java.net.URI) {
         aValidUri = uri;
@@ -307,6 +340,7 @@ class SignatureBaseStringTest extends TestBase {
             aValidUri,
             query,
             consumerCredential,
+		 	null,
             aValidNonce,
             aValidTimestamp
         );
@@ -318,6 +352,7 @@ class SignatureBaseStringTest extends TestBase {
             aValidUri,
             query,
             consumerCredential,
+			null,
             aValidNonce,
             aValidTimestamp
         );

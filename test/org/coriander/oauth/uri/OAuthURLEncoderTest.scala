@@ -6,14 +6,15 @@ import org.junit.Test
 import org.junit.Assert._
 import org.junit._
 
-import org.coriander.oauth.uri.URLEncoder
+import org.coriander.oauth.tests.TestBase
+import org.coriander.oauth.uri.{OAuthURLEncoder, URLEncoder}
 
 class OAuthURLEncoderTest extends TestBase {
 
     // See: http://oauth.net/core/1.0, S 5.1 Parameter Encoding
     // unreserved characters = ALPHA, DIGIT, '-', '.', '_', '~'
 
-    val urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
+    val urlEncoder = new OAuthURLEncoder
 
     @Test
     def null_returns_empty {
@@ -73,5 +74,10 @@ class OAuthURLEncoderTest extends TestBase {
         assertEquals(someAlphabetCharacters, result)
     }
 
-    // TEST: percent encoding is uppercase
+    @Test
+	def hexadecimal_characters_in_encodings_are_be_upper_case {
+		val result = urlEncoder %%("%=?/:=")
+
+		assertEquals(result, "%25%3D%3F%2F%3A%3D")
+	}
 }

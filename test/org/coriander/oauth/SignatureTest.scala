@@ -5,7 +5,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.Assert._
 import org.junit.matchers._
-import org.hamcrest.CoreMatchers._
+import org.hamcrest.core.Is._
+import org.hamcrest.core.IsEqual._
 import org.junit._
 import org.apache.commons.httpclient._
 import org.apache.commons.httpclient.util._

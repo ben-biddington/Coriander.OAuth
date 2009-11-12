@@ -3,6 +3,8 @@ package org.coriander.oauth.http.tests
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.hamcrest.core.Is._
+import org.hamcrest.core.IsEqual._
 import org.junit.Assert._
 import scala.util.matching._
 import org.mockito.Mockito._
@@ -10,6 +12,8 @@ import org.mockito.Mockito._
 import org.coriander.oauth._
 import org.coriander.oauth.uri._
 import org.coriander.oauth.http.AuthorizationHeader
+import java.net.URI
+import org.coriander.QueryParser
 
 // See: http://oauth.net/core/1.0, S 5.4.1
 class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
@@ -35,6 +39,8 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     // [linear_whitespace]name="[value|empty]"[linear_whitespace]
     val nameEqualsAnyQuotedString = "[\\w]+=\"[^\"]+\""
 
+	val urlEncoder = new OAuthURLEncoder
+
     @Test
     def result_is_an_authorization_header {
         val value = newAuthorizationHeader toString
@@ -47,7 +53,7 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
         val value = newAuthorizationHeader toString
         val expected = "OAuth"
         val headerValue = newAuthorizationHeader value
-        
+
         assertTrue(
             "The value part <" + headerValue + "> should start with <" + expected + ">",
             headerValue.startsWith(expected)
@@ -79,13 +85,12 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     }
 
     @Test
-    def each_value_is_url_encoded_during_toString {
+    def each_value_excluding_realm_is_url_encoded_during_toString {
         val mockURLEncoder = newMockURLEncoder
 
         val header = newAuthorizationHeader(mockURLEncoder) toString
-
-        // TODO: Consider NameValuePairs
-        verify(mockURLEncoder, times(1)).%%(realm)
+		
+        verify(mockURLEncoder, times(0)).%%(realm)
         verify(mockURLEncoder, times(1)).%%(oauth_consumer_key)
         verify(mockURLEncoder, times(1)).%%(oauth_signature_method)
         verify(mockURLEncoder, times(1)).%%(oauth_signature)
@@ -98,6 +103,45 @@ class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
     def url_encoder_must_be_supplied_otherwise_toString_throws_exception {
         newAuthorizationHeader(null) toString
     }
+
+	// See: http://oauth.net/core/1.0a#RFC2617, Appendix A.5.1.  Generating Signature Base String
+	@Test
+	def example {
+		val signature = "tR3+Ty81lMeYAr/Fid0kMTYa/WM="
+        val expectedHeaderValue = 
+			"Authorization: OAuth realm=\"http://photos.example.net/\"," +
+			"oauth_consumer_key=\"dpf43f3p2l4k3l03\"," +
+			"oauth_token=\"nnch734d00sl2jdk\"," +
+			"oauth_signature_method=\"HMAC-SHA1\"," +
+			"oauth_signature=\"tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D\"," +
+			"oauth_timestamp=\"1191242096\"," +
+			"oauth_nonce=\"kllo9940pd9333jh\"," +
+			"oauth_version=\"1.0\""
+
+		val timestamp = "1191242096"
+		val nonce = "kllo9940pd9333jh"
+		val version = "1.0"
+		val realm = "http://photos.example.net/"
+		val consumer = new OAuthCredential("dpf43f3p2l4k3l03", "kd94hf93k423kf44")
+		val token = new OAuthCredential("nnch734d00sl2jdk", "pfkkdhi9sl3r4s00")
+
+		val header = new AuthorizationHeader(
+			realm,
+			consumer.key,
+			token.key,
+			oauth_signature_method,
+			signature,
+			timestamp,
+			nonce,
+			version,
+			urlEncoder
+		)
+
+		assertThat(
+			header toString,
+			is(equalTo(expectedHeaderValue))
+		)
+	}
 
     private def newAuthorizationHeader : AuthorizationHeader = {
         newAuthorizationHeader(new org.coriander.oauth.uri.OAuthURLEncoder)

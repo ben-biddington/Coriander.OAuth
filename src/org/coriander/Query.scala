@@ -84,17 +84,14 @@ object Query {
             temp += new NameValuePair(name, value)
         })
 
-        new Query(temp.toList)
+        new Query(temp toList)
     }
     
     def copy(query : Query) : Query = {
-        var result = new Query()
+        var temp : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
 
-        query.foreach(pair => {
-            // TODO: Surely there's a better way
-            result = query += pair
-        })
+        query foreach(pair => temp += new NameValuePair(pair.name, pair.value))
 
-        result
+        new Query(temp toList)
     }
 }
