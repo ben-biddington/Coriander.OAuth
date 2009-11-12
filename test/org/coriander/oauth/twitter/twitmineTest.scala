@@ -67,14 +67,14 @@ class twitmineTest extends TestBase {
 		println("Request token: " + result.responseText)
     }
 
-	@Test @Ignore("Integration test")
+	@Test @Ignore("In progress")
     def i_can_obtain_a_request_token_using_auth_header() {
         given_a_valid_consumer_credential
 		given_an_authorization_header(REQUEST_TOKEN_URI)
 		when_a_request_token_is_requested_using_header_authentication
 
 		println(result.responseText)
-		
+
         assertThat(
             "Should be able to authorize using header.",
             result.status, is(equalTo(HttpStatus.SC_OK))
@@ -83,18 +83,8 @@ class twitmineTest extends TestBase {
 
 	@Test @Ignore("In progress")
 	def given_a_valid_request_token_then_i_can_convert_it_to_access_token {
-		given_a_valid_consumer_credential
-
-		given_a_valid_request_token()
-
-		given_an_authorization_header(ACCESS_TOKEN_URI)
-
-		var result = get(ACCESS_TOKEN_URI, authHeader)
-
-		assertThat(
-            "Should be able to authorize using header.",
-            result.status, is(equalTo(HttpStatus.SC_OK))
-        )
+		// Redirect user to: http://twitter.com/oauth/authorize?oauth_token={request_token_key}
+		// If they press okay they're given a PIN
 	}
 
 	@Test @Ignore("Integration test")
@@ -154,10 +144,7 @@ class twitmineTest extends TestBase {
 	}
 
     private def given_a_valid_consumer_credential {
-        consumerCredential = new OAuthCredential(
-            "",
-            ""
-        )
+        consumerCredential = new OAuthCredential("", "")
     }
 
 	private def given_a_valid_request_token() {
