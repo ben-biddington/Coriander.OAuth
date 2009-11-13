@@ -74,6 +74,23 @@ class OAuthURLEncoderTest extends TestBase {
         assertEquals(someAlphabetCharacters, result)
     }
 
+	@Test
+    def an_example_character_not_listed_in_rfc_3986_unreserved_is_escaped {
+		// See: http://oauth.net/core/1.0/, 5.1. Parameter Encoding
+		// Characters not in the [following] unreserved character set ([RFC3986] section 2.3):
+		//
+		//     unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
+		//
+		// MUST be encoded.
+		// Seealso: http://www.ietf.org/rfc/rfc3986.txt
+		//
+		val anyUnreservedCharacter = "'"
+		val expectedResult = "%27"
+        val actualResult = urlEncoder %%(anyUnreservedCharacter)
+
+        assertEquals(expectedResult, actualResult)
+    }
+
     @Test
 	def hexadecimal_characters_in_encodings_are_be_upper_case {
 		val result = urlEncoder %%("%=?/:=")
