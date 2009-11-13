@@ -21,7 +21,7 @@ import org.coriander.oauth.timestamp._
 import org.coriander.oauth.uri._
 import org.coriander.oauth.http._
 
-class twitmineTest extends TestBase {
+class TwitmineTest extends TestBase {
 
     // See: http://twitter.com/oauth_clients/details/42032
 
@@ -32,19 +32,20 @@ class twitmineTest extends TestBase {
     var timestampFactory    = new SystemTimestampFactory
     val urlEncoder          = new OAuthURLEncoder
 
-    val signatureMethod = "HMAC-SHA1"
-    val version = "1.0"
-	val VALID_CONSUMER = null
+    val SIGNATURE_METHOD 	= "HMAC-SHA1"
+    val VERSION 			= "1.0"
+	val VALID_CONSUMER 		= null
     val VALID_REQUEST_TOKEN = null
-	val VALID_ACCESS_TOKEN = null
-	val VALID_PIN : Int = 0
+	val VALID_ACCESS_TOKEN 	= null
+
+	val VALID_AUTHORIZATION_PIN : Int = 0
 	
 	var consumerCredential = new OAuthCredential("","")
 	var token = new OAuthCredential("","")
 	var authHeader : AuthorizationHeader = null
     var signedUri : java.net.URI = null
     var result : HttpResponse = HttpResponse.empty
-	val twitterRealm = "Twitter API"
+	val TWITTER_REALM = "Twitter API"
 
     @Test @Ignore("Integration test")
     def given_an_invalid_consumer_credential_then_twitmine_get_request_token_returns_unauthorized() {
@@ -76,7 +77,7 @@ class twitmineTest extends TestBase {
     def i_can_obtain_a_request_token_using_auth_header() {
         given_a_valid_consumer_credential
 		given_an_authorization_header(REQUEST_TOKEN_URI)
-		when_a_request_token_is_requested_using_header_authentication
+		when_a_request_token_is_requested
 
 		println(result.responseText)
 
@@ -101,8 +102,7 @@ class twitmineTest extends TestBase {
 
 		result = post(
 			ACCESS_TOKEN_URI,
-			List(new Header("Authorization", authHeader.value)),
-			List(new org.apache.commons.httpclient.NameValuePair("oauth_verifier", VALID_PIN toString))
+			List(new org.apache.commons.httpclient.NameValuePair("oauth_verifier", VALID_AUTHORIZATION_PIN toString))
 		)
 
 		println(result.responseText)
@@ -114,7 +114,7 @@ class twitmineTest extends TestBase {
 	}
 
 	@Test @Ignore("Integration test")
-	def i_can_read_my_own_status_without_authenticating {
+	def given_a_valid_screen_name_then_i_can_read_my_own_status_without_authenticating {
 		given_a_valid_consumer_credential
 		val uri = new java.net.URI("http://twitter.com/users/show.xml?screen_name=benbiddington")
 
@@ -128,54 +128,30 @@ class twitmineTest extends TestBase {
 
 	@Test @Ignore("Integration test")
 	def given_a_valid_access_token_then_i_can_read_rate_limit_status {
-		val uri = new java.net.URI("http://twitter.com/account/rate_limit_status.xml")
-
-		given_a_valid_consumer_credential
-		given_a_valid_access_token
-		given_an_authorization_header(uri)
-
-		val result : HttpResponse = get(uri, authHeader)
-
-		println(result.responseText)
-
-		assertThat(
-            "I think token is required, because when I try this I get 401 with \"basic auth required\".",
-            result.status, is(equalTo(HttpStatus.SC_OK))
-        )
+		assertReturnsOk(new java.net.URI("http://twitter.com/account/rate_limit_status.xml"))
 	}
 
 	@Test @Ignore("Integration test")
-	def given_a_valid_access_token_then_i_can_get_user_timeline {
-		val uri = new java.net.URI("http://twitter.com/statuses/user_timeline.xml?count=200")
-
-		given_a_valid_consumer_credential
-		given_a_valid_access_token
-		given_an_authorization_header(uri)
-
-		val result : HttpResponse = get(uri, authHeader)
-
-		println(result.responseText)
-
-		assertThat(
-            "I think token is required, because when I try this I get 401 with \"basic auth required\".",
-            result.status, is(equalTo(HttpStatus.SC_OK))
-        )
+	def given_a_valid_access_token_then_i_can_get_user_time_line {
+		assertReturnsOk(new java.net.URI("http://twitter.com/statuses/user_timeline.xml?count=200"))
 	}
 
-	@Test @Ignore
+	@Test @Ignore("Integration test")
 	def given_a_valid_access_token_then_i_can_get_user_mentions {
-		val uri = new java.net.URI("http://twitter.com/statuses/mentions.format.xml")
+		assertReturnsOk(new java.net.URI("http://twitter.com/statuses/mentions.xml"))
+	}
 
+	private def assertReturnsOk(uri : java.net.URI) {
 		given_a_valid_consumer_credential
 		given_a_valid_access_token
 		given_an_authorization_header(uri)
 
-		val result : HttpResponse = get(uri, authHeader)
+		val result : HttpResponse = get(uri)
 
 		println(result.responseText)
 
 		assertThat(
-            "I think token is required, because when I try this I get 401 with \"basic auth required\".",
+            "Expected to be able to authenticate against <" + uri.toString + ">.",
             result.status, is(equalTo(HttpStatus.SC_OK))
         )
 	}
@@ -187,26 +163,7 @@ class twitmineTest extends TestBase {
 		if (null == token)
 			throw new Exception("Missing token.")
 
-		val timestamp = timestampFactory.createTimestamp
-		val nonce = nonceFactory.createNonce
-		val query = new QueryParser().parse(uri).filter(nvp => false == nvp.value.startsWith("oauth_"))
-
-		val baseString = new SignatureBaseString(uri, query, consumerCredential, token, nonce, timestamp)
-		
-		val signature = new Signature(urlEncoder, consumerCredential, token).
-				sign(baseString)
-
-		this.authHeader = new AuthorizationHeader(
-			twitterRealm,
-			consumerCredential.key,
-			token.key,
-			signatureMethod,
-			signature,
-			timestamp,
-			nonce,
-			version,
-			urlEncoder
-		)
+		this.authHeader = newAuthHeader(uri)
 	}
 
     private def given_a_valid_consumer_credential {
@@ -225,14 +182,14 @@ class twitmineTest extends TestBase {
         consumerCredential = new OAuthCredential("key", "secret")
     }
 
+	private def when_a_request_token_is_requested {
+		get(REQUEST_TOKEN_URI)
+	}
+
     private def when_a_request_token_is_requested_using_uri_signing {
         signedUri = sign(REQUEST_TOKEN_URI)
 
-        execute(signedUri)
-    }
-
-	private def when_a_request_token_is_requested_using_header_authentication {
-        result = get(REQUEST_TOKEN_URI, authHeader)
+        get(signedUri)
     }	
 
 	private def sign(uri : java.net.URI) : java.net.URI = {
@@ -240,59 +197,72 @@ class twitmineTest extends TestBase {
             uri,
             consumerCredential,
             token,
-            signatureMethod,
+            SIGNATURE_METHOD,
             timestampFactory.createTimestamp,
             nonceFactory.createNonce,
-            version
+            VERSION
         ).value
 	}
-	
-	private def execute(uri : java.net.URI) {
-        result = get(uri)
-    }
 
-	private def get(uri : java.net.URI, authHeader : AuthorizationHeader) : HttpResponse =
-		get(uri, List(new Header("Authorization", authHeader.value)))
-
-	private def get(uri : java.net.URI) : HttpResponse = get(uri, List())
-
-	private def get(uri : java.net.URI, headers : List[Header]) : HttpResponse = {
-		var get = new GetMethod(uri toString)
-
-		headers.foreach(header => {
-			get.addRequestHeader(header)
-			println(header toString)
-		})
-
-		val status = new HttpClient() executeMethod(get)
-
-		if (status != HttpStatus.SC_OK)
-			return new HttpResponse(status, get.getStatusText)
-
-		return new HttpResponse(status, get.getResponseBodyAsString)
+	private def get(uri : java.net.URI) : HttpResponse = {
+		execute(newGet(uri))
 	}
 
-	private def post(uri : java.net.URI, headers : List[Header], params : List[NameValuePair]) : HttpResponse = {
-		var postMethod = new PostMethod(uri toString)
+	private def post(uri : java.net.URI, params : List[NameValuePair]) : HttpResponse = {
+		var post = newPost(uri)
+		
+		params.foreach(parameter => post addParameter(parameter))
 
-		println(uri toString)
+		execute(post)
+	}
 
-		headers.foreach(header => {
-			postMethod.addRequestHeader(header)
-			println(header toString)
-		})
-
-		params.foreach(parameter => {
-			postMethod.addParameter(parameter)
-			println(parameter toString)
-		})
-
-		val status = new HttpClient() executeMethod(postMethod)
+	private def execute(method : HttpMethodBase) : HttpResponse = {
+		val status = new HttpClient() executeMethod(method)
 
 		if (status != HttpStatus.SC_OK)
-			return new HttpResponse(status, postMethod.getStatusText)
+			return new HttpResponse(status, method.getStatusText)
 
-		return new HttpResponse(status, postMethod.getResponseBodyAsString)
+		new HttpResponse(status, method.getResponseBodyAsString)
+	}
+
+	private def newGet(uri : java.net.URI) : HttpMethodBase = authenticate(new GetMethod(uri toString))
+
+	private def newPost(uri : java.net.URI) : PostMethod = {
+		var post = new PostMethod(uri toString)
+
+		authenticate(post)
+
+		post
+	}
+
+	private def authenticate(method : HttpMethodBase) : HttpMethodBase = {
+        if (authHeader != null) {
+			method.addRequestHeader(authHeader.name, authHeader.value)
+		}
+
+		method
+	}
+
+	private def newAuthHeader(uri : java.net.URI) : AuthorizationHeader = {
+		val timestamp = timestampFactory.createTimestamp
+		val nonce = nonceFactory.createNonce
+		val query = new QueryParser().parse(uri)
+
+		val baseString = new SignatureBaseString(uri, query, consumerCredential, token, nonce, timestamp)
+
+		val signature = new Signature(urlEncoder, consumerCredential, token).sign(baseString)
+
+		new AuthorizationHeader(
+			TWITTER_REALM,
+			consumerCredential.key,
+			token.key,
+			SIGNATURE_METHOD,
+			signature,
+			timestamp,
+			nonce,
+			VERSION,
+			urlEncoder
+		)
 	}
 }
 
