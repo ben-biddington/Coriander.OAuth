@@ -1,4 +1,5 @@
-package org.coriander.oauth.tests
+package org.coriander.oauth.core.unit.tests
+
 
 import org.junit.After
 import org.junit.Before
@@ -7,7 +8,6 @@ import org.junit.Assert._
 import org.junit.matchers._
 import org.junit.matchers.JUnitMatchers._
 import org.hamcrest._
-import org.coriander.oauth.core.{SignatureBaseString,OAuthCredential}
 import org.hamcrest.Matcher._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
@@ -18,12 +18,12 @@ import scala.util.matching.Regex._
 import java.util.regex._
 import scala.actors.Actor._
 import org.jfugue._
-
-import org.coriander._
-import org.coriander.oauth._
-import org.coriander.oauth.timestamp._
-import org.coriander.oauth.nonce._
 import java.net.URI
+
+import org.coriander.oauth.core.nonce.SystemNonceFactory
+import org.coriander.oauth.core.timestamp.SystemTimestampFactory
+import org.coriander.oauth.core.{SignatureBaseString,OAuthCredential}
+
 
 class SignatureBaseStringTest extends TestBase {
     val consumerCredential = new org.coriander.oauth.core.OAuthCredential("key", "secret")

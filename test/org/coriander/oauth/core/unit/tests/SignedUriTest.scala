@@ -1,4 +1,5 @@
-package org.coriander.oauth.tests
+package org.coriander.oauth.core.unit.tests
+
 
 import java.net.URI
 import org.junit.After
@@ -9,7 +10,7 @@ import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
 import org.coriander.oauth._
-import core.{SignedUri, OAuthCredential}
+import org.coriander.oauth.core.{SignedUri, OAuthCredential}
 import org.coriander.{Query, NameValuePair}
 
 class SignedUriTest extends TestBase {

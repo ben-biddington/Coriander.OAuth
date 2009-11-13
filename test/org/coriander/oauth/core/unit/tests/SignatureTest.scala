@@ -1,19 +1,14 @@
-package org.coriander.oauth.tests
+package org.coriander.oauth.core.unit.tests
 
-import org.junit.After
-import org.junit.Before
+import org.junit.rules._
 import org.junit.Test
 import org.junit.Assert._
 import org.junit.matchers._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
-import org.junit._
-import org.apache.commons.httpclient._
-import org.apache.commons.httpclient.util._
-import org.junit.rules._
-import scala.collection.immutable._
 import org.coriander.oauth._
 import core.{Signature, OAuthCredential}
+
 // See: http://www.infoq.com/news/2009/07/junit-4.7-rules#
 // For signature examples, see: http://term.ie/oauth/example/client.php
 class SignatureTest extends TestBase {

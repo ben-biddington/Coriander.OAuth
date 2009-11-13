@@ -8,18 +8,17 @@ import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
 
 import org.apache.commons.httpclient._
-import org.coriander.oauth.{SignatureBaseString, Signature, SignedUri, OAuthCredential}
-
+import org.coriander.oauth.core.{SignatureBaseString, Signature, SignedUri}
 import org.apache.commons.httpclient.methods._
 import org.coriander.{QueryParser, Query}
 
-
-import org.coriander.oauth.tests._
-
-import org.coriander.oauth.nonce._
-import org.coriander.oauth.timestamp._
 import org.coriander.oauth.uri._
 import org.coriander.oauth.http._
+import org.coriander.oauth.core._
+import http.AuthorizationHeader
+import timestamp.SystemTimestampFactory
+import nonce.SystemNonceFactory
+import unit.tests.TestBase
 
 class TwitmineTest extends TestBase {
 

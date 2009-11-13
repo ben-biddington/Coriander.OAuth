@@ -1,4 +1,4 @@
-package org.coriander.oauth.tests
+package org.coriander.oauth.core.unit.tests
 
 import org.junit.After
 import org.junit.Before
@@ -11,7 +11,6 @@ import org.mockito.Mockito._
 
 import org.coriander.oauth.core.Normalizer
 import org.coriander.{NameValuePair, Query}
-import org.coriander.oauth.core.Normalizer
 
 class NormalizerTest extends TestBase {
 

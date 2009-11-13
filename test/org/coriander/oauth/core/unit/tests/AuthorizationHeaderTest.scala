@@ -11,13 +11,14 @@ import org.mockito.Mockito._
 
 import org.coriander.oauth._
 import core.OAuthCredential
+import core.unit.tests.TestBase
 import org.coriander.oauth.uri._
-import org.coriander.oauth.http.AuthorizationHeader
+import org.coriander.oauth.core.http.AuthorizationHeader
 import java.net.URI
 import org.coriander.QueryParser
 
 // See: http://oauth.net/core/1.0, S 5.4.1
-class AuthorizationHeaderTest extends org.coriander.oauth.tests.TestBase {
+class AuthorizationHeaderTest extends TestBase {
     val realm                   = "http://sp.example.com/"
     val oauth_consumer_key      = "0685bd9184jfhq22"
     val oauth_token             = "ad180jjd733klru7"

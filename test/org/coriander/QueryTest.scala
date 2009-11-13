@@ -7,8 +7,8 @@ import org.junit.Assert._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 
-import org.coriander.oauth.tests.TestBase
 import org.coriander.{Query,NameValuePair}
+import org.coriander.oauth.core.unit.tests.TestBase
 
 class QueryTest extends TestBase {
 

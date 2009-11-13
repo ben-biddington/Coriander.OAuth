@@ -1,12 +1,11 @@
 package org.coriander.oauth
 
+import core.unit.tests.TestBase
 import org.junit.Test
 import org.junit.Assert._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
-
-import org.coriander.oauth.tests.TestBase
 
 import org.coriander.Query
 import org.coriander.NameValuePair
