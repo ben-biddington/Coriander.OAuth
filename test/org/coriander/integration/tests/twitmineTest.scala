@@ -1,4 +1,5 @@
-package org.coriander.twitter
+package org.coriander.integration.tests
+
 
 
 import org.junit._
