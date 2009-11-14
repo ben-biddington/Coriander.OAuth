@@ -1,4 +1,5 @@
-package org.coriander.tests
+package org.coriander.unit.tests
+
 
 import org.junit.After
 import org.junit.Before
@@ -9,7 +10,6 @@ import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
 
 import org.coriander.{QueryParser,Query,NameValuePair}
-import org.coriander.oauth.core.unit.tests.TestBase
 
 class QueryParserTest extends TestBase {
 

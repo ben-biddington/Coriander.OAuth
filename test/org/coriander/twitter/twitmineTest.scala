@@ -1,4 +1,5 @@
-package org.coriander.oauth.twitter.integration.tests
+package org.coriander.twitter
+
 
 import org.junit._
 import org.junit.Test
@@ -18,7 +19,7 @@ import org.coriander.oauth.core._
 import http.AuthorizationHeader
 import timestamp.SystemTimestampFactory
 import nonce.SystemNonceFactory
-import unit.tests.TestBase
+import org.coriander.unit.tests.TestBase
 
 class TwitmineTest extends TestBase {
 

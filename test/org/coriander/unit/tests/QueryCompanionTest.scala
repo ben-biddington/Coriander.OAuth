@@ -1,6 +1,5 @@
-package org.coriander.oauth
+package org.coriander.unit.tests
 
-import core.unit.tests.TestBase
 import org.junit.Test
 import org.junit.Assert._
 import org.hamcrest.core.Is._

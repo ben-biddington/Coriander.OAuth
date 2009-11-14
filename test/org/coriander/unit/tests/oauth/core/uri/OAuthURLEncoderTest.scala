@@ -1,4 +1,4 @@
-package org.coriander.oauth.uri.tests
+package org.coriander.unit.tests.oauth.core.uri
 
 import org.junit.After
 import org.junit.Before
@@ -6,9 +6,8 @@ import org.junit.Test
 import org.junit.Assert._
 import org.junit._
 
-import org.coriander.oauth.core.unit.tests.TestBase
 import org.coriander.oauth.uri.{OAuthURLEncoder, URLEncoder}
-import org.coriander.oauth.core.unit.tests.TestBase
+import org.coriander.unit.tests.TestBase
 
 class OAuthURLEncoderTest extends TestBase {
 

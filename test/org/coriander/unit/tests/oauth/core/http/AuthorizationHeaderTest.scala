@@ -1,4 +1,6 @@
-package org.coriander.oauth.http.tests
+package org.coriander.unit.tests.oauth.core.http
+
+
 
 import org.junit.After
 import org.junit.Before
@@ -11,11 +13,11 @@ import org.mockito.Mockito._
 
 import org.coriander.oauth._
 import core.OAuthCredential
-import core.unit.tests.TestBase
 import org.coriander.oauth.uri._
 import org.coriander.oauth.core.http.AuthorizationHeader
 import java.net.URI
 import org.coriander.QueryParser
+import org.coriander.unit.tests.TestBase
 
 // See: http://oauth.net/core/1.0, S 5.4.1
 class AuthorizationHeaderTest extends TestBase {

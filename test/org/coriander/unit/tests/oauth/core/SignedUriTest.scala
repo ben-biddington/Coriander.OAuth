@@ -1,4 +1,4 @@
-package org.coriander.oauth.core.unit.tests
+package org.coriander.unit.tests.oauth.core
 
 
 import java.net.URI
@@ -10,8 +10,9 @@ import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
 import org.coriander.oauth._
-import org.coriander.oauth.core.{SignedUri, OAuthCredential}
+import core.{SignedUri, OAuthCredential}
 import org.coriander.{Query, NameValuePair}
+import org.coriander.unit.tests.TestBase
 
 class SignedUriTest extends TestBase {
 
@@ -84,12 +85,6 @@ class SignedUriTest extends TestBase {
 
         then_value_contains_all_query_parameters(expectedQuery)
     }
-
-	@Test
-	def testing_increment_operator_replacement {
-		val list : List[NameValuePair] = List(new NameValuePair("a", "b"));
-
-	}
 
     @Test
     def value_contains_expected_oauth_parameters() {

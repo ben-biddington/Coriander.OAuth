@@ -1,4 +1,5 @@
-package org.coriander.oauth.tests
+package org.coriander.unit.tests
+
 
 import org.junit.After
 import org.junit.Before
