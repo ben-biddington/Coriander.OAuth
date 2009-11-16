@@ -1,7 +1,5 @@
 package org.coriander.integration.tests
 
-
-
 import org.junit._
 import org.junit.Test
 import org.junit.Assert._
@@ -15,7 +13,6 @@ import org.apache.commons.httpclient.methods._
 import org.coriander.{QueryParser, Query}
 
 import org.coriander.oauth.uri._
-import org.coriander.oauth.http._
 import org.coriander.oauth.core._
 import http.AuthorizationHeader
 import timestamp.SystemTimestampFactory

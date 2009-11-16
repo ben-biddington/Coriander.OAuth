@@ -17,14 +17,11 @@ import org.junit.rules._
 import scala.collection.immutable._
 import scala.util.matching.Regex._
 import java.util.regex._
-import scala.actors.Actor._
-import org.jfugue._
 
 import org.coriander._
-import org.coriander.oauth._
-import org.coriander.oauth.timestamp._
-import org.coriander.oauth.nonce._
 import java.net.URI
+import oauth.core.nonce.SystemNonceFactory
+import oauth.core.timestamp.SystemTimestampFactory
 import unit.tests.TestBase
 
 class SignatureBaseStringTest extends TestBase {
@@ -38,7 +35,6 @@ class SignatureBaseStringTest extends TestBase {
     val _urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
 
     var done = false
-    val caller = self
     
     @Test
     def parameters_appear_in_the_result_twice_RFC3629_percent_encoded() {
