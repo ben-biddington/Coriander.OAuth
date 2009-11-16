@@ -94,13 +94,13 @@ class AuthorizationHeaderTest extends TestBase {
 
         val header = newAuthorizationHeader(mockURLEncoder) toString
 		
-        verify(mockURLEncoder, times(0)).%%(realm)
-        verify(mockURLEncoder, times(1)).%%(oauth_consumer_key)
-        verify(mockURLEncoder, times(1)).%%(oauth_signature_method)
-        verify(mockURLEncoder, times(1)).%%(oauth_signature)
-        verify(mockURLEncoder, times(1)).%%(oauth_timestamp)
-        verify(mockURLEncoder, times(1)).%%(oauth_nonce)
-        verify(mockURLEncoder, times(1)).%%(oauth_version)
+        verify(mockURLEncoder, org.mockito.Mockito.times(0)).%%(realm)
+        verify(mockURLEncoder, org.mockito.Mockito.times(1)).%%(oauth_consumer_key)
+        verify(mockURLEncoder, org.mockito.Mockito.times(1)).%%(oauth_signature_method)
+        verify(mockURLEncoder, org.mockito.Mockito.times(1)).%%(oauth_signature)
+        verify(mockURLEncoder, org.mockito.Mockito.times(1)).%%(oauth_timestamp)
+        verify(mockURLEncoder, org.mockito.Mockito.times(1)).%%(oauth_nonce)
+        verify(mockURLEncoder, org.mockito.Mockito.times(1)).%%(oauth_version)
     }
 
     @Test { val expected = classOf[Exception] }

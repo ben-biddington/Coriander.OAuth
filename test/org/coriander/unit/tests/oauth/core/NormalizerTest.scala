@@ -51,8 +51,8 @@ class NormalizerTest extends TestBase {
         val actual = new Normalizer(mockURLEncoder) normalize(anyQuery)
 
         anyQuery foreach(pair => {
-            verify(mockURLEncoder, times(1)).%%(pair.name)
-            verify(mockURLEncoder, times(1)).%%(pair.value)
+            verify(mockURLEncoder, org.mockito.Mockito.times(1)).%%(pair.name)
+            verify(mockURLEncoder, org.mockito.Mockito.times(1)).%%(pair.value)
         })
     }
 

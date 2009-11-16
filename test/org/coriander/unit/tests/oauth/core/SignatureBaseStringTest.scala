@@ -39,9 +39,12 @@ class SignatureBaseStringTest extends TestBase {
     @Test
     def parameters_appear_in_the_result_twice_RFC3629_percent_encoded() {
         val originalValue = "http://some-url?param=value"
-        val expectedEncodedValue = urlEncode(urlEncode(originalValue))
 
-        val query = new Query(List(new NameValuePair("xxx", originalValue)))
+		var expectedEncodedValue : String = originalValue
+
+		times(2) { expectedEncodedValue = urlEncode(expectedEncodedValue) }
+
+        val query = Query.from("xxx" -> originalValue)
 
         val result = newSignatureBaseString(query) toString
 
@@ -60,12 +63,10 @@ class SignatureBaseStringTest extends TestBase {
             parseParameters(_signatureBaseString)
         )
 
-        val expectedQuery = new Query(
-            List(
-                new NameValuePair("a", "a_value"),
-                new NameValuePair("b", "b_value"),
-                new NameValuePair("c", "c_value")
-            )
+        val expectedQuery = Query.from(
+			"a" -> "a_value",
+			"b" -> "b_value",
+			"c" -> "c_value"
         )
 
         assertAreEqual(expectedQuery, queryExcludingOAuth)
@@ -310,19 +311,19 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     private def given_a_list_of_parameters() {
-        query = new Query(List(
-            new NameValuePair("a", "a_value"),
-            new NameValuePair("b", "b_value"),
-            new NameValuePair("c", "c_value")
-        ))
+        query = Query.from(
+            "a" -> "a_value",
+            "b" -> "b_value",
+            "c" -> "c_value"
+        )
     }
 
     private def given_an_unsorted_list_of_parameters() {
-        query = new Query(List(
-            new NameValuePair("c", "c_value"),
-            new NameValuePair("b", "b_value"),
-            new NameValuePair("a", "a_value")
-        ))
+        query = Query.from(
+            "c" -> "c_value",
+            "b" -> "b_value",
+            "a" -> "a_value"
+        )
     } 
 
     private def when_signature_base_string_is_created() {

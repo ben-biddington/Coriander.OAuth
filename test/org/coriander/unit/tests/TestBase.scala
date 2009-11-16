@@ -162,4 +162,10 @@ class TestBase extends Assert {
             assertThat(expected(i).value, is(equalTo(actual(i).value)))
         }
     }
+
+	// Example:
+	// times(2) { println("Block me.")}
+	protected def times(count : Int)(block : => Unit) = {
+		1.to(count).foreach((_) => block)
+	}
 }
