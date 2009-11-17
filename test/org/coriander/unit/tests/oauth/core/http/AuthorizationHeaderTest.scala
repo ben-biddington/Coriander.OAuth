@@ -1,7 +1,5 @@
 package org.coriander.unit.tests.oauth.core.http
 
-
-
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
