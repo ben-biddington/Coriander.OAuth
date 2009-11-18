@@ -1,7 +1,7 @@
 package org.coriander.oauth.core
 
 
-import org.coriander.oauth.uri._
+import org.coriander.oauth.core.uri._
 import collection.mutable.ListBuffer
 
 import org.coriander.{NameValuePair, Query}

@@ -6,7 +6,7 @@ import org.junit.Test
 import org.junit.Assert._
 import org.junit._
 
-import org.coriander.oauth.uri.{OAuthURLEncoder, URLEncoder}
+import org.coriander.oauth.core.uri.{OAuthURLEncoder, URLEncoder}
 import org.coriander.unit.tests.TestBase
 
 class OAuthURLEncoderTest extends TestBase {

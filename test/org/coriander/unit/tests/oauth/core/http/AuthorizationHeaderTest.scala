@@ -11,7 +11,7 @@ import org.mockito.Mockito._
 
 import org.coriander.oauth._
 import core.OAuthCredential
-import org.coriander.oauth.uri._
+import org.coriander.oauth.core.uri._
 import org.coriander.oauth.core.http.AuthorizationHeader
 import java.net.URI
 import org.coriander.QueryParser
@@ -106,7 +106,7 @@ class AuthorizationHeaderTest extends TestBase {
         newAuthorizationHeader(null) toString
     }
 
-	// See: http://oauth.net/core/1.0a#RFC2617, Appendix A.5.1.  Generating Signature Base String
+	// See: http://oauth.net/core/1.0a#RFC2617, Appendix A.5.1. Generating Signature Base String
 	@Test
 	def example {
 		val signature = "tR3+Ty81lMeYAr/Fid0kMTYa/WM="
@@ -146,10 +146,10 @@ class AuthorizationHeaderTest extends TestBase {
 	}
 
     private def newAuthorizationHeader : AuthorizationHeader = {
-        newAuthorizationHeader(new org.coriander.oauth.uri.OAuthURLEncoder)
+        newAuthorizationHeader(new OAuthURLEncoder)
     }
 
-    private def newAuthorizationHeader(urlEncoder : org.coriander.oauth.uri.URLEncoder) :
+    private def newAuthorizationHeader(urlEncoder : URLEncoder) :
         AuthorizationHeader = {
         new AuthorizationHeader(
             realm,
@@ -164,8 +164,8 @@ class AuthorizationHeaderTest extends TestBase {
         )
     }
 
-    private def newMockURLEncoder : org.coriander.oauth.uri.URLEncoder = {
-        var mockedURLEncoder = mock(classOf[org.coriander.oauth.uri.URLEncoder])
+    private def newMockURLEncoder : URLEncoder = {
+        var mockedURLEncoder = mock(classOf[org.coriander.oauth.core.uri.URLEncoder])
         when(mockedURLEncoder.%%("any-string")).thenReturn("stubbed-escaped-value")
         
         mockedURLEncoder

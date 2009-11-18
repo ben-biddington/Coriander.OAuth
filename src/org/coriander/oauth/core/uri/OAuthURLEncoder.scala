@@ -1,4 +1,4 @@
-package org.coriander.oauth.uri
+package org.coriander.oauth.core.uri
 
 class OAuthURLEncoder extends URLEncoder {
     def encode(value : String) : String = {

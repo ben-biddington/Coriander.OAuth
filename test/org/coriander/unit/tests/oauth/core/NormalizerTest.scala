@@ -69,10 +69,10 @@ class NormalizerTest extends TestBase {
         assertThat(actual, is(equalTo(expected)));
     }
 
-    // TEST: How do we handle parameters with the same name?
+    // TEST: Parameters with the same name are sorted by their value
 
-    private def newMockURLEncoder : org.coriander.oauth.uri.URLEncoder = {
-        var mockedURLEncoder = mock(classOf[org.coriander.oauth.uri.URLEncoder])
+    private def newMockURLEncoder : org.coriander.oauth.core.uri.URLEncoder = {
+        var mockedURLEncoder = mock(classOf[org.coriander.oauth.core.uri.URLEncoder])
         
         when(mockedURLEncoder.%%("any-string")).
         thenReturn("stubbed-escaped-value")

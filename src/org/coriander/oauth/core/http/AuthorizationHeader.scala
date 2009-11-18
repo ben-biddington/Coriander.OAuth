@@ -9,7 +9,7 @@ class AuthorizationHeader(
     timestamp   : String,
     nonce       : String,
     version     : String,
-    urlEncoder  : org.coriander.oauth.uri.URLEncoder
+    urlEncoder  : org.coriander.oauth.core.uri.URLEncoder
 ) {
     val name = "Authorization"
     val value = formatValue(createValue)

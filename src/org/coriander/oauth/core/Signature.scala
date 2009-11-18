@@ -7,16 +7,16 @@ import java.net.URI
 import org.apache.http.protocol.HTTP.UTF_8
 import org.apache.commons.codec.binary.Base64.encodeBase64
 
-import org.coriander.oauth.uri._
+import org.coriander.oauth.core.uri._
 
 class Signature(
-    urlEncoder              : org.coriander.oauth.uri.URLEncoder,
+    urlEncoder              : org.coriander.oauth.core.uri.URLEncoder,
     consumerCredential      : OAuthCredential,
     token                   : OAuthCredential
 ) {
 
     def this(
-        urlEncoder          : org.coriander.oauth.uri.URLEncoder,
+        urlEncoder          : org.coriander.oauth.core.uri.URLEncoder,
         consumerCredential  : OAuthCredential,
         token               : OAuthCredential,
         algorithm           : String
@@ -26,7 +26,7 @@ class Signature(
     }
 
     def this(
-        urlEncoder          : org.coriander.oauth.uri.URLEncoder,
+        urlEncoder          : org.coriander.oauth.core.uri.URLEncoder,
         consumerCredential  : OAuthCredential
     ) {
         this(urlEncoder, consumerCredential, null)

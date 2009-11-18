@@ -22,6 +22,7 @@ import org.coriander._
 import java.net.URI
 import oauth.core.nonce.SystemNonceFactory
 import oauth.core.timestamp.SystemTimestampFactory
+import oauth.core.uri.OAuthURLEncoder
 import unit.tests.TestBase
 
 class SignatureBaseStringTest extends TestBase {
@@ -32,7 +33,7 @@ class SignatureBaseStringTest extends TestBase {
     val aValidTimestamp = new SystemTimestampFactory createTimestamp
     var query : Query = new Query
     var _signatureBaseString : SignatureBaseString = null;
-    val _urlEncoder = new org.coriander.oauth.uri.OAuthURLEncoder
+    val _urlEncoder = new OAuthURLEncoder
 
     var done = false
     

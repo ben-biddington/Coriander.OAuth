@@ -14,7 +14,7 @@ import scala.util.matching._
 
 import scala.collection.immutable._
 
-import org.coriander.oauth.uri._
+import org.coriander.oauth.core.uri._
 import org.coriander.Query
 import org.coriander.NameValuePair
 
