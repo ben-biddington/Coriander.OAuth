@@ -54,7 +54,6 @@ class SignatureTest extends TestBase {
 
     @Test 
     def when_just_consumer_secret_supplied_then_sign_returns_correct_signature {
-        // [!] Multiline strings cause failure
         val baseString = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26" +
 			"oauth_nonce%3Df3df23228e40e2905e305a893895f115%26oauth_signature_method%3DHMAC-SHA1%26" +
 			"oauth_timestamp%3D1252657173%26oauth_version%3D1.0"
@@ -67,7 +66,6 @@ class SignatureTest extends TestBase {
 
     @Test
     def when_consumer_secret_and_token_secret_supplied_then_sign_returns_correct_signature {
-        // [!] Multiline strings cause failure
         val baseString = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26" +
 			"oauth_nonce%3D35d48708b951a3adfaa64a9d0632e19a%26oauth_signature_method%3DHMAC-SHA1%26" +
 			"oauth_timestamp%3D1252669302%26oauth_token%3Dtoken_key%26oauth_version%3D1.0"
@@ -81,7 +79,6 @@ class SignatureTest extends TestBase {
 
     @Test
     def when_consumer_secret_contains_uri_reserved_characters_then_sign_returns_correct_signature_having_escaped_them {
-        // [!] Multiline strings cause failure
         val baseString = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26" +
 			"oauth_nonce%3D26db6028882d344cccad2227f4a9dae8%26oauth_signature_method%3DHMAC-SHA1%26" +
 			"oauth_timestamp%3D1252670619%26oauth_version%3D1.0"
