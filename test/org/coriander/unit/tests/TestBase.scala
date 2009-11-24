@@ -33,7 +33,7 @@ class TestBase extends Assert {
     }
     
     protected def parseQuery(uri : java.net.URI) : Query = {
-        parseQuery(uri.getQuery)
+        parseQuery(uri.getRawQuery)
     }
 
     protected def parseQuery(query : String) : Query = {

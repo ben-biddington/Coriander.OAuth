@@ -138,15 +138,17 @@ class SignedUriTest extends TestBase {
             version
         )
         
-        val expectedSignedUrl = "http://xxx/?oauth_version=1.0&oauth_nonce=ea757706c42e2b14a7a8999acdc71089&oauth_timestamp=1257608197&oauth_consumer_key=key&oauth_signature_method=HMAC-SHA1&oauth_signature=RO8XXXVxGl1kzYs%2FC7ueQzo974k%3D"
-        val expecteSignature = "RO8XXXVxGl1kzYs/C7ueQzo974k="
+        val expectedSignedUrl = "http://xxx/?oauth_version=1.0&" +
+			"oauth_nonce=ea757706c42e2b14a7a8999acdc71089&oauth_timestamp=1257608197&" + 
+			"oauth_consumer_key=key&oauth_signature_method=HMAC-SHA1&" +
+			"oauth_signature=RO8XXXVxGl1kzYs%2FC7ueQzo974k%3D"
+		
+        val expectedSignature = "RO8XXXVxGl1kzYs/C7ueQzo974k="
 
         val expectedParams : Query = parseQuery(new URI(expectedSignedUrl))
         val actualParams : Query = parseQuery(signedUri.value)
        
-        expectedParams.foreach(nameValuePair => {
-            assertTrue(actualParams.contains(nameValuePair.name))
-        })
+        expectedParams.foreach(nameValuePair => assertTrue(actualParams.contains(nameValuePair.name)))
     }
 
     private def give_a_signed_uri {

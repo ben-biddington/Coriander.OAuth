@@ -19,9 +19,7 @@ class Query(val nameValuePairs : List[NameValuePair]) {
     }
 
     def filter(comparer : NameValuePair => Boolean) : Query = {
-        new Query(
-             nameValuePairs.filter(comparer)
-        )
+        new Query(nameValuePairs.filter(comparer))
     }
 
     def foreach(func : NameValuePair => Unit) {

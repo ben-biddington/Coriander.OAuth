@@ -245,9 +245,9 @@ class SignatureBaseStringTest extends TestBase {
 	@Test
 	def an_example_with_token {
 		val expected = "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg" +
-				"%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26" +
-				"oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26" +
-				"oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal"
+			"%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26" +
+			"oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26" +
+			"oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal"
 				
 		val timestamp = "1191242096"
 		val nonce = "kllo9940pd9333jh"
@@ -260,6 +260,31 @@ class SignatureBaseStringTest extends TestBase {
 		val query = new QueryParser().
 				parse("file=vacation.jpg&size=original").
 				filter(nvp => false == nvp.name.startsWith("oauth_"))
+
+		val signatureBaseString = new SignatureBaseString(uri, query, consumer, token, nonce, timestamp)
+
+		assertThat(
+			signatureBaseString toString,
+			is(equalTo(expected))
+		)
+	}
+
+	@Test
+	def another_example_with_token {
+		val expected = "GET&http%3A%2F%2Fxxx&" +
+			"oauth_consumer_key%3Dkey%26oauth_nonce%3D1108721620a4c6093f92b24d5844e61b%26" +
+			"oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1259051683%26" +
+			"oauth_token%3DHZvFeX5T7XlRIcJme%252FEWTg%253D%253D%26oauth_version%3D1.0"
+
+		val timestamp = "1259051683"
+		val nonce = "1108721620a4c6093f92b24d5844e61b"
+		val version = "1.0"
+
+		val consumer = new OAuthCredential("key", "secret")
+		val token = new OAuthCredential("HZvFeX5T7XlRIcJme/EWTg==", "Ao61gCJXIM20aqLDw7+Cow==")
+
+		val uri : URI = new URI("http://xxx")
+		val query = Query()
 
 		val signatureBaseString = new SignatureBaseString(uri, query, consumer, token, nonce, timestamp)
 
