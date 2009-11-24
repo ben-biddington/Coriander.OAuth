@@ -121,8 +121,33 @@ class SignedUriTest extends TestBase {
         )
     }
 
+	@Test
+	def both_consumer_and_token_are_used_to_sign {
+		val uri = new URI("http://xxx")
+		val consumer = new OAuthCredential("key", "secret")
+		val token = new OAuthCredential("token", "token_secret")
+		val timestamp = "1259067839"
+		val nonce = "73f0f93345d76d6cd1bab30af14a99e3"
+
+		val signedUri = new SignedUri(
+			uri,
+			consumer,
+			token,
+			signatureMethod,
+			timestamp,
+			nonce,
+			version
+		)
+
+		val expectedSignature = "q89vhbqDzUX9aVeuavDhAP4TTPA="
+
+		var actualSignature = parseQuery(signedUri.value).get("oauth_signature")(0).value
+
+		assertThat(actualSignature, is(equalTo(expectedSignature)))
+	}
+
     @Test
-    def examples {
+    def example_without_token {
         val uri = new URI("http://xxx/")
         val token = null
         val timestamp = "1257608197"

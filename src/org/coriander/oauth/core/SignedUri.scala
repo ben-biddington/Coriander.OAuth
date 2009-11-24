@@ -33,7 +33,6 @@ class SignedUri(
             parameters += new NameValuePair(name, value)
         })
 
-        // TODO: The following causes duplicates, but we need it
         query.foreach(nvp => {parameters += nvp})
 
         val normalizedParams : String = normalize(new Query(parameters.toList))
@@ -69,9 +68,7 @@ class SignedUri(
             timestamp
         )
 
-        val result = new Signature(consumer).sign(signatureBaseString toString)
-
-        result
+ 		new Signature(consumer, token) sign(signatureBaseString toString)
     }
 
     private def normalize(query : Query) : String = {

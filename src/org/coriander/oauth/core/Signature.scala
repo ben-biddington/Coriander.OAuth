@@ -32,8 +32,8 @@ class Signature(
         this(urlEncoder, consumerCredential, null)
     }
 
-    def this(consumerCredential  : OAuthCredential) {
-        this(new OAuthURLEncoder(), consumerCredential)
+    def this(consumerCredential  : OAuthCredential, token : OAuthCredential) {
+        this(new OAuthURLEncoder(), consumerCredential, token)
     }
     
     val DEFAULT_ALGORITHM = "HMacSha1"
