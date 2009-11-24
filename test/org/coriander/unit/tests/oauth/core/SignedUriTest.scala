@@ -147,7 +147,7 @@ class SignedUriTest extends TestBase {
 	}
 
     @Test
-    def example_without_token {
+    def result_contains_all_expected_parameters {
         val uri = new URI("http://xxx/")
         val token = null
         val timestamp = "1257608197"
@@ -162,12 +162,12 @@ class SignedUriTest extends TestBase {
             nonce,
             version
         )
-        
+
         val expectedSignedUrl = "http://xxx/?oauth_version=1.0&" +
-			"oauth_nonce=ea757706c42e2b14a7a8999acdc71089&oauth_timestamp=1257608197&" + 
+			"oauth_nonce=ea757706c42e2b14a7a8999acdc71089&oauth_timestamp=1257608197&" +
 			"oauth_consumer_key=key&oauth_signature_method=HMAC-SHA1&" +
 			"oauth_signature=RO8XXXVxGl1kzYs%2FC7ueQzo974k%3D"
-		
+
         val expectedSignature = "RO8XXXVxGl1kzYs/C7ueQzo974k="
 
         val expectedParams : Query = parseQuery(new URI(expectedSignedUrl))
