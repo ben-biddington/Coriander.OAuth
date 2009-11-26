@@ -220,7 +220,7 @@ class SignatureBaseStringTest extends TestBase {
     // See: http://term.ie/oauth/example/client.php
     // See also: http://oauth.net/core/1.0#sig_base_example
     @Test
-    def examples() {
+    def examples {
         val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey" +
             "%26oauth_nonce%3Dddb61ca14d02e9ef7b55cc5c1f88616f%26" +
             "oauth_signature_method%3DHMAC-SHA1%26" +
@@ -311,6 +311,8 @@ class SignatureBaseStringTest extends TestBase {
         given_a_list_of_parameters
 
         when_signature_base_string_is_created
+
+		println(_signatureBaseString.toString)
 
         val plainTextValue = urlDecode(_signatureBaseString.toString)
 

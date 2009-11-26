@@ -1,11 +1,7 @@
 package org.coriander.oauth.core
 
 import scala.collection.immutable._
-import java.net._
-import javax.crypto
 import java.net.URI
-import org.apache.http.protocol.HTTP.UTF_8
-import org.apache.commons.codec.binary.Base64.encodeBase64
 
 import org.coriander.oauth.core.uri._
 import org.coriander.{NameValuePair, Query}

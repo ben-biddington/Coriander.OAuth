@@ -30,7 +30,6 @@ class SignedUriTest extends TestBase {
     }
 
     // TEST: The sort order of the parameters does not matter
-    // TEST: Adheres to the same rules about transparent ports
 
     @Test
     def value_preserves_uri_scheme() {
@@ -46,7 +45,7 @@ class SignedUriTest extends TestBase {
     }
 
     @Test
-    def result_always_includes_port {
+    def value_always_includes_port {
         given_a_signed_uri(new URI("https://an-https-uri-with-default-port:443"))
 
         assertThat(
@@ -147,7 +146,7 @@ class SignedUriTest extends TestBase {
 	}
 
     @Test
-    def result_contains_all_expected_parameters {
+    def value_contains_all_expected_parameters {
         val uri = new URI("http://xxx/")
         val token = null
         val timestamp = "1257608197"
@@ -175,6 +174,30 @@ class SignedUriTest extends TestBase {
        
         expectedParams.foreach(nameValuePair => assertTrue(actualParams.contains(nameValuePair.name)))
     }
+
+	// TODO: Refactor to match org.coriander.unit.tests.oauth.core.SignatureBaseStringTest.result_excludes_default_port_80_for_http_and_443_for_https
+	@Test
+	def value_excludes_default_port_80_for_http {
+		var uri = new URI("http://xxx:80/")
+        var token = null
+        var timestamp = "1259226604"
+        var nonce = "e2d77f64c61903a24d9b6ad8e9c4e71c"
+
+        var signedUri = new SignedUri(
+            uri,
+            consumerCredential,
+            token,
+            signatureMethod,
+            timestamp,
+            nonce,
+            version
+        )
+
+		var expectedSignature = "lL9UsKRGi6y9UT5Rlgaag56RgT8="
+		val actualSignature = parseQuery(signedUri.value).get("oauth_signature")(0).value
+
+		assertThat(actualSignature, is(equalTo(expectedSignature)))
+	}
 
     private def give_a_signed_uri {
         given_a_signed_uri(anyUri)
