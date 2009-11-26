@@ -312,8 +312,6 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-		println(_signatureBaseString.toString)
-
         val plainTextValue = urlDecode(_signatureBaseString.toString)
 
         assertStartsWith("^GET&" + expectedUriString + "&", plainTextValue)
