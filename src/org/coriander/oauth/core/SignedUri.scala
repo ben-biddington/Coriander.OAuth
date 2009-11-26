@@ -9,10 +9,9 @@ class SignedUri(
     uri : URI,
     consumer : OAuthCredential,
     token : OAuthCredential,
-    signatureMethod : String,
     timestamp : String,
     nonce : String,
-    version : String
+    options : Options
 ) {
     val normalizer = new Normalizer()
     val queryParser = new QueryParser()
@@ -50,10 +49,10 @@ class SignedUri(
         new Parameters(
             consumer,
 			token,
-            signatureMethod,
+            options.signatureMethod,
             timestamp,
             nonce,
-            version
+            options.version toString
         ) toMap
     }
 

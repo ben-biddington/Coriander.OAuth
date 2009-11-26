@@ -195,10 +195,9 @@ class TwitmineTest extends TestBase {
             uri,
             consumerCredential,
             token,
-            SIGNATURE_METHOD,
             timestampFactory.createTimestamp,
             nonceFactory.createNonce,
-            VERSION
+            Options.DEFAULT
         ).value
 	}
 

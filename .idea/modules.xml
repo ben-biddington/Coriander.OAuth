@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/scala-oauth.iml" filepath="$PROJECT_DIR$/scala-oauth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Scala-oauth.iml" filepath="$PROJECT_DIR$/Scala-oauth.iml" />
     </modules>
   </component>
 </project>

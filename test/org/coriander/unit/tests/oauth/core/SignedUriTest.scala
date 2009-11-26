@@ -10,7 +10,7 @@ import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
 import org.coriander.oauth._
-import core.{SignedUri, OAuthCredential}
+import core.{Options, SignedUri, OAuthCredential}
 import org.coriander.{Query, NameValuePair}
 import org.coriander.unit.tests.TestBase
 
@@ -132,10 +132,9 @@ class SignedUriTest extends TestBase {
 			uri,
 			consumer,
 			token,
-			signatureMethod,
 			timestamp,
 			nonce,
-			version
+            Options.DEFAULT
 		)
 
 		val expectedSignature = "q89vhbqDzUX9aVeuavDhAP4TTPA="
@@ -156,10 +155,9 @@ class SignedUriTest extends TestBase {
             uri,
             consumerCredential,
             token,
-            signatureMethod,
             timestamp,
             nonce,
-            version
+            Options.DEFAULT
         )
 
         val expectedSignedUrl = "http://xxx/?oauth_version=1.0&" +
@@ -187,10 +185,9 @@ class SignedUriTest extends TestBase {
             uri,
             consumerCredential,
             token,
-            signatureMethod,
             timestamp,
             nonce,
-            version
+            Options.DEFAULT
         )
 
 		var expectedSignature = "lL9UsKRGi6y9UT5Rlgaag56RgT8="
@@ -214,10 +211,9 @@ class SignedUriTest extends TestBase {
             uri,
             consumerCredential,
             null,
-            signatureMethod,
             timestamp,
             nonce,
-            version
+            Options.DEFAULT
         )
     }
 
