@@ -51,21 +51,16 @@ class SignatureBaseString (
         
         val requestUrl = uri.getScheme + "://" + selectAuthority(uri) + uri.getPath
 
-        val result = String format(
+        String format(
             "%1$s%2$s%3$s",
             method.toUpperCase + "&",
             %%(requestUrl) + "&",
             %%(normalizedParams)
         );
-
-        result
     }
 
     private def selectAuthority(uri : URI) : String = {
-        if (containsDefaultPort(uri))
-            return uri getHost
-        else
-            return uri getAuthority
+        return if (containsDefaultPort(uri)) uri getHost else uri getAuthority
     }
 
     private def containsDefaultPort(uri : URI) : Boolean = {
@@ -84,19 +79,13 @@ class SignatureBaseString (
             options
         ) toList
     }
-    
-    private def %% (t: (String, String)) : (String, String) = {
-        (%%(t._1), %%(t._2.toString))
-    }
-
+   
     private def %% (str : String) : String = {
-      if (null == str) return ""
-
-      return urlEncoder.%%(str.toString)
+		return if (str != null) urlEncoder.%%(str.toString) else ""
     }
 
     private def normalize(query : Query) : String = {
-        new Normalizer().normalize(query)
+		new Normalizer().normalize(query)
     }
 }
 
