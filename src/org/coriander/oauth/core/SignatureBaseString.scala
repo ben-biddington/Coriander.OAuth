@@ -1,6 +1,6 @@
 package org.coriander.oauth.core
 
-import scala.collection.immutable._
+import http.HttpVerb
 import java.net.URI
 
 import org.coriander.oauth.core.uri._
@@ -28,7 +28,7 @@ class SignatureBaseString (
         nonce               : String,
         timestamp           : String
     ) {
-        this("get", uri, query, consumerCredential, token, nonce, timestamp, Options.DEFAULT)
+        this(HttpVerb.GET, uri, query, consumerCredential, token, nonce, timestamp, Options.DEFAULT)
     }
 
     override def toString() : String = {

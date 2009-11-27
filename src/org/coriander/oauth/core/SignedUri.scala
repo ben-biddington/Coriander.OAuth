@@ -1,5 +1,6 @@
 package org.coriander.oauth.core
 
+import http.HttpVerb
 import java.net.URI
 import org.coriander.{NameValuePair, QueryParser, Query}
 import collection.mutable.ListBuffer
@@ -15,7 +16,7 @@ class SignedUri(
 ) {
     val normalizer 	= new Normalizer()
     val queryParser = new QueryParser()
-    val method 		= "GET"
+    val method 		= HttpVerb.GET
     
     def value() : URI = {
         value(uri, queryParser.parse(uri))
@@ -35,8 +36,7 @@ class SignedUri(
     }
 
 	private def combineParameters(resource : URI, query : Query) : List[NameValuePair] = {
-		var oauthParams = getOAuthParams
-		oauthParams += new NameValuePair(Parameters.Names.SIGNATURE, sign(resource, query))
+		var oauthParams = getOAuthParamsWithSignature(sign(resource, query))
 
         var parameters : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
 
@@ -47,6 +47,12 @@ class SignedUri(
 		parameters toList
 	}
 
+	private def getOAuthParamsWithSignature(signature : String) : ListBuffer[NameValuePair] = {
+        var oauthParams = getOAuthParams
+		oauthParams += new NameValuePair(Parameters.Names.SIGNATURE, signature)
+		oauthParams
+    }
+	
     private def getOAuthParams() : ListBuffer[NameValuePair] = {
         var result = new ListBuffer[NameValuePair]
 
