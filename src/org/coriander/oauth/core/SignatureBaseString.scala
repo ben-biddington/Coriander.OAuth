@@ -6,7 +6,7 @@ import java.net.URI
 import org.coriander.oauth.core.uri._
 import org.coriander.{NameValuePair, Query}
 
-class SignatureBaseString (
+final class SignatureBaseString (
     method              : String,
     uri                 : URI,
     query               : Query,
@@ -17,7 +17,7 @@ class SignatureBaseString (
 	options				: Options
 ) {
     var value : String  = null
-    val defaultPorts 	= List(new Port("http", 80), new Port("https", 443))
+    val defaultPorts 	= List(Port("http", 80), Port("https", 443))
     var urlEncoder 		= new OAuthURLEncoder()
     
     def this(
@@ -31,13 +31,9 @@ class SignatureBaseString (
         this(HttpVerb.GET, uri, query, consumerCredential, token, nonce, timestamp, Options.DEFAULT)
     }
 
-    override def toString() : String = {
-        return getSignatureBaseString
-    }
+    override def toString() : String = getSignatureBaseString
     
-    def getSignatureBaseString() : String = {
-        return getSignatureBaseString(uri, query)
-    }
+    def getSignatureBaseString() : String = getSignatureBaseString(uri, query)
 
     def getSignatureBaseString(uri : URI, query : Query) : String = {
 
@@ -84,9 +80,7 @@ class SignatureBaseString (
 		return if (str != null) urlEncoder.%%(str.toString) else ""
     }
 
-    private def normalize(query : Query) : String = {
-		new Normalizer().normalize(query)
-    }
+    private def normalize(query : Query) : String = new Normalizer normalize(query)
 }
 
 object SignatureBaseString {

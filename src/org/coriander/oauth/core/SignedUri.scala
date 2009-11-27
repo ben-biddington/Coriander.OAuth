@@ -18,9 +18,7 @@ class SignedUri(
     val queryParser = new QueryParser()
     val method 		= HttpVerb.GET
     
-    def value() : URI = {
-        value(uri, queryParser.parse(uri))
-    }
+    def value : URI = value(uri, queryParser.parse(uri))
 
     private def value(resource : URI, query : Query) : URI = {
 		val parameters = combineParameters(resource, query)
@@ -56,7 +54,7 @@ class SignedUri(
     private def getOAuthParams() : ListBuffer[NameValuePair] = {
         var result = new ListBuffer[NameValuePair]
 
-		result.appendAll(
+		result appendAll(
 			new Parameters(
 				consumer,
 				token,
@@ -84,7 +82,5 @@ class SignedUri(
  		new Signature(consumer,token) sign(signatureBaseString toString)
     }
 
-    private def normalize(query : Query) : String = {
-        normalizer normalize(query)
-    }
+    private def normalize(query : Query) : String = normalizer normalize(query)
 }
