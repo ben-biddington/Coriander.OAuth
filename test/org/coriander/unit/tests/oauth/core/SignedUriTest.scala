@@ -196,6 +196,8 @@ class SignedUriTest extends TestBase {
 		assertThat(actualSignature, is(equalTo(expectedSignature)))
 	}
 
+	// TEST: When I create 2 instances, then each has a different timestamp value
+
     private def give_a_signed_uri {
         given_a_signed_uri(anyUri)
     }

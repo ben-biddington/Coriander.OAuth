@@ -3,38 +3,27 @@ package org.coriander.oauth.core
 import java.net.URI
 import org.coriander.{NameValuePair, QueryParser, Query}
 import collection.mutable.ListBuffer
-// TODO: Consider combining consumer and token into single type, here and in
-// all other places that take these two args.
+
+// TODO: Consider combining consumer and token into single type
 class SignedUri(
-    uri : URI,
-    consumer : OAuthCredential,
-    token : OAuthCredential,
-    timestamp : String,
-    nonce : String,
-    options : Options
+    uri 		: URI,
+    consumer 	: OAuthCredential,
+    token 		: OAuthCredential,
+    timestamp 	: String,
+    nonce 		: String,
+    options 	: Options
 ) {
-    val normalizer = new Normalizer()
+    val normalizer 	= new Normalizer()
     val queryParser = new QueryParser()
-    val method = "GET"
+    val method 		= "GET"
     
     def value() : URI = {
         value(uri, queryParser.parse(uri))
     }
 
     private def value(resource : URI, query : Query) : URI = {
-        var oauthParams = getOAuthParams + ("oauth_signature" -> sign(resource, query))
-
-        var parameters : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
-
-        oauthParams.foreach(item => {
-            val (name, value) = item
-            
-            parameters += new NameValuePair(name, value)
-        })
-
-        query.foreach(nvp => {parameters += nvp})
-
-        val normalizedParams : String = normalize(new Query(parameters.toList))
+		val parameters = combineParameters(resource, query)
+        val normalizedParams : String = normalize(new Query(parameters))
 
         val signedUrl : String =
             resource.getScheme + "://" +
@@ -45,14 +34,30 @@ class SignedUri(
         return new URI(signedUrl)
     }
 
+	private def combineParameters(resource : URI, query : Query) : List[NameValuePair] = {
+		val signature = sign(resource, query)
+		var oauthParams = getOAuthParams + ("oauth_signature" -> signature)
+
+        var parameters : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
+
+        oauthParams.foreach(item => {
+            val (name, value) = item
+
+            parameters += new NameValuePair(name, value)
+        })
+
+        query.foreach(nvp => parameters += nvp)
+
+		parameters toList
+	}
+
     private def getOAuthParams() : Map[String, String] = {
         new Parameters(
             consumer,
 			token,
-            options.signatureMethod,
             timestamp,
             nonce,
-            options.version toString
+            options
         ) toMap
     }
 
@@ -64,7 +69,8 @@ class SignedUri(
             consumer,
 			token,
             nonce,
-            timestamp
+            timestamp,
+			Options.DEFAULT
         )
 
  		new Signature(consumer, token) sign(signatureBaseString toString)

@@ -1,39 +1,30 @@
 package org.coriander.unit.tests.oauth.core
 
-
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.Assert._
-import org.junit.matchers._
 import org.junit.matchers.JUnitMatchers._
-import org.hamcrest._
-import org.coriander.oauth.core.{SignatureBaseString,OAuthCredential}
-import org.hamcrest.Matcher._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit._
 import org.junit.rules._
-import scala.collection.immutable._
-import scala.util.matching.Regex._
-import java.util.regex._
 
 import org.coriander._
 import java.net.URI
 import oauth.core.nonce.SystemNonceFactory
 import oauth.core.timestamp.SystemTimestampFactory
 import oauth.core.uri.OAuthURLEncoder
+import oauth.core.{Options, SignatureBaseString, OAuthCredential}
 import unit.tests.TestBase
 
 class SignatureBaseStringTest extends TestBase {
     val consumerCredential = new org.coriander.oauth.core.OAuthCredential("key", "secret")
 	
-    var aValidUri =  new java.net.URI("http://xxx/")
-    val aValidNonce = new SystemNonceFactory createNonce
+    var aValidUri 		= new java.net.URI("http://xxx/")
+    val aValidNonce 	= new SystemNonceFactory createNonce
     val aValidTimestamp = new SystemTimestampFactory createTimestamp
-    var query : Query = new Query
-    var _signatureBaseString : SignatureBaseString = null;
-    val _urlEncoder = new OAuthURLEncoder
+    var query : Query 	= new Query
+    val urlEncoder 	= new OAuthURLEncoder
+    var signatureBaseString : SignatureBaseString = null
 
     var done = false
     
@@ -61,7 +52,7 @@ class SignatureBaseStringTest extends TestBase {
         when_signature_base_string_is_created
 
         var queryExcludingOAuth = trimOAuth(
-            parseParameters(_signatureBaseString)
+            parseParameters(signatureBaseString)
         )
 
         val expectedQuery = Query.from(
@@ -99,7 +90,7 @@ class SignatureBaseStringTest extends TestBase {
         given_a_list_of_parameters
         when_signature_base_string_is_created
         
-        val allParameters = parseParameters(_signatureBaseString)
+        val allParameters = parseParameters(signatureBaseString)
 
         val requiredParameters = List(
             "oauth_consumer_key",
@@ -166,7 +157,7 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-        val plainTextValue = urlDecode(_signatureBaseString.toString)
+        val plainTextValue = urlDecode(signatureBaseString.toString)
 
         assertStartsWith("^GET&http://xxx:1337/&", plainTextValue)
     }
@@ -188,8 +179,8 @@ class SignatureBaseStringTest extends TestBase {
         when_signature_base_string_is_created
 
         assertThat(
-            _signatureBaseString.toString,
-            containsString(_urlEncoder.%%(aValidUri.getPath))
+            signatureBaseString.toString,
+            containsString(urlEncoder.%%(aValidUri.getPath))
         )
     }
 
@@ -235,7 +226,8 @@ class SignatureBaseStringTest extends TestBase {
             new OAuthCredential("key", "secret"),
 			null,
             "ddb61ca14d02e9ef7b55cc5c1f88616f",
-            "1252500234"
+            "1252500234",
+			Options.DEFAULT
         ) toString;
 
         assertEquals("Actual does not match expected.", expected, actual)
@@ -297,9 +289,6 @@ class SignatureBaseStringTest extends TestBase {
 	// TEST: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
     // TEST: When URL contains ending slash, then it is included in the result
     // TEST: When URL contains query string, then it is excluded in the result
-    // TEST: When I create 2 instances, then each has a different timestamp value
-    // TEST: I can supply timestamp behaviour (or value) to create a SignatureBaseString instance
-    // TEST: I can supply nonce behaviour (or value) to create a SignatureBaseString instance
     // TEST: This class only requires oauth_key, not an entire OAuthCredential
 
     private def assertResultExcludesPort(scheme: String, port : Int) {
@@ -312,7 +301,7 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-        val plainTextValue = urlDecode(_signatureBaseString.toString)
+        val plainTextValue = urlDecode(signatureBaseString.toString)
 
         assertStartsWith("^GET&" + expectedUriString + "&", plainTextValue)
     }
@@ -327,7 +316,7 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-        val plainTextValue = urlDecode(_signatureBaseString.toString)
+        val plainTextValue = urlDecode(signatureBaseString.toString)
 
         assertStartsWith("^GET&" + expectedUriString + "&", plainTextValue)
     }
@@ -357,7 +346,7 @@ class SignatureBaseStringTest extends TestBase {
     }
 
     private def when_signature_base_string_is_created(method : String) {
-        _signatureBaseString = createDefault(method)
+        signatureBaseString = createDefault(method)
     }
 
     private def createDefault(method : String) : SignatureBaseString = {
@@ -368,7 +357,8 @@ class SignatureBaseStringTest extends TestBase {
             consumerCredential,
 		 	null,
             aValidNonce,
-            aValidTimestamp
+            aValidTimestamp,
+		 	Options.DEFAULT
         );
     }
 
@@ -392,9 +382,9 @@ class SignatureBaseStringTest extends TestBase {
     private def parse(signatureBaseString : SignatureBaseString) : Tuple3[String, String, Query] = {        
         val parts = signatureBaseString.toString().split("&")
 
-        val method = parts(0)
-        val url = parts(1)
-        val encodedParams = parts(2)
+        val method : String			= parts(0)
+        val url : String 			= parts(1)
+        val encodedParams : String	= parts(2)
 
         val query = parseQuery(urlDecode(encodedParams))
         

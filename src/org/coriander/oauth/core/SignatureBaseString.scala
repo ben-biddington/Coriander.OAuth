@@ -13,13 +13,12 @@ class SignatureBaseString (
     consumerCredential  : OAuthCredential,
 	token 				: OAuthCredential,
     nonce               : String,
-    timestamp           : String
+    timestamp           : String,
+	options				: Options
 ) {
-    val signatureMethod = "HMAC-SHA1"
     var value : String  = null
-    val defaultPorts = List(new Port("http", 80), new Port("https", 443))
-    var urlEncoder = new OAuthURLEncoder()
-    var version  =  "1.0"
+    val defaultPorts 	= List(new Port("http", 80), new Port("https", 443))
+    var urlEncoder 		= new OAuthURLEncoder()
     
     def this(
         uri                 : URI,
@@ -29,7 +28,7 @@ class SignatureBaseString (
         nonce               : String,
         timestamp           : String
     ) {
-        this("get", uri, query, consumerCredential, token, nonce, timestamp)
+        this("get", uri, query, consumerCredential, token, nonce, timestamp, Options.DEFAULT)
     }
 
     override def toString() : String = {
@@ -81,10 +80,9 @@ class SignatureBaseString (
         return new Parameters(
             consumerCredential,
 			token,
-            signatureMethod,
             timestamp,
             nonce,
-            version
+            options
         ) toMap
     }
     
