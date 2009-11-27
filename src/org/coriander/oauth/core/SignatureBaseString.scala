@@ -43,10 +43,9 @@ class SignatureBaseString (
 
         var tempQuery = Query.copy(query)
 
-        getOAuthParameters.foreach(item => {
-            val (name, value) = item
-            tempQuery = tempQuery += new NameValuePair(name, value)
-        })
+        getOAuthParameters.foreach(item =>
+            tempQuery = tempQuery += new NameValuePair(item.name, item.value)
+        )
 
         val normalizedParams = normalize(tempQuery)
         
@@ -76,14 +75,14 @@ class SignatureBaseString (
         })
     }
 
-    private def getOAuthParameters : Map[String, String] = {
+    private def getOAuthParameters : List[NameValuePair] = {
         return new Parameters(
             consumerCredential,
 			token,
             timestamp,
             nonce,
             options
-        ) toMap
+        ) toList
     }
     
     private def %% (t: (String, String)) : (String, String) = {

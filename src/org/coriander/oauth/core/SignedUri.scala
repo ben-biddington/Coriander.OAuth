@@ -35,30 +35,32 @@ class SignedUri(
     }
 
 	private def combineParameters(resource : URI, query : Query) : List[NameValuePair] = {
-		val signature = sign(resource, query)
-		var oauthParams = getOAuthParams + ("oauth_signature" -> signature)
+		var oauthParams = getOAuthParams
+		oauthParams += new NameValuePair(Parameters.Names.SIGNATURE, sign(resource, query))
 
         var parameters : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
 
-        oauthParams.foreach(item => {
-            val (name, value) = item
-
-            parameters += new NameValuePair(name, value)
-        })
+        oauthParams.foreach(item => parameters += new NameValuePair(item.name, item.value))
 
         query.foreach(nvp => parameters += nvp)
 
 		parameters toList
 	}
 
-    private def getOAuthParams() : Map[String, String] = {
-        new Parameters(
-            consumer,
-			token,
-            timestamp,
-            nonce,
-            options
-        ) toMap
+    private def getOAuthParams() : ListBuffer[NameValuePair] = {
+        var result = new ListBuffer[NameValuePair]
+
+		result.appendAll(
+			new Parameters(
+				consumer,
+				token,
+				timestamp,
+				nonce,
+				options
+        	) toList
+		)
+		
+		result
     }
 
     private def sign(resource : URI, query : Query) : String = {
