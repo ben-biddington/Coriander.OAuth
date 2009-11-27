@@ -69,10 +69,10 @@ class SignatureBaseString (
     }
 
     private def containsDefaultPort(uri : URI) : Boolean = {
-        defaultPorts exists((port) => {
-            port.scheme == uri.getScheme &&
-            port.number == uri.getPort
-        })
+        defaultPorts exists(port =>
+			port.scheme == uri.getScheme &&
+			port.number == uri.getPort
+        )
     }
 
     private def getOAuthParameters : List[NameValuePair] = {

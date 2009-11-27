@@ -40,9 +40,9 @@ class SignedUri(
 
         var parameters : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
 
-        oauthParams.foreach(item => parameters += new NameValuePair(item.name, item.value))
+        oauthParams foreach(item => parameters += new NameValuePair(item.name, item.value))
 
-        query.foreach(nvp => parameters += nvp)
+        query foreach(nvp => parameters += nvp)
 
 		parameters toList
 	}
@@ -81,10 +81,10 @@ class SignedUri(
 			Options.DEFAULT
         )
 
- 		new Signature(consumer, token) sign(signatureBaseString toString)
+ 		new Signature(consumer,token) sign(signatureBaseString toString)
     }
 
     private def normalize(query : Query) : String = {
-        normalizer.normalize(query)
+        normalizer normalize(query)
     }
 }
