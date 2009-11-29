@@ -46,12 +46,19 @@ class SignedUriTest extends TestBase {
     }
 
     @Test
-    def value_always_includes_port {
+    def value_preserves_port_even_transparent_ones {
         given_a_signed_uri(new URI("https://an-https-uri-with-default-port:443"))
 
         assertThat(
             "Port 443 should not be excluded.",
             instance.value.getPort, is(equalTo(443))
+        )
+
+        given_a_signed_uri(new URI("https://an-https-uri-with-any-port:1337"))
+
+        assertThat(
+            "Port 1337 should not be excluded.",
+            instance.value.getPort, is(equalTo(1337))
         )
 
         given_a_signed_uri(new URI("http://a-plain-http-uri-with-default-port:80"))
