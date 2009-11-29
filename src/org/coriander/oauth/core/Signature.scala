@@ -10,32 +10,23 @@ import org.apache.commons.codec.binary.Base64.encodeBase64
 import org.coriander.oauth.core.uri._
 
 class Signature(
-    urlEncoder              : org.coriander.oauth.core.uri.URLEncoder,
-    consumerCredential      : OAuthCredential,
-    token                   : OAuthCredential
+    urlEncoder  : org.coriander.oauth.core.uri.URLEncoder,
+    credentials : OAuthCredentialSet
 ) {
 
     def this(
-        urlEncoder          : org.coriander.oauth.core.uri.URLEncoder,
-        consumerCredential  : OAuthCredential,
-        token               : OAuthCredential,
-        algorithm           : String
+        urlEncoder  : org.coriander.oauth.core.uri.URLEncoder,
+        credentials : OAuthCredentialSet,
+        algorithm   : String
     ) {
-        this(urlEncoder, consumerCredential, token)
+        this(urlEncoder, credentials)
         this.algorithm = algorithm
     }
 
-    def this(
-        urlEncoder          : org.coriander.oauth.core.uri.URLEncoder,
-        consumerCredential  : OAuthCredential
-    ) {
-        this(urlEncoder, consumerCredential, null)
+    def this(credentials : OAuthCredentialSet) {
+        this(new OAuthURLEncoder, credentials)
     }
 
-    def this(consumerCredential  : OAuthCredential, token : OAuthCredential) {
-        this(new OAuthURLEncoder(), consumerCredential, token)
-    }
-    
     val DEFAULT_ALGORITHM = "HMacSha1"
     var algorithm = DEFAULT_ALGORITHM
     val DEFAULT_TOKEN_SECRET : String = ""
@@ -66,16 +57,14 @@ class Signature(
     }
 
     private def getConsumerSecret : String = {
-        if (consumerCredential != null) consumerCredential.secret else null
+        if (credentials hasConsumer) credentials.consumer.secret else null
     }
 
     private def getTokenSecret : String = {
-       if (token != null) token.secret else DEFAULT_TOKEN_SECRET
+       if (credentials hasToken) credentials.token.secret else DEFAULT_TOKEN_SECRET
     }
 
-    private def %% (value : String) : String = {
-        urlEncoder.encode(value)
-    }
+    private def %% (value : String) : String = urlEncoder.encode(value)
 
     private def validate {
         validateAlgorithm
@@ -90,22 +79,23 @@ class Signature(
     }
 
     private def validateConsumerCredential {
-        if (null == consumerCredential)
+        if (false == credentials.hasConsumer)
             throw new Exception("Missing the 'consumerCredential'.")
 
-        if (null == consumerCredential.secret)
+        
+        if (null == credentials.consumer.secret)
             throw new Exception(
                 "The supplied ConsumerCredential has no secret defined."
             )
 
-        if (null == consumerCredential.key)
+        if (null == credentials.consumer.key)
             throw new Exception(
                 "The supplied ConsumerCredential has no key defined."
             )
     }
 
     private def validateToken {
-        if (token != null && token.secret == null)
+        if (credentials.hasToken && credentials.token.secret == null)
             throw new Exception("The supplied token is missing a secret.")
     }
 

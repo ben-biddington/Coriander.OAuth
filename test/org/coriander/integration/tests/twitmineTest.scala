@@ -18,6 +18,7 @@ import timestamp.SystemTimestampFactory
 import nonce.SystemNonceFactory
 import org.coriander.unit.tests.TestBase
 import uri.OAuthURLEncoder
+import org.coriander.oauth.core.OAuthCredentialSet._
 
 class TwitmineTest extends TestBase {
 
@@ -193,10 +194,7 @@ class TwitmineTest extends TestBase {
 	private def sign(uri : java.net.URI) : java.net.URI = {
 		new SignedUri(
             uri,
-            new OAuthCredentialSet(
-                consumerCredential,
-                token
-            ),
+            OAuthCredentialSet(forConsumer(consumerCredential), andToken(token)),
             timestampFactory.createTimestamp,
             nonceFactory.createNonce,
             Options.DEFAULT
@@ -247,22 +245,33 @@ class TwitmineTest extends TestBase {
 		val nonce = nonceFactory.createNonce
 		val query = new QueryParser().parse(uri)
 
-		val baseString = new SignatureBaseString(uri, query, consumerCredential, token, nonce, timestamp)
+		val baseString = new SignatureBaseString(
+            uri,
+            query,
+            OAuthCredentialSet(forConsumer(consumerCredential), andToken(token)),
+            nonce,
+            timestamp
+       )
 
-		val signature = new Signature(urlEncoder, consumerCredential, token).sign(baseString)
+		val signature = new Signature(
+            urlEncoder,
+            OAuthCredentialSet(forConsumer(consumerCredential), andToken(token))
+        ).sign(baseString)
 
 		new AuthorizationHeader(
 			TWITTER_REALM,
-			consumerCredential.key,
-			token.key,
-			SIGNATURE_METHOD,
+			credentials,
 			signature,
 			timestamp,
 			nonce,
-			VERSION,
+			Options.DEFAULT,
 			urlEncoder
 		)
 	}
+
+    private def credentials : OAuthCredentialSet = {
+        OAuthCredentialSet(forConsumer(consumerCredential), andToken(token))
+    }
 }
 
 class HttpResponse(val status : Int, val responseText : String)

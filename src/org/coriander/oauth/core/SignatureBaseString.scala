@@ -5,30 +5,29 @@ import java.net.URI
 
 import org.coriander.oauth.core.uri._
 import org.coriander.{NameValuePair, Query}
+import OAuthCredentialSet._
 
 final class SignatureBaseString (
-    method              : String,
-    uri                 : URI,
-    query               : Query,
-    consumerCredential  : OAuthCredential,
-	token 				: OAuthCredential,
-    nonce               : String,
-    timestamp           : String,
-	options				: Options
+    method      : String,
+    uri         : URI,
+    query       : Query,
+    credentials : OAuthCredentialSet,
+    nonce       : String,
+    timestamp   : String,
+	options		: Options
 ) {
     var value : String  = null
     val defaultPorts 	= List(Port("http", 80), Port("https", 443))
     var urlEncoder 		= new OAuthURLEncoder()
     
     def this(
-        uri                 : URI,
-        query               : Query,
-        consumerCredential  : OAuthCredential,
-		token 				: OAuthCredential,
-        nonce               : String,
-        timestamp           : String
+        uri         : URI,
+        query       : Query,
+        credentials : OAuthCredentialSet,
+        nonce       : String,
+        timestamp   : String
     ) {
-        this(HttpVerb.GET, uri, query, consumerCredential, token, nonce, timestamp, Options.DEFAULT)
+        this(HttpVerb.GET, uri, query, credentials, nonce, timestamp, Options.DEFAULT)
     }
 
     override def toString() : String = getSignatureBaseString
@@ -66,8 +65,7 @@ final class SignatureBaseString (
 
     private def getOAuthParameters : List[NameValuePair] = {
         return new Parameters(
-            consumerCredential,
-			token,
+            credentials,
             timestamp,
             nonce,
             options

@@ -15,7 +15,8 @@ import org.junit.rules._
 import scala.collection.immutable._
 import org.coriander.oauth._
 import core.uri.OAuthURLEncoder
-import core.{Signature, OAuthCredential}
+import core.{OAuthCredentialSet, Signature, OAuthCredential}
+import core.OAuthCredentialSet._
 import org.coriander.unit.tests.TestBase
 
 // See: http://www.infoq.com/news/2009/07/junit-4.7-rules#
@@ -29,27 +30,21 @@ class SignatureTest extends TestBase {
     // TODO: Better exception name
     @Test { val expected=classOf[Exception] }
     def when_consumerCredential_is_null_then_sign_throws_exception {
-        val credentialWithNullSecret = new OAuthCredential("key", null)
-
         newSignature(null) sign("anything");
     }
 
     // TODO: Better exception name
     @Test { val expected=classOf[Exception] }
     def when_consumerSecret_is_null_then_sign_throws_exception {
-        val credentialWithNullSecret = new OAuthCredential("key", null)
-
-        val signature = new Signature(urlEncoder, credentialWithNullSecret)
-
-        signature sign("anything");
+        newSignature(new OAuthCredential("key", null)) sign("anything")
     }
 
     // TODO: Better exception name
     @Test { val expected=classOf[Exception] }
     def when_token_is_supplied_with_null_secret_then_sign_throws_exception {
-        val tokenCredentialWithNullSecret = new OAuthCredential("key", null)
+        val tokenWithNullSecret = new OAuthCredential("key", null)
 
-        newSignature(validConsumerCredential, tokenCredentialWithNullSecret) sign("anything");
+        newSignature(validConsumerCredential, tokenWithNullSecret) sign("anything");
     }
 
     @Test 
@@ -59,7 +54,7 @@ class SignatureTest extends TestBase {
 			"oauth_timestamp%3D1252657173%26oauth_version%3D1.0"
 
         val expected : String = "2/MMtvuImh4H+clAdThQWk916lo="
-        val actual = newSignature(validConsumerCredential) sign(baseString);
+        val actual = newSignature(validConsumerCredential) sign(baseString)
 
         assertEquals(expected, actual)
     }
@@ -83,10 +78,9 @@ class SignatureTest extends TestBase {
 			"oauth_nonce%3D26db6028882d344cccad2227f4a9dae8%26oauth_signature_method%3DHMAC-SHA1%26" +
 			"oauth_timestamp%3D1252670619%26oauth_version%3D1.0"
 
-        val credential = new OAuthCredential("key", "secret with spaces")
         val expected : String = "DD+dh4ZaBlgf4WrUBfFoah/gfZg="
         
-        val actual = newSignature(credential) sign(baseString);
+        val actual = newSignature(new OAuthCredential("key", "secret with spaces")) sign(baseString);
 
         assertEquals(expected, actual)
     }
@@ -99,8 +93,13 @@ class SignatureTest extends TestBase {
 
         val token = new OAuthCredential("token_key", "token secret with spaces")
         val expected : String = "aNXBLy2UtMF99dgrJa+9PSWYYUI="
-        
-        val actual = new Signature(urlEncoder, validConsumerCredential, token) sign(baseString);
+
+        val credentials = OAuthCredentialSet(
+            forConsumer(validConsumerCredential),
+            andToken(token)
+        )
+
+        val actual = new Signature(urlEncoder, credentials) sign(baseString);
 
         assertEquals(expected, actual)
     }
@@ -111,7 +110,7 @@ class SignatureTest extends TestBase {
         var success = false
 
         try {
-            new Signature(null, null, null, "Anything but hmacsha1") sign("Any string");
+            new Signature(null, null, "Anything but hmacsha1") sign("Any string");
         } catch {
             case e : Exception => {
                 assertEquals(expectedMessage, e.getMessage)
@@ -131,9 +130,10 @@ class SignatureTest extends TestBase {
 
 		val consumer = new OAuthCredential("key", "secret")
 		val token = new OAuthCredential("HZvFeX5T7XlRIcJme/EWTg==", "Ao61gCJXIM20aqLDw7+Cow==")
-
+        val credentials = OAuthCredentialSet(consumer, token)
+        
 		val expected = "ZZ3oRaIMA4dg4HrS63qokpKwGbY="
-		val actual = new Signature(urlEncoder, consumer, token) sign(baseString)
+		val actual = new Signature(credentials) sign(baseString)
 
 		assertThat(actual, is(equalTo(expected)))
 	}
@@ -142,10 +142,11 @@ class SignatureTest extends TestBase {
         newSignature(consumerCredential, null)
     }
 
-    def newSignature(
-        consumerCredential : OAuthCredential,
-        token : OAuthCredential
-    ) : Signature = {
-        new Signature(urlEncoder, consumerCredential, token)
+    def newSignature(consumer  : OAuthCredential, token : OAuthCredential) : Signature = {
+        val credentials = OAuthCredentialSet(
+            forConsumer(consumer),
+            andToken(token)
+        )
+        new Signature(urlEncoder, credentials)
     }
 }

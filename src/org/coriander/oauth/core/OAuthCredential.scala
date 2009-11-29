@@ -6,6 +6,8 @@ final class OAuthCredentialSet (val consumer : OAuthCredential, val token : OAut
     def this(consumer : OAuthCredential) {
         this(consumer, null)
     }
+    def hasConsumer : Boolean = return consumer != null
+    def hasToken : Boolean = return token != null
 }
 
 object OAuthCredentialSet {

@@ -54,8 +54,7 @@ class SignedUri(
 
 		result appendAll(
 			new Parameters(
-				credentials.consumer,
-				credentials.token,
+				credentials,
 				timestamp,
 				nonce,
 				options
@@ -70,14 +69,13 @@ class SignedUri(
             method,
             uri,
             query,
-            credentials.consumer,
-			credentials.token,
+            credentials,
             nonce,
             timestamp,
 			Options.DEFAULT
         )
 
- 		new Signature(credentials.consumer,credentials.token) sign(signatureBaseString toString)
+ 		new Signature(credentials) sign(signatureBaseString toString)
     }
 
     private def normalize(query : Query) : String = normalizer normalize(query)

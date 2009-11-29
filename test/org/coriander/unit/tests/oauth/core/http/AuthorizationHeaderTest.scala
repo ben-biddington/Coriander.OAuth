@@ -10,7 +10,7 @@ import scala.util.matching._
 import org.mockito.Mockito._
 
 import org.coriander.oauth._
-import core.OAuthCredential
+import core.{Options, OAuthCredentialSet, OAuthCredential}
 import org.coriander.oauth.core.uri._
 import org.coriander.oauth.core.http.AuthorizationHeader
 import java.net.URI
@@ -27,6 +27,13 @@ class AuthorizationHeaderTest extends TestBase {
     val oauth_timestamp         = "137131200"
     val oauth_nonce             = "4572616e48616d6d65724c61686176"
     val oauth_version           = "1.0"
+
+    val credentials =  new OAuthCredentialSet(
+        new OAuthCredential(oauth_consumer_key, ""),
+        new OAuthCredential(oauth_token, "")
+    )
+
+    val options = Options.DEFAULT
 
     val linearWhitespace        = "[\t| ]"
     val anyLinearWhitespace     = linearWhitespace + "*"
@@ -68,9 +75,9 @@ class AuthorizationHeaderTest extends TestBase {
 
         val nameValuePairs : Array[String] = value.split(",");
 
-        nameValuePairs foreach(pair => {
+        nameValuePairs foreach(pair =>
             assertMatches(createNameValuePairPattern, pair)
-        })
+        )
     }
 
      @Test
@@ -129,13 +136,11 @@ class AuthorizationHeaderTest extends TestBase {
 
 		val header = new AuthorizationHeader(
 			realm,
-			consumer.key,
-			token.key,
-			oauth_signature_method,
+			new OAuthCredentialSet(consumer, token),
 			signature,
 			timestamp,
 			nonce,
-			version,
+			options,
 			urlEncoder
 		)
 
@@ -153,13 +158,11 @@ class AuthorizationHeaderTest extends TestBase {
         AuthorizationHeader = {
         new AuthorizationHeader(
             realm,
-            oauth_consumer_key,
-            oauth_token,
-            oauth_signature_method,
+            credentials,
             oauth_signature,
             oauth_timestamp,
             oauth_nonce,
-            oauth_version,
+            options,
             urlEncoder
         )
     }
