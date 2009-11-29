@@ -193,8 +193,10 @@ class TwitmineTest extends TestBase {
 	private def sign(uri : java.net.URI) : java.net.URI = {
 		new SignedUri(
             uri,
-            consumerCredential,
-            token,
+            new OAuthCredentialSet(
+                consumerCredential,
+                token
+            ),
             timestampFactory.createTimestamp,
             nonceFactory.createNonce,
             Options.DEFAULT

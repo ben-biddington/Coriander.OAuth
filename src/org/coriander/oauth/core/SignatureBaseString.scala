@@ -43,15 +43,13 @@ final class SignatureBaseString (
             tempQuery = tempQuery += new NameValuePair(item.name, item.value)
         )
 
-        val normalizedParams = normalize(tempQuery)
-        
         val requestUrl = uri.getScheme + "://" + selectAuthority(uri) + uri.getPath
 
         String format(
             "%1$s%2$s%3$s",
             method.toUpperCase + "&",
             %%(requestUrl) + "&",
-            %%(normalizedParams)
+            %%(normalize(tempQuery))
         );
     }
 

@@ -5,11 +5,9 @@ import java.net.URI
 import org.coriander.{NameValuePair, QueryParser, Query}
 import collection.mutable.ListBuffer
 
-// TODO: Consider combining consumer and token into single type
 class SignedUri(
     uri 		: URI,
-    consumer 	: OAuthCredential,
-    token 		: OAuthCredential,
+    credentials : OAuthCredentialSet,
     timestamp 	: String,
     nonce 		: String,
     options 	: Options
@@ -18,7 +16,7 @@ class SignedUri(
     val queryParser = new QueryParser()
     val method 		= HttpVerb.GET
     
-    def value : URI = value(uri, queryParser.parse(uri))
+    def value : URI = value(uri, queryParser.parse(uri))            
 
     private def value(resource : URI, query : Query) : URI = {
 		val parameters = combineParameters(resource, query)
@@ -56,8 +54,8 @@ class SignedUri(
 
 		result appendAll(
 			new Parameters(
-				consumer,
-				token,
+				credentials.consumer,
+				credentials.token,
 				timestamp,
 				nonce,
 				options
@@ -72,14 +70,14 @@ class SignedUri(
             method,
             uri,
             query,
-            consumer,
-			token,
+            credentials.consumer,
+			credentials.token,
             nonce,
             timestamp,
 			Options.DEFAULT
         )
 
- 		new Signature(consumer,token) sign(signatureBaseString toString)
+ 		new Signature(credentials.consumer,credentials.token) sign(signatureBaseString toString)
     }
 
     private def normalize(query : Query) : String = normalizer normalize(query)

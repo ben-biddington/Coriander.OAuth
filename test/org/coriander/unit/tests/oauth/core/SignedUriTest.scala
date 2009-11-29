@@ -10,9 +10,10 @@ import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
 import org.coriander.oauth._
-import core.{Options, SignedUri, OAuthCredential}
+import core.{OAuthCredentialSet, Options, SignedUri, OAuthCredential}
 import org.coriander.{Query, NameValuePair}
 import org.coriander.unit.tests.TestBase
+import org.coriander.oauth.core.OAuthCredentialSet._
 
 class SignedUriTest extends TestBase {
 
@@ -130,8 +131,7 @@ class SignedUriTest extends TestBase {
 
 		val signedUri = new SignedUri(
 			uri,
-			consumer,
-			token,
+			new OAuthCredentialSet(consumer, token),
 			timestamp,
 			nonce,
             Options.DEFAULT
@@ -147,14 +147,12 @@ class SignedUriTest extends TestBase {
     @Test
     def value_contains_all_expected_parameters {
         val uri = new URI("http://xxx/")
-        val token = null
         val timestamp = "1257608197"
         val nonce = "ea757706c42e2b14a7a8999acdc71089"
 
         val signedUri = new SignedUri(
             uri,
-            consumerCredential,
-            token,
+            OAuthCredentialSet(forConsumer(consumerCredential), andNoToken),
             timestamp,
             nonce,
             Options.DEFAULT
@@ -177,14 +175,12 @@ class SignedUriTest extends TestBase {
 	@Test
 	def value_excludes_default_port_80_for_http {
 		var uri = new URI("http://xxx:80/")
-        var token = null
         var timestamp = "1259226604"
         var nonce = "e2d77f64c61903a24d9b6ad8e9c4e71c"
 
         var signedUri = new SignedUri(
             uri,
-            consumerCredential,
-            token,
+            OAuthCredentialSet(forConsumer(consumerCredential), andNoToken),
             timestamp,
             nonce,
             Options.DEFAULT
@@ -203,16 +199,14 @@ class SignedUriTest extends TestBase {
     }
 
     private def given_a_signed_uri(uri : URI) {
-        val token = null
         val signatureMethod = "any-signature-method"
         val timestamp = "any-timestamp"
         val nonce = "any-nonce"
         val version = "any-version"
-        
+
         instance = new SignedUri(
             uri,
-            consumerCredential,
-            null,
+            OAuthCredentialSet(forConsumer(consumerCredential), andNoToken),
             timestamp,
             nonce,
             Options.DEFAULT
