@@ -2,7 +2,7 @@
 <project name="scala-oauth-make-jar" basedir=".">
     <property name="app.name" value="scala-oauth"/>
     <property name="app.path" value="/${app.name}"/>
-    <property name="app.version" value="1.0.0"/>
+    <property name="app.version" value="1.1.0"/>
     <property name="src.home" value="${basedir}/src"/>
     <property name="build.home" value="${basedir}/out"/>
     <target  name="clean">
@@ -11,9 +11,10 @@
 
     <target name="jar" depends="clean">
         <mkdir dir="${build.home}/jar"/>
-        <jar destfile="out/jar/scala-oauth-${app.version}.jar" basedir="${build.home}/production">
+        <jar destfile="out/jar/scala-oauth-${app.version}.jar" basedir="${build.home}/production/scala-oauth" >
             <manifest>
                 <attribute name="Author" value="Ben Biddington"/>
+                <attribute name="Version" value="${app.version}"/>
             </manifest>
         </jar>
     </target>

@@ -16,9 +16,9 @@ final class SignatureBaseString (
     timestamp   : String,
 	options		: Options
 ) {
-    var value : String  = null
+    var value           = null
     val defaultPorts 	= List(Port("http", 80), Port("https", 443))
-    var urlEncoder 		= new OAuthURLEncoder()
+    var urlEncoder 		= new OAuthURLEncoder
     
     def this(
         uri         : URI,
@@ -32,9 +32,9 @@ final class SignatureBaseString (
 
     override def toString() : String = getSignatureBaseString
     
-    def getSignatureBaseString() : String = getSignatureBaseString(uri, query)
+    private def getSignatureBaseString() : String = getSignatureBaseString(uri, query)
 
-    def getSignatureBaseString(uri : URI, query : Query) : String = {
+    private def getSignatureBaseString(uri : URI, query : Query) : String = {
 
         var tempQuery = Query.copy(query)
 
