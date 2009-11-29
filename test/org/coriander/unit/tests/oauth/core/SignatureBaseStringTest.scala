@@ -22,11 +22,9 @@ class SignatureBaseStringTest extends TestBase {
     var aValidUri 		= new java.net.URI("http://xxx/")
     val aValidNonce 	= new SystemNonceFactory createNonce
     val aValidTimestamp = new SystemTimestampFactory createTimestamp
-    var query : Query 	= new Query
-    val urlEncoder 	= new OAuthURLEncoder
+    var query           = new Query
+    val urlEncoder 	    = new OAuthURLEncoder
     var signatureBaseString : SignatureBaseString = null
-
-    var done = false
     
     @Test
     def parameters_appear_in_the_result_twice_RFC3629_percent_encoded() {
