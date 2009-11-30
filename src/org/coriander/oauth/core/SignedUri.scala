@@ -12,7 +12,6 @@ class SignedUri(
     nonce 		: String,
     options 	: Options
 ) {
-
 	def this(
 		uri 		: URI,
     	credentials : CredentialSet,
@@ -22,8 +21,8 @@ class SignedUri(
 		this(uri, credentials, timestamp, nonce, Options.DEFAULT)
 	}
 
-    val normalizer 	= new Normalizer()
-    val queryParser = new QueryParser()
+    val normalizer 	= new Normalizer
+    val queryParser = new QueryParser
     val method 		= HttpVerb.GET
     
     def value : URI = value(uri, queryParser.parse(uri))            
@@ -33,9 +32,11 @@ class SignedUri(
         val normalizedParams : String = normalize(new Query(parameters))
 
         val signedUrl : String =
-            resource.getScheme + "://" +
-            resource.getAuthority +
-            resource.getPath + "?" +
+            resource.getScheme	 		+
+			"://" 						+
+            resource.getAuthority 		+
+            resource.getPath 			+
+			"?" 						+
             normalizedParams.toString
 
         return new URI(signedUrl)
@@ -54,12 +55,12 @@ class SignedUri(
 	}
 
 	private def getOAuthParamsWithSignature(signature : String) : ListBuffer[NameValuePair] = {
-        var oauthParams = getOAuthParams
+        var oauthParams = getOAuthParameters
 		oauthParams += new NameValuePair(Parameters.Names.SIGNATURE, signature)
 		oauthParams
     }
 	
-    private def getOAuthParams() : ListBuffer[NameValuePair] = {
+    private def getOAuthParameters() : ListBuffer[NameValuePair] = {
         var result = new ListBuffer[NameValuePair]
 
 		result appendAll(
@@ -85,7 +86,7 @@ class SignedUri(
 			Options.DEFAULT
         )
 
- 		new Signature(credentials) sign(signatureBaseString toString)
+ 		new Signature(credentials) sign(signatureBaseString)
     }
 
     private def normalize(query : Query) : String = normalizer normalize(query)

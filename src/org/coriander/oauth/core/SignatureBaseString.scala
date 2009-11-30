@@ -45,8 +45,8 @@ final class SignatureBaseString (
 
         String format(
             "%1$s%2$s%3$s",
-            method.toUpperCase + "&",
-            %%(requestUrl) + "&",
+            method.toUpperCase 	+ "&",
+            %%(requestUrl) 		+ "&",
             %%(normalize(tempQuery))
         );
     }

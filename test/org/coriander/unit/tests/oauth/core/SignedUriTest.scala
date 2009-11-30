@@ -20,9 +20,6 @@ class SignedUriTest extends TestBase {
     val consumerCredential = new Credential("key", "secret")
     val anyUri : URI = new URI("http://any-host/default.html")
 
-    val signatureMethod = "HMAC-SHA1"
-    val version = "1.0"
-
     var instance : SignedUri = null
 
     @Before
@@ -131,14 +128,17 @@ class SignedUriTest extends TestBase {
 	@Test
 	def both_consumer_and_token_are_used_to_sign {
 		val uri = new URI("http://xxx")
-		val consumer = new Credential("key", "secret")
-		val token = new Credential("token", "token_secret")
 		val timestamp = "1259067839"
 		val nonce = "73f0f93345d76d6cd1bab30af14a99e3"
 
+		val credentials : CredentialSet = new CredentialSet(
+			new Credential("key", "secret"),
+			new Credential("token", "token_secret")
+		)
+
 		val signedUri = new SignedUri(
 			uri,
-			new CredentialSet(consumer, token),
+			credentials,
 			timestamp,
 			nonce
 		)

@@ -12,20 +12,20 @@ import java.net.URI
 import oauth.core._
 import oauth.core.nonce.SystemNonceFactory
 import oauth.core.timestamp.SystemTimestampFactory
-import oauth.core.uri.OAuthURLEncoder
 import CredentialSet._
+import oauth.core.uri.{Port, OAuthURLEncoder}
 import unit.tests.TestBase
+import java.lang.String
 
 class SignatureBaseStringTest extends TestBase {
     val consumerCredential = new Credential("key", "secret")
-	
-    var aValidUri 		= new java.net.URI("http://xxx/")
+    var uri 		= new java.net.URI("http://xxx/")
     val aValidNonce 	= new SystemNonceFactory createNonce
     val aValidTimestamp = new SystemTimestampFactory createTimestamp
     var query           = new Query
     val urlEncoder 	    = new OAuthURLEncoder
-    var signatureBaseString : SignatureBaseString = null
-    
+	var signatureBaseString : SignatureBaseString = null
+
     @Test
     def parameters_appear_in_the_result_twice_RFC3629_percent_encoded() {
         val originalValue = "http://some-url?param=value"
@@ -67,7 +67,7 @@ class SignatureBaseStringTest extends TestBase {
         given_a_list_of_parameters
 
         val result = new SignatureBaseString(
-            aValidUri,
+            uri,
             query,
             CredentialSet(forConsumer(consumerCredential), andNoToken),
             aValidNonce,
@@ -90,11 +90,11 @@ class SignatureBaseStringTest extends TestBase {
         val allParameters = parseParameters(signatureBaseString)
 
         val requiredParameters = List(
-            "oauth_consumer_key",
-            "oauth_signature_method",
-            "oauth_timestamp",
-            "oauth_nonce",
-            "oauth_version"
+			Parameters.Names.CONSUMER_KEY,
+            Parameters.Names.SIGNATURE_METHOD,
+            Parameters.Names.TIMESTAMP,
+            Parameters.Names.NONCE,
+            Parameters.Names.VERSION
         )
 
         requiredParameters foreach(
@@ -161,10 +161,10 @@ class SignatureBaseStringTest extends TestBase {
 
     @Test
     def result_excludes_default_port_80_for_http_and_443_for_https() {
-        assertResultExcludesPort("http", 80)
-        assertResultIncludesPort("http", 443)
-        assertResultExcludesPort("https", 443)
-        assertResultIncludesPort("https", 80)
+        assertResultExcludes(Port("http"	, 80))
+        assertResultIncludes(Port("http"	, 443))
+        assertResultExcludes(Port("https"	, 443))
+        assertResultIncludes(Port("https"	, 80))
     }
 
     @Test
@@ -175,18 +175,20 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-        assertThat(
-            signatureBaseString.toString,
-            containsString(urlEncoder.%%(aValidUri.getPath))
+		val expectedPath: String = uri getPath
+
+		assertThat(
+            signatureBaseString toString,
+            containsString(urlEncoder.%%(expectedPath))
         )
     }
 
     @Test
     def when_I_create_an_instance_without_supplying_a_method_then_method_defaults_to_get() {
         val signatureBaseString = new SignatureBaseString(
-            aValidUri,
+            uri,
             query,
-            CredentialSet(forConsumer(consumerCredential), andNoToken),
+            CredentialSet(consumerCredential),
             aValidNonce,
             aValidTimestamp
         )
@@ -213,7 +215,7 @@ class SignatureBaseStringTest extends TestBase {
             "oauth_signature_method%3DHMAC-SHA1%26" +
             "oauth_timestamp%3D1252500234%26oauth_version%3D1.0"
         
-        // Signature for above: oyg55+J+tiWduaXMdMFrCS/PMZQ=
+        // [i] Signature for above: oyg55+J+tiWduaXMdMFrCS/PMZQ=
 
         val actual = new SignatureBaseString(
             "get",
@@ -242,7 +244,7 @@ class SignatureBaseStringTest extends TestBase {
 
 		val consumer = new Credential("dpf43f3p2l4k3l03", "kd94hf93k423kf44")
 		val token = new Credential("nnch734d00sl2jdk", "pfkkdhi9sl3r4s00")
-        val credentials = new CredentialSet(forConsumer(consumer), andToken(token))
+        val credentials = CredentialSet(forConsumer(consumer), andToken(token))
 
 		val uri : URI = new URI("http://photos.example.net/photos")
 		val query = new QueryParser().
@@ -266,11 +268,11 @@ class SignatureBaseStringTest extends TestBase {
 
 		val timestamp = "1259051683"
 		val nonce = "1108721620a4c6093f92b24d5844e61b"
-		val version = "1.0"
 
-		val consumer = new Credential("key", "secret")
-		val token = new Credential("HZvFeX5T7XlRIcJme/EWTg==", "Ao61gCJXIM20aqLDw7+Cow==")
-        val credentials = new CredentialSet(forConsumer(consumer), andToken(token))
+		val credentials = new CredentialSet(
+			new Credential("key", "secret"),
+			new Credential("HZvFeX5T7XlRIcJme/EWTg==", "Ao61gCJXIM20aqLDw7+Cow==")
+		)
         
 		val uri : URI = new URI("http://xxx")
 		val query = Query()
@@ -288,9 +290,9 @@ class SignatureBaseStringTest extends TestBase {
     // TEST: When URL contains query string, then it is excluded in the result
     // TEST: This class only requires oauth_key, not an entire Credential
 
-    private def assertResultExcludesPort(scheme: String, port : Int) {
-        val expectedUriString = scheme + "://xxx/"
-        val suppliedUriString = scheme + "://xxx:" + port.toString + "/"
+    private def assertResultExcludes(port : Port) {
+        val expectedUriString = port.scheme + "://xxx/"
+        val suppliedUriString = port.scheme + "://xxx:" + port.number.toString  + "/"
 
         given_a_uri(new java.net.URI(suppliedUriString))
 
@@ -303,8 +305,8 @@ class SignatureBaseStringTest extends TestBase {
         assertStartsWith("^GET&" + expectedUriString + "&", plainTextValue)
     }
 
-     private def assertResultIncludesPort(scheme: String, port : Int) {
-        val expectedUriString = scheme + "://xxx:" + port.toString + "/"
+     private def assertResultIncludes(port : Port) {
+        val expectedUriString = port.scheme + "://xxx:" + port.number.toString + "/"
         val suppliedUriString = expectedUriString
 
         given_a_uri(new java.net.URI(suppliedUriString))
@@ -318,11 +320,9 @@ class SignatureBaseStringTest extends TestBase {
         assertStartsWith("^GET&" + expectedUriString + "&", plainTextValue)
     }
 
-    private def given_a_uri(uri: java.net.URI) {
-        aValidUri = uri;
-    }
+    private def given_a_uri(uri: java.net.URI) = this.uri = uri;
 
-    private def given_a_list_of_parameters() {
+    private def given_a_list_of_parameters {
         query = Query.from(
             "a" -> "a_value",
             "b" -> "b_value",
@@ -330,7 +330,7 @@ class SignatureBaseStringTest extends TestBase {
         )
     }
 
-    private def given_an_unsorted_list_of_parameters() {
+    private def given_an_unsorted_list_of_parameters {
         query = Query.from(
             "c" -> "c_value",
             "b" -> "b_value",
@@ -349,7 +349,7 @@ class SignatureBaseStringTest extends TestBase {
     private def createDefault(method : String) : SignatureBaseString = {
          new SignatureBaseString(
             method,
-            aValidUri,
+            uri,
             query,
             CredentialSet(forConsumer(consumerCredential), andNoToken),
             aValidNonce,
@@ -361,7 +361,7 @@ class SignatureBaseStringTest extends TestBase {
     private def newSignatureBaseString(query : Query) :
         SignatureBaseString = {
         new SignatureBaseString(
-            aValidUri,
+            uri,
             query,
             CredentialSet(forConsumer(consumerCredential), andNoToken),
             aValidNonce,
@@ -384,5 +384,5 @@ class SignatureBaseStringTest extends TestBase {
         val query = parseQuery(urlDecode(encodedParams))
         
         (method, url, query)
-    }    
+    }
 }
