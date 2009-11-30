@@ -1,10 +1,10 @@
 package org.coriander.oauth.core.http
 
-import org.coriander.oauth.core.{OAuthCredentialSet, Options}
+import org.coriander.oauth.core.{CredentialSet, Options}
 
 class AuthorizationHeader(
     realm       : String,
-    credentials : OAuthCredentialSet,
+    credentials : CredentialSet,
     signature   : String,
     timestamp   : String,
     nonce       : String,

@@ -18,7 +18,7 @@ import timestamp.SystemTimestampFactory
 import nonce.SystemNonceFactory
 import org.coriander.unit.tests.TestBase
 import uri.OAuthURLEncoder
-import org.coriander.oauth.core.OAuthCredentialSet._
+import CredentialSet._
 
 class TwitmineTest extends TestBase {
 
@@ -39,8 +39,8 @@ class TwitmineTest extends TestBase {
 
 	val VALID_AUTHORIZATION_PIN : Int = 0
 	
-	var consumerCredential = new OAuthCredential("","")
-	var token = new OAuthCredential("","")
+	var consumerCredential = new Credential("","")
+	var token = new Credential("","")
 	var authHeader : AuthorizationHeader = null
     var signedUri : java.net.URI = null
     var result : HttpResponse = HttpResponse.empty
@@ -178,7 +178,7 @@ class TwitmineTest extends TestBase {
 	}
 
     private def given_an_invalid_credential {
-        consumerCredential = new OAuthCredential("key", "secret")
+        consumerCredential = new Credential("key", "secret")
     }
 
 	private def when_a_request_token_is_requested {
@@ -194,7 +194,7 @@ class TwitmineTest extends TestBase {
 	private def sign(uri : java.net.URI) : java.net.URI = {
 		new SignedUri(
             uri,
-            OAuthCredentialSet(forConsumer(consumerCredential), andToken(token)),
+            CredentialSet(forConsumer(consumerCredential), andToken(token)),
             timestampFactory.createTimestamp,
             nonceFactory.createNonce,
             Options.DEFAULT
@@ -248,14 +248,14 @@ class TwitmineTest extends TestBase {
 		val baseString = new SignatureBaseString(
             uri,
             query,
-            OAuthCredentialSet(forConsumer(consumerCredential), andToken(token)),
+            CredentialSet(forConsumer(consumerCredential), andToken(token)),
             nonce,
             timestamp
        )
 
 		val signature = new Signature(
             urlEncoder,
-            OAuthCredentialSet(forConsumer(consumerCredential), andToken(token))
+            CredentialSet(forConsumer(consumerCredential), andToken(token))
         ).sign(baseString)
 
 		new AuthorizationHeader(
@@ -269,8 +269,8 @@ class TwitmineTest extends TestBase {
 		)
 	}
 
-    private def credentials : OAuthCredentialSet = {
-        OAuthCredentialSet(forConsumer(consumerCredential), andToken(token))
+    private def credentials : CredentialSet = {
+        CredentialSet(forConsumer(consumerCredential), andToken(token))
     }
 }
 

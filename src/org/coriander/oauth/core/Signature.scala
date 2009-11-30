@@ -11,19 +11,19 @@ import org.coriander.oauth.core.uri._
 
 class Signature(
     urlEncoder  : org.coriander.oauth.core.uri.URLEncoder,
-    credentials : OAuthCredentialSet
+    credentials : CredentialSet
 ) {
 
     def this(
         urlEncoder  : org.coriander.oauth.core.uri.URLEncoder,
-        credentials : OAuthCredentialSet,
+        credentials : CredentialSet,
         algorithm   : String
     ) {
         this(urlEncoder, credentials)
         this.algorithm = algorithm
     }
 
-    def this(credentials : OAuthCredentialSet) {
+    def this(credentials : CredentialSet) {
         this(new OAuthURLEncoder, credentials)
     }
 

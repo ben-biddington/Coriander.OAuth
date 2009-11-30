@@ -4,7 +4,7 @@ import org.coriander.NameValuePair
 import collection.mutable.ListBuffer
 
 final class Parameters(
-    val credentials : OAuthCredentialSet,
+    val credentials : CredentialSet,
     val timestamp 	: String,
     val nonce 		: String,
     val options 	: Options

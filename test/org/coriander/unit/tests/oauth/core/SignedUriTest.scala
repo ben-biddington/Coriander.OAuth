@@ -10,14 +10,14 @@ import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit.matchers.JUnitMatchers._
 import org.coriander.oauth._
-import core.{OAuthCredentialSet, Options, SignedUri, OAuthCredential}
+import core.{CredentialSet, Options, SignedUri, Credential}
 import org.coriander.{Query, NameValuePair}
 import org.coriander.unit.tests.TestBase
-import org.coriander.oauth.core.OAuthCredentialSet._
+import CredentialSet._
 
 class SignedUriTest extends TestBase {
 
-    val consumerCredential = new OAuthCredential("key", "secret")
+    val consumerCredential = new Credential("key", "secret")
     val anyUri : URI = new URI("http://any-host/default.html")
 
     val signatureMethod = "HMAC-SHA1"
@@ -131,14 +131,14 @@ class SignedUriTest extends TestBase {
 	@Test
 	def both_consumer_and_token_are_used_to_sign {
 		val uri = new URI("http://xxx")
-		val consumer = new OAuthCredential("key", "secret")
-		val token = new OAuthCredential("token", "token_secret")
+		val consumer = new Credential("key", "secret")
+		val token = new Credential("token", "token_secret")
 		val timestamp = "1259067839"
 		val nonce = "73f0f93345d76d6cd1bab30af14a99e3"
 
 		val signedUri = new SignedUri(
 			uri,
-			new OAuthCredentialSet(consumer, token),
+			new CredentialSet(consumer, token),
 			timestamp,
 			nonce,
             Options.DEFAULT
@@ -159,7 +159,7 @@ class SignedUriTest extends TestBase {
 
         val signedUri = new SignedUri(
             uri,
-            OAuthCredentialSet(forConsumer(consumerCredential), andNoToken),
+            CredentialSet(forConsumer(consumerCredential), andNoToken),
             timestamp,
             nonce,
             Options.DEFAULT
@@ -187,7 +187,7 @@ class SignedUriTest extends TestBase {
 
         var signedUri = new SignedUri(
             uri,
-            OAuthCredentialSet(forConsumer(consumerCredential), andNoToken),
+            CredentialSet(forConsumer(consumerCredential), andNoToken),
             timestamp,
             nonce,
             Options.DEFAULT
@@ -213,7 +213,7 @@ class SignedUriTest extends TestBase {
 
         instance = new SignedUri(
             uri,
-            OAuthCredentialSet(forConsumer(consumerCredential), andNoToken),
+            CredentialSet(forConsumer(consumerCredential), andNoToken),
             timestamp,
             nonce,
             Options.DEFAULT

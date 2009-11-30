@@ -10,7 +10,7 @@ import scala.util.matching._
 import org.mockito.Mockito._
 
 import org.coriander.oauth._
-import core.{Options, OAuthCredentialSet, OAuthCredential}
+import core.{Options, CredentialSet, Credential}
 import org.coriander.oauth.core.uri._
 import org.coriander.oauth.core.http.AuthorizationHeader
 import java.net.URI
@@ -28,9 +28,9 @@ class AuthorizationHeaderTest extends TestBase {
     val oauth_nonce             = "4572616e48616d6d65724c61686176"
     val oauth_version           = "1.0"
 
-    val credentials =  new OAuthCredentialSet(
-        new OAuthCredential(oauth_consumer_key, ""),
-        new OAuthCredential(oauth_token, "")
+    val credentials =  new CredentialSet(
+        new Credential(oauth_consumer_key, ""),
+        new Credential(oauth_token, "")
     )
 
     val options = Options.DEFAULT
@@ -131,12 +131,12 @@ class AuthorizationHeaderTest extends TestBase {
 		val nonce = "kllo9940pd9333jh"
 		val version = "1.0"
 		val realm = "http://photos.example.net/"
-		val consumer = new OAuthCredential("dpf43f3p2l4k3l03", "kd94hf93k423kf44")
-		val token = new OAuthCredential("nnch734d00sl2jdk", "pfkkdhi9sl3r4s00")
+		val consumer = new Credential("dpf43f3p2l4k3l03", "kd94hf93k423kf44")
+		val token = new Credential("nnch734d00sl2jdk", "pfkkdhi9sl3r4s00")
 
 		val header = new AuthorizationHeader(
 			realm,
-			new OAuthCredentialSet(consumer, token),
+			new CredentialSet(consumer, token),
 			signature,
 			timestamp,
 			nonce,

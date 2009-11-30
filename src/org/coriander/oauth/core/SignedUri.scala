@@ -7,7 +7,7 @@ import collection.mutable.ListBuffer
 
 class SignedUri(
     uri 		: URI,
-    credentials : OAuthCredentialSet,
+    credentials : CredentialSet,
     timestamp 	: String,
     nonce 		: String,
     options 	: Options

@@ -1,6 +1,5 @@
 package org.coriander.unit.tests.oauth.core
 
-
 import org.junit.Assert._
 import org.junit.matchers.JUnitMatchers._
 import org.hamcrest.core.Is._
@@ -10,15 +9,15 @@ import org.junit.rules._
 
 import org.coriander._
 import java.net.URI
+import oauth.core._
 import oauth.core.nonce.SystemNonceFactory
 import oauth.core.timestamp.SystemTimestampFactory
 import oauth.core.uri.OAuthURLEncoder
-import oauth.core.OAuthCredentialSet._
-import oauth.core.{OAuthCredentialSet, Options, SignatureBaseString, OAuthCredential}
+import CredentialSet._
 import unit.tests.TestBase
 
 class SignatureBaseStringTest extends TestBase {
-    val consumerCredential = new org.coriander.oauth.core.OAuthCredential("key", "secret")
+    val consumerCredential = new Credential("key", "secret")
 	
     var aValidUri 		= new java.net.URI("http://xxx/")
     val aValidNonce 	= new SystemNonceFactory createNonce
@@ -70,7 +69,7 @@ class SignatureBaseStringTest extends TestBase {
         val result = new SignatureBaseString(
             aValidUri,
             query,
-            OAuthCredentialSet(forConsumer(consumerCredential), andNoToken),
+            CredentialSet(forConsumer(consumerCredential), andNoToken),
             aValidNonce,
             aValidTimestamp
         )
@@ -187,7 +186,7 @@ class SignatureBaseStringTest extends TestBase {
         val signatureBaseString = new SignatureBaseString(
             aValidUri,
             query,
-            OAuthCredentialSet(forConsumer(consumerCredential), andNoToken),
+            CredentialSet(forConsumer(consumerCredential), andNoToken),
             aValidNonce,
             aValidTimestamp
         )
@@ -220,7 +219,7 @@ class SignatureBaseStringTest extends TestBase {
             "get",
             new URI("http://xxx/"),
             new Query(),
-            OAuthCredentialSet(forConsumer(new OAuthCredential("key", "secret")), andNoToken),
+            CredentialSet(forConsumer(new Credential("key", "secret")), andNoToken),
             "ddb61ca14d02e9ef7b55cc5c1f88616f",
             "1252500234",
 			Options.DEFAULT
@@ -241,9 +240,9 @@ class SignatureBaseStringTest extends TestBase {
 		val nonce = "kllo9940pd9333jh"
 		val version = "1.0"
 
-		val consumer = new OAuthCredential("dpf43f3p2l4k3l03", "kd94hf93k423kf44")
-		val token = new OAuthCredential("nnch734d00sl2jdk", "pfkkdhi9sl3r4s00")
-        val credentials = new OAuthCredentialSet(forConsumer(consumer), andToken(token))
+		val consumer = new Credential("dpf43f3p2l4k3l03", "kd94hf93k423kf44")
+		val token = new Credential("nnch734d00sl2jdk", "pfkkdhi9sl3r4s00")
+        val credentials = new CredentialSet(forConsumer(consumer), andToken(token))
 
 		val uri : URI = new URI("http://photos.example.net/photos")
 		val query = new QueryParser().
@@ -269,9 +268,9 @@ class SignatureBaseStringTest extends TestBase {
 		val nonce = "1108721620a4c6093f92b24d5844e61b"
 		val version = "1.0"
 
-		val consumer = new OAuthCredential("key", "secret")
-		val token = new OAuthCredential("HZvFeX5T7XlRIcJme/EWTg==", "Ao61gCJXIM20aqLDw7+Cow==")
-        val credentials = new OAuthCredentialSet(forConsumer(consumer), andToken(token))
+		val consumer = new Credential("key", "secret")
+		val token = new Credential("HZvFeX5T7XlRIcJme/EWTg==", "Ao61gCJXIM20aqLDw7+Cow==")
+        val credentials = new CredentialSet(forConsumer(consumer), andToken(token))
         
 		val uri : URI = new URI("http://xxx")
 		val query = Query()
@@ -287,7 +286,7 @@ class SignatureBaseStringTest extends TestBase {
 	// TEST: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
     // TEST: When URL contains ending slash, then it is included in the result
     // TEST: When URL contains query string, then it is excluded in the result
-    // TEST: This class only requires oauth_key, not an entire OAuthCredential
+    // TEST: This class only requires oauth_key, not an entire Credential
 
     private def assertResultExcludesPort(scheme: String, port : Int) {
         val expectedUriString = scheme + "://xxx/"
@@ -352,7 +351,7 @@ class SignatureBaseStringTest extends TestBase {
             method,
             aValidUri,
             query,
-            OAuthCredentialSet(forConsumer(consumerCredential), andNoToken),
+            CredentialSet(forConsumer(consumerCredential), andNoToken),
             aValidNonce,
             aValidTimestamp,
 		 	Options.DEFAULT
@@ -364,7 +363,7 @@ class SignatureBaseStringTest extends TestBase {
         new SignatureBaseString(
             aValidUri,
             query,
-            OAuthCredentialSet(forConsumer(consumerCredential), andNoToken),
+            CredentialSet(forConsumer(consumerCredential), andNoToken),
             aValidNonce,
             aValidTimestamp
         );

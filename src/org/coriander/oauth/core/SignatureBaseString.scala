@@ -5,13 +5,13 @@ import java.net.URI
 
 import org.coriander.oauth.core.uri._
 import org.coriander.{NameValuePair, Query}
-import OAuthCredentialSet._
+import CredentialSet._
 
 final class SignatureBaseString (
     method      : String,
     uri         : URI,
     query       : Query,
-    credentials : OAuthCredentialSet,
+    credentials : CredentialSet,
     nonce       : String,
     timestamp   : String,
 	options		: Options
@@ -23,7 +23,7 @@ final class SignatureBaseString (
     def this(
         uri         : URI,
         query       : Query,
-        credentials : OAuthCredentialSet,
+        credentials : CredentialSet,
         nonce       : String,
         timestamp   : String
     ) {
@@ -35,8 +35,7 @@ final class SignatureBaseString (
     private def getSignatureBaseString() : String = getSignatureBaseString(uri, query)
 
     private def getSignatureBaseString(uri : URI, query : Query) : String = {
-
-        var tempQuery = Query.copy(query)
+		var tempQuery = Query.copy(query)
 
         getOAuthParameters.foreach(item =>
             tempQuery = tempQuery += new NameValuePair(item.name, item.value)
