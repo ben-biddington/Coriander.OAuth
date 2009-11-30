@@ -30,9 +30,9 @@ final class SignatureBaseString (
         this(HttpVerb.GET, uri, query, credentials, nonce, timestamp, Options.DEFAULT)
     }
 
-    override def toString() : String = getSignatureBaseString
+    override def toString : String = getSignatureBaseString
     
-    private def getSignatureBaseString() : String = getSignatureBaseString(uri, query)
+    private def getSignatureBaseString : String = getSignatureBaseString(uri, query)
 
     private def getSignatureBaseString(uri : URI, query : Query) : String = {
 		var tempQuery = Query.copy(query)
@@ -51,35 +51,29 @@ final class SignatureBaseString (
         );
     }
 
-    private def selectAuthority(uri : URI) : String = {
-        return if (containsDefaultPort(uri)) uri getHost else uri getAuthority
-    }
+    private def selectAuthority(uri : URI) : String =
+        return if (containsDefaultPort(uri)) uri getHost else uri getAuthority;
 
-    private def containsDefaultPort(uri : URI) : Boolean = {
+    private def containsDefaultPort(uri : URI) : Boolean =
         defaultPorts exists(port =>
 			port.scheme == uri.getScheme &&
 			port.number == uri.getPort
         )
-    }
 
-    private def getOAuthParameters : List[NameValuePair] = {
+    private def getOAuthParameters : List[NameValuePair] =
         return new Parameters(
             credentials,
             timestamp,
             nonce,
             options
         ) toList
-    }
    
-    private def %% (str : String) : String = {
+    private def %% (str : String) : String =
 		return if (str != null) urlEncoder.%%(str.toString) else ""
-    }
 
     private def normalize(query : Query) : String = new Normalizer normalize(query)
 }
 
 object SignatureBaseString {
-    implicit def to_string(instance : SignatureBaseString) : String = {
-        return instance.toString
-    }
+    implicit def to_string(instance : SignatureBaseString) : String = return instance toString
 }

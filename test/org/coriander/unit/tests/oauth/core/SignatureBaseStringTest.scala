@@ -18,12 +18,12 @@ import unit.tests.TestBase
 import java.lang.String
 
 class SignatureBaseStringTest extends TestBase {
-    val consumerCredential = new Credential("key", "secret")
-    var uri 		= new java.net.URI("http://xxx/")
-    val aValidNonce 	= new SystemNonceFactory createNonce
-    val aValidTimestamp = new SystemTimestampFactory createTimestamp
-    var query           = new Query
-    val urlEncoder 	    = new OAuthURLEncoder
+    val consumerCredential 	= new Credential("key", "secret")
+    var uri 				= new java.net.URI("http://xxx/")
+    val aValidNonce 		= new SystemNonceFactory createNonce
+    val aValidTimestamp 	= new SystemTimestampFactory createTimestamp
+    var query           	= Query()
+    val urlEncoder 	    	= new OAuthURLEncoder
 	var signatureBaseString : SignatureBaseString = null
 
     @Test
