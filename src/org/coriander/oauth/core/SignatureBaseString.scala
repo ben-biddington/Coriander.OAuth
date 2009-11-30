@@ -6,6 +6,7 @@ import java.net.URI
 import org.coriander.oauth.core.uri._
 import org.coriander.{NameValuePair, Query}
 import CredentialSet._
+import java.lang.String
 
 final class SignatureBaseString (
     method      : String,
@@ -19,7 +20,8 @@ final class SignatureBaseString (
     var value           = null
     val defaultPorts 	= List(Port("http", 80), Port("https", 443))
     var urlEncoder 		= new OAuthURLEncoder
-    
+    val DELIMITER		= "&"
+
     def this(
         uri         : URI,
         query       : Query,
@@ -35,21 +37,26 @@ final class SignatureBaseString (
     private def getSignatureBaseString : String = getSignatureBaseString(uri, query)
 
     private def getSignatureBaseString(uri : URI, query : Query) : String = {
-		var tempQuery = Query.copy(query)
+		val allParameters = combineOAuthParametersWith(query).map(nvp => %%(nvp))
 
-        getOAuthParameters.foreach(item =>
-            tempQuery = tempQuery += new NameValuePair(item.name, item.value)
-        )
-
-        val requestUrl = uri.getScheme + "://" + selectAuthority(uri) + uri.getPath
-
-        String format(
+		String format(
             "%1$s%2$s%3$s",
-            method.toUpperCase 	+ "&",
-            %%(requestUrl) 		+ "&",
-            %%(normalize(tempQuery))
+            method.toUpperCase 			+ DELIMITER,
+            %%(getAbsolute(uri)) 		+ DELIMITER,
+            %%(normalize(allParameters))
         );
     }
+
+	private def combineOAuthParametersWith(query : Query) : Query = {
+		var tempQuery = Query.copy(query)
+
+        getOAuthParameters.foreach(item => tempQuery = tempQuery += item)
+
+		tempQuery
+	}
+
+	private def getAbsolute(uri : URI) =
+		uri.getScheme + "://" + selectAuthority(uri) + uri.getPath
 
     private def selectAuthority(uri : URI) : String =
         return if (containsDefaultPort(uri)) uri getHost else uri getAuthority;
@@ -67,9 +74,12 @@ final class SignatureBaseString (
             nonce,
             options
         ) toList
-   
-    private def %% (str : String) : String =
-		return if (str != null) urlEncoder.%%(str.toString) else ""
+
+    private def %%(nameValuePair : NameValuePair) : NameValuePair =
+		new NameValuePair(%%(nameValuePair.name), %%(nameValuePair.value))
+
+    private def %%(value : String) : String =
+		return if (value != null) urlEncoder.%%(value.toString) else ""
 
     private def normalize(query : Query) : String = new Normalizer normalize(query)
 }

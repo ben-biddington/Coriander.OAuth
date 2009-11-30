@@ -1,35 +1,23 @@
 package org.coriander.unit.tests.oauth.core
 
-
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.Assert._
-import org.junit.matchers.JUnitMatchers._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
-import org.mockito.Mockito._
 
-import org.coriander.oauth.core.Normalizer
-import org.coriander.{NameValuePair, Query}
+import org.coriander.Query
 import org.coriander.oauth.core.Normalizer
 import org.coriander.unit.tests.TestBase
 
 class NormalizerTest extends TestBase {
 
-    @Before
-    def setUp { }
-
-    @After
-    def tearDown { }
-
     @Test
     def normalize_returns_string_containing_all_supplied_parameters_sorted_by_name {
-        val anyQuery = new Query(List(
-            new NameValuePair("b", "any-value"),
-            new NameValuePair("c", "any-value"),
-            new NameValuePair("a", "any-value")
-        ))
+        val anyQuery = Query.from(
+            "b" -> "any-value",
+            "c" -> "any-value",
+            "a" -> "any-value"
+        )
 
         val expected = "a=any-value&b=any-value&c=any-value"
 
@@ -39,44 +27,51 @@ class NormalizerTest extends TestBase {
     }
 
     @Test
-    def normalize_url_encodes_each_name_and_value {
-        val anyQuery = new Query(List(
-            new NameValuePair("b", "any-value"),
-            new NameValuePair("c", "any-value-1"),
-            new NameValuePair("a", "any-value-2")
-        ))
+    def normalize_does_not_url_encode_names_or_values {
+        val anyQuery = Query.from("!" -> "/")
+		val actual = normalize(anyQuery)
 
-        val mockURLEncoder = newMockURLEncoder
-
-        val actual = new Normalizer(mockURLEncoder) normalize(anyQuery)
-
-        anyQuery foreach(pair => {
-            verify(mockURLEncoder, org.mockito.Mockito.times(1)).%%(pair.name)
-            verify(mockURLEncoder, org.mockito.Mockito.times(1)).%%(pair.value)
-        })
+		assertThat(actual, is(equalTo("!=/")))
     }
 
     @Test
     def normalize_includes_parameters_with_no_value {
         val singleParameter = Query.from("b" -> null)
 
-		assertEquals(singleParameter.size, 1)
-        
-        val expected = "b="
+		assertEquals("Test requires a single parameter.", singleParameter.size, 1)
 
-        val actual = new Normalizer() normalize(singleParameter)
+		val expected = "b="
+        val actual = normalize(singleParameter)
 
         assertThat(actual, is(equalTo(expected)));
     }
 
-    // TEST: Parameters with the same name are sorted by their value
+	@Test
+    def normalize_sorts_parameters_with_the_same_name_by_their_value {
+		val twoParametersWithTheSameName = Query.from("a" -> "2", "a" -> "1")
+		val expected = "a=1&a=2"
+		val actual = normalize(twoParametersWithTheSameName)
 
-    private def newMockURLEncoder : org.coriander.oauth.core.uri.URLEncoder = {
-        var mockedURLEncoder = mock(classOf[org.coriander.oauth.core.uri.URLEncoder])
-        
-        when(mockedURLEncoder.%%("any-string")).
-        thenReturn("stubbed-escaped-value")
+		assertThat(actual, is(equalTo(expected)))
+	}
 
-        mockedURLEncoder
-    }
+	@Test
+	def normalize_sorts_parameters_using_lexicographical_byte_value_ordering {
+		val parameters = Query.from("z" -> "1", "!" -> "1", "a" -> "1")
+		val expected = "!=1&a=1&z=1"
+		val actual = normalize(parameters)
+
+		assertThat(actual, is(equalTo(expected)))
+	}
+
+	@Test
+	def normalize_includes_parameters_with_no_name {
+		val parameters = Query.from("" -> "xxx")
+		val expected = "=xxx"
+		val actual = normalize(parameters)
+
+		assertThat(actual, is(equalTo(expected)))	
+	}
+
+	private def normalize(query : Query) : String = new Normalizer().normalize(query)
 }

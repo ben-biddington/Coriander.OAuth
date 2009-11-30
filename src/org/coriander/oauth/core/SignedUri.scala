@@ -4,6 +4,7 @@ import http.HttpVerb
 import java.net.URI
 import org.coriander.{NameValuePair, QueryParser, Query}
 import collection.mutable.ListBuffer
+import uri.OAuthURLEncoder
 
 class SignedUri(
     uri 		: URI,
@@ -24,11 +25,13 @@ class SignedUri(
     val normalizer 	= new Normalizer
     val queryParser = new QueryParser
     val method 		= HttpVerb.GET
+	val urlEncoder 	= new OAuthURLEncoder
     
     def value : URI = value(uri, queryParser.parse(uri))            
 
     private def value(resource : URI, query : Query) : URI = {
-		val parameters = combineParameters(resource, query)
+		val parameters = combineParameters(resource, query).map(nvp => %%(nvp))
+		
         val normalizedParams : String = normalize(new Query(parameters))
 
         val signedUrl : String =
@@ -42,6 +45,12 @@ class SignedUri(
         return new URI(signedUrl)
     }
 
+	private def %%(nameValuePair : NameValuePair) : NameValuePair =
+		new NameValuePair(
+			urlEncoder.%%(nameValuePair.name),
+			urlEncoder.%%(nameValuePair.value)
+		)
+	
 	private def combineParameters(resource : URI, query : Query) : List[NameValuePair] = {
 		var oauthParams = getOAuthParamsWithSignature(sign(resource, query))
 

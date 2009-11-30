@@ -182,7 +182,7 @@ class SignedUriTest extends TestBase {
 		var uri = new URI("http://xxx:80/")
         var timestamp = "1259226604"
         var nonce = "e2d77f64c61903a24d9b6ad8e9c4e71c"
-
+		                                  
         var signedUri = new SignedUri(
             uri,
             CredentialSet(forConsumer(consumerCredential), andNoToken),

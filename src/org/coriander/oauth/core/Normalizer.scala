@@ -1,16 +1,9 @@
 package org.coriander.oauth.core
 
-
-import org.coriander.oauth.core.uri._
 import collection.mutable.ListBuffer
-
 import org.coriander.{NameValuePair, Query}
 
-class Normalizer(val urlEncoder : URLEncoder) {
-    def this() {
-        this(new OAuthURLEncoder())
-    }
-
+class Normalizer {
     def normalize(query : Query) : String = {
         var pairs : ListBuffer[String] = new ListBuffer[String]() 
 
@@ -19,7 +12,6 @@ class Normalizer(val urlEncoder : URLEncoder) {
         pairs.toList.mkString("&")
     }
 
-	private def toString(nameValuePair : NameValuePair) : String = {
-		urlEncoder.%%(nameValuePair.name) + "=" + urlEncoder.%%(nameValuePair.value)
-	}
+	private def toString(nameValuePair : NameValuePair) : String = 
+		nameValuePair.name + "=" + (if (nameValuePair.value != null) nameValuePair.value else "")
 }
