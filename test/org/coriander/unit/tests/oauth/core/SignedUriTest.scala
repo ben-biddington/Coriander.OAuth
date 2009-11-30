@@ -140,8 +140,7 @@ class SignedUriTest extends TestBase {
 			uri,
 			new CredentialSet(consumer, token),
 			timestamp,
-			nonce,
-            Options.DEFAULT
+			nonce
 		)
 
 		val expectedSignature = "q89vhbqDzUX9aVeuavDhAP4TTPA="
@@ -161,8 +160,7 @@ class SignedUriTest extends TestBase {
             uri,
             CredentialSet(forConsumer(consumerCredential), andNoToken),
             timestamp,
-            nonce,
-            Options.DEFAULT
+            nonce
         )
 
         val expectedSignedUrl = "http://xxx/?oauth_version=1.0&" +

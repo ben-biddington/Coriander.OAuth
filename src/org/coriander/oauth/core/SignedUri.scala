@@ -12,6 +12,16 @@ class SignedUri(
     nonce 		: String,
     options 	: Options
 ) {
+
+	def this(
+		uri 		: URI,
+    	credentials : CredentialSet,
+    	timestamp 	: String,
+    	nonce 		: String
+	) {
+		this(uri, credentials, timestamp, nonce, Options.DEFAULT)
+	}
+
     val normalizer 	= new Normalizer()
     val queryParser = new QueryParser()
     val method 		= HttpVerb.GET

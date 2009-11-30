@@ -1,3 +1,18 @@
 2009-11-10, 16:53
 
-This project is a pure scala implementation of the OAuth standard. It has been test-driven with JUnit and Mockito. 
+This project is a pure scala implementation of the OAuth standard. It has been test-driven with JUnit and Mockito.
+
+Example: How to create signed URI
+
+val uri = new URI("http://xxx")
+val consumer = new Credential("key", "secret")
+val token = new Credential("token", "token_secret")
+val timestamp = "1259067839"
+val nonce = "73f0f93345d76d6cd1bab30af14a99e3"
+
+val signedUri = new SignedUri(
+    uri,
+    new CredentialSet(consumer, token),
+    timestamp,
+    nonce
+)
