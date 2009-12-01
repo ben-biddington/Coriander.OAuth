@@ -3,16 +3,26 @@ package org.coriander
 import collection.mutable.ListBuffer
 
 class Query(val nameValuePairs : List[NameValuePair]) {
-    val urlEncoder = new org.coriander.oauth.core.uri.OAuthURLEncoder
-    val DELIMITER = "&"
+    val urlEncoder 	= new org.coriander.oauth.core.uri.OAuthURLEncoder
+    val DELIMITER 	= "&"
     
-    def this() {
-        this(List())
-    }
+    def this() { this(List()) }
 
-    def contains(name : String) : Boolean = {
-         nameValuePairs.exists(nameValuePair => nameValuePair.name == name )
-    }
+    def contains(name : String) : Boolean =
+         nameValuePairs.exists(nameValuePair => nameValuePair.name == name)
+
+	def get(name : String) : List[NameValuePair] =
+         nameValuePairs.filter(nameValuePair => nameValuePair.name == name)
+	
+    def filter(comparer : NameValuePair => Boolean) : Query =
+        new Query(nameValuePairs.filter(comparer))
+
+    def foreach(func : NameValuePair => Unit) = nameValuePairs.foreach(func);
+
+    def size : Int = nameValuePairs.size
+
+    def map(mapper : NameValuePair => NameValuePair) : Query =
+		new Query(nameValuePairs.map(mapper))
 
 	def single(name : String) : NameValuePair = {
 		val allMatching = get(name)
@@ -25,37 +35,13 @@ class Query(val nameValuePairs : List[NameValuePair]) {
 		allMatching.head
     }
 
-	def get(name : String) : List[NameValuePair] = {
-         nameValuePairs.filter(nameValuePair => nameValuePair.name == name)
-    }
-	
-    def filter(comparer : NameValuePair => Boolean) : Query = {
-        new Query(nameValuePairs.filter(comparer))
-    }
+    def sort : Query = new Query(
+		 nameValuePairs.sort(
+			(left, right) => left.name.compareToIgnoreCase(right.name) < 0
+		)
+	)
 
-    def foreach(func : NameValuePair => Unit) {
-         nameValuePairs.foreach(func);
-    }
-
-    def size : Int = {
-        return nameValuePairs.size
-    }
-
-    def map(mapper : NameValuePair => NameValuePair) : Query = {
-        new Query(nameValuePairs.map(mapper))
-    }
-    
-    def sort : Query = {
-		new Query(
-			 nameValuePairs.sort(
-                (left, right) => left.name.compareToIgnoreCase(right.name) < 0
-			)
-        )
-    }
-
-    def += (nameValuePair : NameValuePair) : Query = {
-        new Query(append(nameValuePair))
-    }
+    def += (nameValuePair : NameValuePair) : Query = new Query(append(nameValuePair))
 
     override def toString : String = {
         var result : StringBuffer = new StringBuffer()
@@ -68,14 +54,10 @@ class Query(val nameValuePairs : List[NameValuePair]) {
         result toString
     }
 
-    private def append(nameValuePair : NameValuePair) : List[NameValuePair] = {
-        val result = nameValuePairs ::: List(nameValuePair)
-        result
-    }
+    private def append(nameValuePair : NameValuePair) : List[NameValuePair] =
+		nameValuePairs ::: List(nameValuePair)
 
-    private def urlEncode(value : String) : String = {
-        urlEncoder.encode(value)
-    }
+    private def urlEncode(value : String) : String = urlEncoder.encode(value)
 }
 
 object Query {

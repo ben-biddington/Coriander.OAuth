@@ -1,8 +1,8 @@
 package org.coriander
 
 class NameValuePairBuilder() {
-    var name : String = ""
-    var value : String = ""
+    var name : String 	= ""
+    var value : String 	= ""
 
     def called(name : String) : NameValuePairBuilder = {
         this.name = name
