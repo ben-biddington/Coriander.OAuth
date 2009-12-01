@@ -225,14 +225,14 @@ class SignatureBaseStringTest extends TestBase {
             "ddb61ca14d02e9ef7b55cc5c1f88616f",
             "1252500234",
 			Options.DEFAULT
-        ) toString;
+        ) toString
 
         assertEquals("Actual does not match expected.", expected, actual)
     }
 
 	// See: http://oauth.net/core/1.0a#RFC2617, Appendix A.5.1.  Generating Signature Base String
 	@Test
-	def an_example_with_token {
+	def example_with_token_from_the_oauth_spec_document {
 		val expected = "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg" +
 			"%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26" +
 			"oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26" +
@@ -242,8 +242,8 @@ class SignatureBaseStringTest extends TestBase {
 		val nonce = "kllo9940pd9333jh"
 		val version = "1.0"
 
-		val consumer = new Credential("dpf43f3p2l4k3l03", "kd94hf93k423kf44")
-		val token = new Credential("nnch734d00sl2jdk", "pfkkdhi9sl3r4s00")
+		val consumer 	= new Credential("dpf43f3p2l4k3l03", "kd94hf93k423kf44")
+		val token 		= new Credential("nnch734d00sl2jdk", "pfkkdhi9sl3r4s00")
         val credentials = CredentialSet(forConsumer(consumer), andToken(token))
 
 		val uri : URI = new URI("http://photos.example.net/photos")

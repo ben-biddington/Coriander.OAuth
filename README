@@ -1,8 +1,10 @@
 2009-11-10, 16:53
 
-Pure scala implementation of the OAuth standard. It has been test-driven with JUnit and Mockito.
+Test-driven, "clean code" pure scala implementation of the OAuth standard.
 
+-------------------------------------------------------------------------------------
 Example: How to create a signed URI
+-------------------------------------------------------------------------------------
 
 val uri         = new URI("http://xxx")
 val consumer    = new Credential("key", "secret")
@@ -16,3 +18,12 @@ val signedUri = new SignedUri(
     timestamp,
     nonce
 )
+
+-------------------------------------------------------------------------------------
+Example: How to generate signature base string
+-------------------------------------------------------------------------------------
+The one from the oauth specification (http://oauth.net/core/1.0a#RFC2617,
+Appendix A.5.1.  Generating Signature Base String) is represented as a unit test.
+
+See: org.coriander.unit.tests.oauth.core.SignatureBaseStringTest.
+    example_with_token_from_the_oauth_spec_document
