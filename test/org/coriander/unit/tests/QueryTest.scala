@@ -8,6 +8,7 @@ import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 
 import org.coriander.{Query,NameValuePair}
+import java.lang.String
 
 class QueryTest extends TestBase {
 
@@ -59,7 +60,7 @@ class QueryTest extends TestBase {
 
     @Test
     def increment_and_assign_returns_a_new_instance {
-        val query = new Query(List(new NameValuePair("a", "b")))
+        val query = Query.from("a" -> "b")
 
         val incremented = query += new NameValuePair("c", "d")
 
@@ -85,4 +86,31 @@ class QueryTest extends TestBase {
 
         assertThat(actual, is(equalTo(expected)))
     }
+
+	@Test { val expected=classOf[RuntimeException] }
+	def single_throws_exception_when_name_contains_two_items {
+        var name : String = "a"
+		val query = Query.from(
+			name -> "item",
+			name -> "item_1"
+		)
+
+		val item = query.single(name);
+	}
+
+	@Test
+	def given_item_with_name_exists_exactly_once_then_single_returns_it {
+		var expectedItem = new NameValuePair("a", "item")
+
+		val query = Query.from(
+			"b" -> "item_1",
+			expectedItem.name -> expectedItem.value,
+			"c" -> "item_2"
+		)
+
+		val actualItem = query.single(expectedItem.name);
+
+		assertThat("Mismatched name", actualItem.name, is(equalTo(expectedItem.name)))
+		assertThat("Mismatched value", actualItem.value, is(equalTo(expectedItem.value)))
+	}
 }

@@ -14,10 +14,21 @@ class Query(val nameValuePairs : List[NameValuePair]) {
          nameValuePairs.exists(nameValuePair => nameValuePair.name == name )
     }
 
-    def get(name : String) : List[NameValuePair] = {
-         nameValuePairs.filter(nameValuePair => nameValuePair.name == name)
+	def single(name : String) : NameValuePair = {
+		val allMatching = get(name)
+
+		if (allMatching.size > 1)
+			throw new RuntimeException(
+				"Too many items found, expected <1>, actual <" + allMatching.size + ">"
+			)
+
+		allMatching.head
     }
 
+	def get(name : String) : List[NameValuePair] = {
+         nameValuePairs.filter(nameValuePair => nameValuePair.name == name)
+    }
+	
     def filter(comparer : NameValuePair => Boolean) : Query = {
         new Query(nameValuePairs.filter(comparer))
     }
