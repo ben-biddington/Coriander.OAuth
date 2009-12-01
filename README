@@ -2,7 +2,7 @@
 
 Pure scala implementation of the OAuth standard. It has been test-driven with JUnit and Mockito.
 
-Example: How to create an signed URI
+Example: How to create a signed URI
 
 val uri         = new URI("http://xxx")
 val consumer    = new Credential("key", "secret")
