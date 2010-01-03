@@ -27,8 +27,6 @@ class SignedUriTest extends TestBase {
         instance = null
     }
 
-    // TEST: The sort order of the parameters does not matter
-
     @Test
     def value_preserves_uri_scheme() {
         val httpsUri = new URI("https://an-https-uri")
@@ -39,7 +37,7 @@ class SignedUriTest extends TestBase {
         val plainUri = new URI("http://a-plain-http-uri")
         given_a_signed_uri(plainUri)
 
-        assertThat(instance.value.toString, containsString(plainUri.getScheme))
+        assertThat(instance.value toString, containsString(plainUri.getScheme))
     }
 
     @Test
@@ -48,7 +46,7 @@ class SignedUriTest extends TestBase {
 
         assertThat(
             "Port 443 should not be excluded.",
-            instance.value.getPort, is(equalTo(443))
+            instance.value getPort, is(equalTo(443))
         )
 
         given_a_signed_uri(new URI("https://an-https-uri-with-any-port:1337"))
@@ -87,7 +85,7 @@ class SignedUriTest extends TestBase {
 
         given_a_signed_uri(uriWithParameters)
 
-        then_value_contains_all_query_parameters(expectedQuery)
+        then_value_contains_all_of(expectedQuery)
     }
 
     @Test
@@ -152,9 +150,9 @@ class SignedUriTest extends TestBase {
 
     @Test
     def value_contains_all_expected_parameters {
-        val uri = new URI("http://xxx/")
-        val timestamp = "1257608197"
-        val nonce = "ea757706c42e2b14a7a8999acdc71089"
+        val uri 		= new URI("http://xxx/")
+        val timestamp 	= "1257608197"
+        val nonce 		= "ea757706c42e2b14a7a8999acdc71089"
 
         val signedUri = new SignedUri(
             uri,
@@ -173,7 +171,12 @@ class SignedUriTest extends TestBase {
         val expectedParams : Query = parseQuery(new URI(expectedSignedUrl))
         val actualParams : Query = parseQuery(signedUri.value)
        
-        expectedParams.foreach(nameValuePair => assertTrue(actualParams.contains(nameValuePair.name)))
+        expectedParams.foreach(nameValuePair =>
+			assertTrue(
+				"The parameter called <" + nameValuePair.name + "> should exist.", 
+				actualParams contains(nameValuePair.name)
+			)
+		)
     }
 
 	// TODO: Refactor to match org.coriander.unit.tests.oauth.core.SignatureBaseStringTest.result_excludes_default_port_80_for_http_and_443_for_https
@@ -192,33 +195,36 @@ class SignedUriTest extends TestBase {
         )
 
 		var expectedSignature = "lL9UsKRGi6y9UT5Rlgaag56RgT8="
-		val actualSignature = parseQuery(signedUri.value).get("oauth_signature")(0).value
+		val actualSignature = parseQuery(signedUri.value) single "oauth_signature" value
 
 		assertThat(actualSignature, is(equalTo(expectedSignature)))
 	}
 
-	// TEST: When I create 2 instances, then each has a different timestamp value
+	@Test
+	def the_sort_order_of_the_parameters_does_not_matter {
+		
+	}
 
     private def give_a_signed_uri {
-        given_a_signed_uri(anyUri)
+        this given_a_signed_uri anyUri
     }
 
     private def given_a_signed_uri(uri : URI) {
         val signatureMethod = "any-signature-method"
-        val timestamp = "any-timestamp"
-        val nonce = "any-nonce"
-        val version = "any-version"
+        val timestamp 		= "any-timestamp"
+        val nonce 			= "any-nonce"
+        val version 		= "any-version"
 
         instance = new SignedUri(
             uri,
             CredentialSet(forConsumer(consumerCredential), andNoToken),
             timestamp,
             nonce,
-            Options.DEFAULT
+            Options DEFAULT
         )
     }
 
-    private def then_value_contains_all_query_parameters(expectedQueryParameters : Query) {
+    private def then_value_contains_all_of(expectedQueryParameters : Query) {
         val actualQueryParameters = parseQuery(instance.value getQuery)
 
         assertContainsAll(
