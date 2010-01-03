@@ -7,12 +7,15 @@
     <property name="build.home" value="${basedir}/out"/>
     <property name="bin.home" value="${basedir}/bin"/>
     <target name="clean">
-        <delete dir="${build.home}/bin" verbose="true"/>
+        <delete dir="${bin.home}" verbose="true"/>
     </target>
 
     <target name="jar" depends="clean">
         <mkdir dir="${bin.home}"/>
-        <jar destfile="${bin.home}/scala-oauth-${app.version}.jar" basedir="${build.home}/production/scala-oauth">
+        <jar
+            destfile="${bin.home}/scala-oauth-${app.version}.jar"
+            basedir="${build.home}/production/scala-oauth"
+        >
             <manifest>
                 <attribute name="Author" value="Ben Biddington"/>
                 <attribute name="Version" value="${app.version}"/>
