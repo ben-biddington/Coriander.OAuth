@@ -21,11 +21,6 @@ class SignedUri(
 	) {
 		this(uri, credentials, timestamp, nonce, Options.DEFAULT)
 	}
-
-    val normalizer 	= new Normalizer
-    val queryParser = new QueryParser
-    val method 		= HttpVerb.GET
-	val urlEncoder 	= new OAuthURLEncoder
     
     def value : URI = value(uri, queryParser.parse(uri))            
 
@@ -99,4 +94,9 @@ class SignedUri(
     }
 
     private def normalize(query : Query) : String = normalizer normalize(query)
+
+	val normalizer 	= new Normalizer
+    val queryParser = new QueryParser
+    val method 		= HttpVerb.GET
+	val urlEncoder 	= new OAuthURLEncoder
 }
