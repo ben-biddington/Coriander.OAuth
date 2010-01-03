@@ -5,15 +5,15 @@
     <property name="app.version" value="2.0.1"/>
     <property name="src.home" value="${basedir}/src"/>
     <property name="build.home" value="${basedir}/out"/>
-    <property name="bin.home" value="${basedir}/bin"/>
+    <property name="jar.home" value="${build.home}/jar"/>
     <target name="clean">
-        <delete dir="${bin.home}" verbose="true"/>
+        <delete dir="${jar.home}" verbose="true"/>
     </target>
 
     <target name="jar" depends="clean">
-        <mkdir dir="${bin.home}"/>
+        <mkdir dir="${jar.home}"/>
         <jar
-            destfile="${bin.home}/scala-oauth-${app.version}.jar"
+            destfile="${jar.home}/scala-oauth-${app.version}.jar"
             basedir="${build.home}/production/scala-oauth"
         >
             <manifest>
