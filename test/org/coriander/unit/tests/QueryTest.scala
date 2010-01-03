@@ -25,7 +25,7 @@ class QueryTest extends TestBase {
 
         val actualList = new Query(expectedList) get(key)
 
-        assertThat(actualList, is(equalTo(actualList)))
+        assertThat(actualList, is(equalTo(expectedList)))
     }
 
     @Test
