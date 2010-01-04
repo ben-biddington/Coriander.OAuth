@@ -205,6 +205,16 @@ class SignedUriTest extends TestBase {
 		
 	}
 
+	@Test
+	def value_is_immutable {
+		give_a_signed_uri
+
+		val value = instance.value
+		val theSameValueSampledAgain = instance.value
+
+		assertThat(value, is(equalTo(theSameValueSampledAgain)))
+	}
+	
     private def give_a_signed_uri {
         this given_a_signed_uri anyUri
     }

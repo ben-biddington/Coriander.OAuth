@@ -113,7 +113,7 @@ class SignatureTest extends TestBase {
             new Signature(null, null, "Anything but hmacsha1") sign("Any string");
         } catch {
             case e : Exception => {
-                assertEquals(expectedMessage, e.getMessage)
+                assertTrue(e.getMessage.contains(expectedMessage))
                 success = true
             }
         }

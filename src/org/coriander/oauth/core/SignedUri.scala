@@ -22,7 +22,7 @@ class SignedUri(
 		this(uri, credentials, timestamp, nonce, Options.DEFAULT)
 	}
     
-    def value : URI = value(uri, queryParser.parse(uri))            
+    lazy val value : URI = value(uri, queryParser.parse(uri))            
 
     private def value(resource : URI, query : Query) : URI = {
 		val parameters = combineParameters(resource, query).map(nvp => %%(nvp))
@@ -49,11 +49,13 @@ class SignedUri(
 	private def combineParameters(resource : URI, query : Query) : List[NameValuePair] = {
 		var oauthParams = getOAuthParamsWithSignature(sign(resource, query))
 
-        var parameters : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
+        var parameters = new ListBuffer[NameValuePair]()
 
-        oauthParams foreach(item => parameters += new NameValuePair(item.name, item.value))
+        oauthParams foreach(item =>
+			parameters += new NameValuePair(item.name, item.value)
+		)
 
-        query foreach(nvp => parameters += nvp)
+        query foreach(parameters += _)
 
 		parameters toList
 	}
@@ -93,7 +95,7 @@ class SignedUri(
  		new Signature(credentials) sign(signatureBaseString)
     }
 
-    private def normalize(query : Query) : String = normalizer normalize(query)
+    private def normalize(query : Query) = normalizer normalize(query)
 
 	val normalizer 	= new Normalizer
     val queryParser = new QueryParser
