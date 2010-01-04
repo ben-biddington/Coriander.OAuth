@@ -53,7 +53,7 @@ class SignatureTest extends TestBase {
 			"oauth_nonce%3Df3df23228e40e2905e305a893895f115%26oauth_signature_method%3DHMAC-SHA1%26" +
 			"oauth_timestamp%3D1252657173%26oauth_version%3D1.0"
 
-        val expected : String = "2/MMtvuImh4H+clAdThQWk916lo="
+        val expected = "2/MMtvuImh4H+clAdThQWk916lo="
         val actual = newSignature(validConsumerCredential) sign(baseString)
 
         assertEquals(expected, actual)
@@ -65,7 +65,7 @@ class SignatureTest extends TestBase {
 			"oauth_nonce%3D35d48708b951a3adfaa64a9d0632e19a%26oauth_signature_method%3DHMAC-SHA1%26" +
 			"oauth_timestamp%3D1252669302%26oauth_token%3Dtoken_key%26oauth_version%3D1.0"
 
-        val expected : String = "a6D1JJVdKIxKe7L/AW+gtSzBT24="
+        val expected = "a6D1JJVdKIxKe7L/AW+gtSzBT24="
 
         val actual = newSignature(validConsumerCredential, validToken) sign(baseString);
 
@@ -78,7 +78,7 @@ class SignatureTest extends TestBase {
 			"oauth_nonce%3D26db6028882d344cccad2227f4a9dae8%26oauth_signature_method%3DHMAC-SHA1%26" +
 			"oauth_timestamp%3D1252670619%26oauth_version%3D1.0"
 
-        val expected : String = "DD+dh4ZaBlgf4WrUBfFoah/gfZg="
+        val expected = "DD+dh4ZaBlgf4WrUBfFoah/gfZg="
         
         val actual = newSignature(new Credential("key", "secret with spaces")) sign(baseString);
 
@@ -92,7 +92,7 @@ class SignatureTest extends TestBase {
 			"oauth_timestamp%3D1252671920%26oauth_token%3Dtoken_key%26oauth_version%3D1.0"
 
         val token = new Credential("token_key", "token secret with spaces")
-        val expected : String = "aNXBLy2UtMF99dgrJa+9PSWYYUI="
+        val expected = "aNXBLy2UtMF99dgrJa+9PSWYYUI="
 
         val credentials = CredentialSet(
             forConsumer(validConsumerCredential),
