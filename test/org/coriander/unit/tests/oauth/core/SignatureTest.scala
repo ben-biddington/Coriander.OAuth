@@ -14,7 +14,7 @@ import org.apache.commons.httpclient.util._
 import org.junit.rules._
 import scala.collection.immutable._
 import org.coriander.oauth._
-import core.uri.OAuthURLEncoder
+import core.uri.OAuthUrlEncoder
 import core.{CredentialSet, Signature, Credential}
 import CredentialSet._
 import org.coriander.unit.tests.TestBase
@@ -25,7 +25,7 @@ class SignatureTest extends TestBase {
 
     val validConsumerCredential = new Credential("key", "secret")
     val validToken = new Credential("token_key", "token_secret")
-    val urlEncoder = new OAuthURLEncoder
+    val urlEncoder = new OAuthUrlEncoder
 
     // TODO: Better exception name
     @Test { val expected=classOf[Exception] }

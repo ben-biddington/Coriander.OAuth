@@ -4,7 +4,7 @@ import http.HttpVerb
 import java.net.URI
 import org.coriander.{NameValuePair, QueryParser, Query}
 import collection.mutable.ListBuffer
-import uri.OAuthURLEncoder
+import uri.OAuthUrlEncoder
 
 class SignedUri(
     uri 		: URI,
@@ -100,5 +100,5 @@ class SignedUri(
 	val normalizer 	= new Normalizer
     val queryParser = new QueryParser
     val method 		= HttpVerb.GET
-	val urlEncoder 	= new OAuthURLEncoder
+	val urlEncoder 	= new OAuthUrlEncoder
 }

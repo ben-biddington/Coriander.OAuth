@@ -4,9 +4,9 @@ import javax.crypto
 import org.apache.commons.codec.binary.Base64.encodeBase64
 import org.coriander.oauth.core.uri._
 
-class Signature(urlEncoder : URLEncoder, credentials : CredentialSet) {
+class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
     def this(
-        urlEncoder  : URLEncoder,
+        urlEncoder  : UrlEncoder,
         credentials : CredentialSet,
         algorithm   : String
     ) {
@@ -15,7 +15,7 @@ class Signature(urlEncoder : URLEncoder, credentials : CredentialSet) {
     }
 
     def this(credentials : CredentialSet) = this(
-		new OAuthURLEncoder,
+		new OAuthUrlEncoder,
 		credentials
 	)
 
@@ -60,7 +60,7 @@ class Signature(urlEncoder : URLEncoder, credentials : CredentialSet) {
     }
 
     private def requireURLEncoder {
-        require (urlEncoder != null, "Please supply a URLEncoder.")
+        require (urlEncoder != null, "Please supply a UrlEncoder.")
     }
 
     private def validateConsumerCredential {

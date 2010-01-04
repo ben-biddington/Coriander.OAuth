@@ -1,9 +1,10 @@
 package org.coriander
 
 import collection.mutable.ListBuffer
+import oauth.core.uri.OAuthUrlEncoder
 
 class Query(val nameValuePairs : List[NameValuePair]) {
-    val urlEncoder 	= new org.coriander.oauth.core.uri.OAuthURLEncoder
+    val urlEncoder 	= new OAuthUrlEncoder
     val DELIMITER 	= "&"
     
     def this() { this(List()) }

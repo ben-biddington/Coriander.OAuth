@@ -17,7 +17,7 @@ import http.AuthorizationHeader
 import timestamp.SystemTimestampFactory
 import nonce.SystemNonceFactory
 import org.coriander.unit.tests.TestBase
-import uri.OAuthURLEncoder
+import org.coriander.oauth.core.uri.OAuthUrlEncoder
 import CredentialSet._
 
 class TwitmineTest extends TestBase {
@@ -29,7 +29,7 @@ class TwitmineTest extends TestBase {
     val AUTHORIZE_URI       = new java.net.URI("https://twitter.com/oauth/authorize")
     var nonceFactory        = new SystemNonceFactory
     var timestampFactory    = new SystemTimestampFactory
-    val urlEncoder          = new OAuthURLEncoder
+    val urlEncoder          = new OAuthUrlEncoder
 
     val SIGNATURE_METHOD 	= "HMAC-SHA1"
     val VERSION 			= "1.0"

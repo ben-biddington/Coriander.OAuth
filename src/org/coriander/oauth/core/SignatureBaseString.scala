@@ -19,7 +19,7 @@ final class SignatureBaseString (
 ) {
     var value           = null
     val defaultPorts 	= List(Port("http", 80), Port("https", 443))
-    var urlEncoder 		= new OAuthURLEncoder
+    var urlEncoder 		= new OAuthUrlEncoder
     val DELIMITER		= "&"
 
     def this(

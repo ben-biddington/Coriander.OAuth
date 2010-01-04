@@ -1,6 +1,6 @@
 package org.coriander.oauth.core.uri
 
-class OAuthURLEncoder extends URLEncoder {
+class OAuthUrlEncoder extends UrlEncoder {
     def encode(value : String) : String = {
         if (null == value) return ""
 

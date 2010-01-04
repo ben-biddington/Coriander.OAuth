@@ -13,7 +13,7 @@ import oauth.core._
 import oauth.core.nonce.SystemNonceFactory
 import oauth.core.timestamp.SystemTimestampFactory
 import CredentialSet._
-import oauth.core.uri.{Port, OAuthURLEncoder}
+import oauth.core.uri.{Port, OAuthUrlEncoder}
 import unit.tests.TestBase
 import java.lang.String
 
@@ -23,7 +23,7 @@ class SignatureBaseStringTest extends TestBase {
     val aValidNonce 		= new SystemNonceFactory createNonce
     val aValidTimestamp 	= new SystemTimestampFactory createTimestamp
     var query           	= Query()
-    val urlEncoder 	    	= new OAuthURLEncoder
+    val urlEncoder 	    	= new OAuthUrlEncoder
 	var signatureBaseString : SignatureBaseString = null
 
     @Test

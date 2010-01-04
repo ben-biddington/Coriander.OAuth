@@ -1,6 +1,7 @@
 package org.coriander.oauth.core.http
 
 import org.coriander.oauth.core.{CredentialSet, Options}
+import org.coriander.oauth.core.uri.UrlEncoder
 
 class AuthorizationHeader(
     realm       : String,
@@ -9,7 +10,7 @@ class AuthorizationHeader(
     timestamp   : String,
     nonce       : String,
     options     : Options,
-    urlEncoder  : org.coriander.oauth.core.uri.URLEncoder
+    urlEncoder  : UrlEncoder
 ) {
     val name = "Authorization"
     val value = formatValue(createValue)

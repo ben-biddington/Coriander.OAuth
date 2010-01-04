@@ -1,6 +1,6 @@
 package org.coriander.oauth.core.uri
 
-abstract class URLEncoder {
+abstract class UrlEncoder {
     def %%(value : String) : String  = {
         encode(value)
     }

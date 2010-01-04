@@ -6,7 +6,7 @@ import org.junit.Test
 import org.junit.Assert._
 import org.junit._
 
-import org.coriander.oauth.core.uri.{OAuthURLEncoder, URLEncoder}
+import org.coriander.oauth.core.uri.{OAuthUrlEncoder, UrlEncoder}
 import org.coriander.unit.tests.TestBase
 
 class OAuthURLEncoderTest extends TestBase {
@@ -14,7 +14,7 @@ class OAuthURLEncoderTest extends TestBase {
     // See: http://oauth.net/core/1.0, S 5.1 Parameter Encoding
     // unreserved characters = ALPHA, DIGIT, '-', '.', '_', '~'
 
-    val urlEncoder = new OAuthURLEncoder
+    val urlEncoder = new OAuthUrlEncoder
 
     @Test
     def null_returns_empty {

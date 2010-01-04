@@ -48,7 +48,7 @@ class AuthorizationHeaderTest extends TestBase {
     // [linear_whitespace]name="[value|empty]"[linear_whitespace]
     val nameEqualsAnyQuotedString = "[\\w]+=\"[^\"]+\""
 
-	val urlEncoder = new OAuthURLEncoder
+	val urlEncoder = new OAuthUrlEncoder
 
     @Test
     def result_is_an_authorization_header {
@@ -151,10 +151,10 @@ class AuthorizationHeaderTest extends TestBase {
 	}
 
     private def newAuthorizationHeader : AuthorizationHeader = {
-        newAuthorizationHeader(new OAuthURLEncoder)
+        newAuthorizationHeader(new OAuthUrlEncoder)
     }
 
-    private def newAuthorizationHeader(urlEncoder : URLEncoder) :
+    private def newAuthorizationHeader(urlEncoder : UrlEncoder) :
         AuthorizationHeader = {
         new AuthorizationHeader(
             realm,
@@ -167,8 +167,8 @@ class AuthorizationHeaderTest extends TestBase {
         )
     }
 
-    private def newMockURLEncoder : URLEncoder = {
-        var mockedURLEncoder = mock(classOf[org.coriander.oauth.core.uri.URLEncoder])
+    private def newMockURLEncoder : UrlEncoder = {
+        var mockedURLEncoder = mock(classOf[UrlEncoder])
         when(mockedURLEncoder.%%("any-string")).thenReturn("stubbed-escaped-value")
         
         mockedURLEncoder

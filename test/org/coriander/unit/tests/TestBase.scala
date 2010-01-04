@@ -54,7 +54,7 @@ class TestBase extends Assert {
     }
 
     protected def urlEncode(str : String) : String = {
-        new OAuthURLEncoder().encode(str)
+        new OAuthUrlEncoder().encode(str)
     }
 
     protected def urlDecode(str : String) : String = {
