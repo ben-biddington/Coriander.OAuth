@@ -20,8 +20,8 @@ import java.lang.String
 class SignatureBaseStringTest extends TestBase {
     val consumerCredential 	= new Credential("key", "secret")
     var uri 				= new java.net.URI("http://xxx/")
-    val aValidNonce 		= new SystemNonceFactory createNonce
-    val aValidTimestamp 	= new SystemTimestampFactory createTimestamp
+    val aValidNonce 		= new SystemNonceFactory newNonce
+    val aValidTimestamp 	= new SystemTimestampFactory newTimestamp
     var query           	= Query()
     val urlEncoder 	    	= new OAuthUrlEncoder
 	var signatureBaseString : SignatureBaseString = null

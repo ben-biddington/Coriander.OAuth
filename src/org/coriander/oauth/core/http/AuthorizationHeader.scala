@@ -15,9 +15,9 @@ class AuthorizationHeader(
     val name = "Authorization"
     val value = formatValue(createValue)
     
-    override def toString : String  = name + ": " + value
+    override def toString = name + ": " + value
 
-    private def formatValue(value : String) : String = "OAuth " + value
+	private def formatValue(value : String) = "OAuth " + value
 
     private def createValue : String = {
         requireUrlEncoder
@@ -33,7 +33,6 @@ class AuthorizationHeader(
     }
 
     private def requireUrlEncoder {
-        if (null == urlEncoder)
-            throw new Exception("No urlEncoder has been supplied.")
+        require (urlEncoder != null, "No urlEncoder has been supplied.")
     }
 }

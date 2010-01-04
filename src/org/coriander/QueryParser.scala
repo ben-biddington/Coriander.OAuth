@@ -1,25 +1,20 @@
 package org.coriander
 
 import collection.mutable.ListBuffer
+import java.net.URI
 
 class QueryParser {
-    val DELIMITER = "&"
+    def parse(uri : URI) : Query = parse(uri.getQuery)
 
-    def parse(uri : java.net.URI) : Query = {
-        parse(uri.getQuery)
-    }
+    def parse(query : String) = parseNameValuePairs(query, DELIMITER)
 
-    def parse(query : String) : Query = {
-        parseNameValuePairs(query, DELIMITER)
-    }
+    private def parseNameValuePairs(queryString : String, delimiter : String) : Query = {
+        var buffer = new ListBuffer[NameValuePair]()
 
-    private def parseNameValuePairs(value : String, delimiter : String) : Query = {
-        var buffer : ListBuffer[NameValuePair] = new ListBuffer[NameValuePair]()
-
-        if (null == value || value.trim == "")
+        if (null == queryString || queryString.trim == "")
             return new Query()
 
-        value split(delimiter) foreach(pair => {
+        queryString split(delimiter) foreach(pair => {
             val nameAndValue = parseNameValuePair(pair)
             
             if (nameAndValue != null) {
@@ -44,7 +39,7 @@ class QueryParser {
         )
     }
 
-    private def urlDecode(str : String) : String = {
-        java.net.URLDecoder.decode(str, "UTF-8")
-    }
+    private def urlDecode(str : String) = java.net.URLDecoder.decode(str, "UTF-8")
+
+	val DELIMITER = "&"
 }

@@ -195,8 +195,8 @@ class TwitmineTest extends TestBase {
 		new SignedUri(
             uri,
             CredentialSet(forConsumer(consumerCredential), andToken(token)),
-            timestampFactory.createTimestamp,
-            nonceFactory.createNonce,
+            timestampFactory.newTimestamp,
+            nonceFactory.newNonce,
             Options.DEFAULT
         ).value
 	}
@@ -241,8 +241,8 @@ class TwitmineTest extends TestBase {
 	}
 
 	private def newAuthHeader(uri : java.net.URI) : AuthorizationHeader = {
-		val timestamp = timestampFactory.createTimestamp
-		val nonce = nonceFactory.createNonce
+		val timestamp = timestampFactory.newTimestamp
+		val nonce = nonceFactory.newNonce
 		val query = new QueryParser().parse(uri)
 
 		val baseString = new SignatureBaseString(
