@@ -66,7 +66,7 @@
     <option name="OPEN_IN_BROWSER" value="true" />
   </component>
   <component name="ProjectDetails">
-    <option name="projectName" value="scala-oauth" />
+    <option name="projectName" value="Coriander.Oauth" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
