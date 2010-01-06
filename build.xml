@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="scala-oauth-make-jar" basedir=".">
+<project name="coriander-oauth-make-jar" basedir=".">
     <property name="app.name" value="Coriander.Oauth"/>
     <property name="app.path" value="/${app.name}"/>
     <property name="app.version" value="2.0.1"/>
