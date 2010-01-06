@@ -7,7 +7,7 @@
     <autodetection-disabled>
       <facet-type id="Scala">
         <modules>
-          <module name="scala-oauth">
+          <module name="Coriander.OAuth">
             <files>
               <file url="file://$PROJECT_DIR$/src/org/coriander/NameValuePair.scala" />
               <file url="file://$PROJECT_DIR$/src/org/coriander/NameValuePairBuilder.scala" />
