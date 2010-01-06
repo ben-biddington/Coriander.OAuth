@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <project name="scala-oauth-make-jar" basedir=".">
-    <property name="app.name" value="scala-oauth"/>
+    <property name="app.name" value="Coriander.Oauth"/>
     <property name="app.path" value="/${app.name}"/>
     <property name="app.version" value="2.0.1"/>
     <property name="src.home" value="${basedir}/src"/>
     <property name="build.home" value="${basedir}/out"/>
     <property name="jar.home" value="${build.home}/jar"/>
+    <property name="jar.name" value="coriander-oauth-${app.version}.jar"/>
+
     <target name="clean">
         <delete dir="${jar.home}" verbose="true"/>
     </target>
@@ -13,8 +15,8 @@
     <target name="jar" depends="clean">
         <mkdir dir="${jar.home}"/>
         <jar
-            destfile="${jar.home}/scala-oauth-${app.version}.jar"
-            basedir="${build.home}/production/scala-oauth"
+            destfile="${jar.home}/${jar.name}"
+            basedir="${build.home}/production/${app.name}"
         >
             <manifest>
                 <attribute name="Author" value="Ben Biddington"/>
