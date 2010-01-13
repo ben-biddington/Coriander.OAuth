@@ -15,7 +15,7 @@ import org.mockito.Mockito._
 
 class ConsumerTests extends TestBase {
 	@Test
-	def can_sign_a_uri_as_expected {
+	def sign_produces_correct_result {
 		given_the_next_timestamp_will_be("1257608197")
 		given_the_next_nonce_will_be("ea757706c42e2b14a7a8999acdc71089")
 
