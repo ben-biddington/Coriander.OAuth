@@ -5,7 +5,6 @@ import java.net.URI
 
 import org.coriander.oauth.core.uri._
 import org.coriander.{NameValuePair, Query}
-import CredentialSet._
 import java.lang.String
 
 final class SignatureBaseString (
@@ -32,7 +31,7 @@ final class SignatureBaseString (
         this(HttpVerb.GET, uri, query, credentials, nonce, timestamp, Options.DEFAULT)
     }
 
-    override def toString : String = getSignatureBaseString
+    override def toString = getSignatureBaseString
     
     private def getSignatureBaseString : String = getSignatureBaseString(uri, query)
 
@@ -67,13 +66,12 @@ final class SignatureBaseString (
 			port.number == uri.getPort
         )
 
-    private def getOAuthParameters : List[NameValuePair] =
-        return new Parameters(
-            credentials,
-            timestamp,
-            nonce,
-            options
-        ) toList
+    private def getOAuthParameters : List[NameValuePair] = new Parameters(
+		credentials,
+		timestamp,
+		nonce,
+		options
+	) toList
 
     private def %%(nameValuePair : NameValuePair) : NameValuePair =
 		new NameValuePair(%%(nameValuePair.name), %%(nameValuePair.value))
@@ -85,5 +83,5 @@ final class SignatureBaseString (
 }
 
 object SignatureBaseString {
-    implicit def to_string(instance : SignatureBaseString) : String = return instance toString
+    implicit def to_string(instance : SignatureBaseString) = instance toString
 }
