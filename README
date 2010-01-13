@@ -3,6 +3,14 @@
 Test-driven, "clean code" pure scala implementation of the OAuth standard.
 
 -------------------------------------------------------------------------------------
+Example: How to sign a URI with Consumer
+-------------------------------------------------------------------------------------
+
+val uri         = new URI("http://xxx")
+val consumer    = new Consumer(new Credential("key", "secret"))
+val signedUri   = consumer.sign(uri)
+
+-------------------------------------------------------------------------------------
 Example: How to create a signed URI
 -------------------------------------------------------------------------------------
 
