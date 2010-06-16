@@ -55,7 +55,7 @@ final class SignatureBaseString (
 	}
 
 	private def getAbsolute(uri : URI) =
-		uri.getScheme + "://" + selectAuthority(uri) + uri.getPath
+		uri.getScheme.toLowerCase + "://" + selectAuthority(uri).toLowerCase + uri.getPath
 
     private def selectAuthority(uri : URI) : String =
         return if (containsDefaultPort(uri)) uri getHost else uri getAuthority;

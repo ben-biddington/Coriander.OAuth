@@ -83,7 +83,7 @@ class SignatureBaseStringTest extends TestBase {
 
     // See: http://oauth.net/core/1.0/#anchor13
     @Test
-    def result_contains_all_expected_oauthparameters() {
+    def result_contains_all_expected_oauth_parameters() {
         given_a_list_of_parameters
         when_signature_base_string_is_created
         
@@ -206,6 +206,75 @@ class SignatureBaseStringTest extends TestBase {
         )
     }
 
+	// See: http://oauth.net/core/1.0/#anchor14, 9.1.2. Construct Request URL
+	@Test
+	def result_includes_url_scheme_lowercase {
+		val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey" +
+            "%26oauth_nonce%3Dddb61ca14d02e9ef7b55cc5c1f88616f%26" +
+            "oauth_signature_method%3DHMAC-SHA1%26" +
+            "oauth_timestamp%3D1252500234%26oauth_version%3D1.0"
+
+        // [i] Signature for above: oyg55+J+tiWduaXMdMFrCS/PMZQ=
+
+        val actual = new SignatureBaseString(
+            "get",
+            new URI("HTTP://xxx/"),
+            new Query(),
+            CredentialSet(forConsumer(new Credential("key", "secret")), andNoToken),
+            "ddb61ca14d02e9ef7b55cc5c1f88616f",
+            "1252500234",
+			Options.DEFAULT
+        ) toString
+
+        assertEquals("Actual does not match expected.", expected, actual)
+	}
+
+	// See: http://oauth.net/core/1.0/#anchor14, 9.1.2. Construct Request URL
+	@Test
+	def result_includes_url_authority_in_lowercase {
+		val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey" +
+            "%26oauth_nonce%3Dddb61ca14d02e9ef7b55cc5c1f88616f%26" +
+            "oauth_signature_method%3DHMAC-SHA1%26" +
+            "oauth_timestamp%3D1252500234%26oauth_version%3D1.0"
+
+        // [i] Signature for above: oyg55+J+tiWduaXMdMFrCS/PMZQ=
+
+        val actual = new SignatureBaseString(
+            "get",
+            new URI("http://XXX/"),
+            new Query(),
+            CredentialSet(forConsumer(new Credential("key", "secret")), andNoToken),
+            "ddb61ca14d02e9ef7b55cc5c1f88616f",
+            "1252500234",
+			Options.DEFAULT
+        ) toString
+
+        assertEquals("Actual does not match expected.", expected, actual)
+	}
+
+	// See: http://oauth.net/core/1.0/#anchor14, 9.1.2. Construct Request URL
+	@Test
+	def result_includes_url_path_as_declared_i_e_not_lower_cased {
+		val expected = "GET&http%3A%2F%2Fxxx%2FANYPATH&oauth_consumer_key%3Dkey" +
+            "%26oauth_nonce%3Dddb61ca14d02e9ef7b55cc5c1f88616f%26" +
+            "oauth_signature_method%3DHMAC-SHA1%26" +
+            "oauth_timestamp%3D1252500234%26oauth_version%3D1.0"
+
+        // [i] Signature for above: oyg55+J+tiWduaXMdMFrCS/PMZQ=
+
+        val actual = new SignatureBaseString(
+            "get",
+            new URI("http://xxx/ANYPATH"),
+            new Query(),
+            CredentialSet(forConsumer(new Credential("key", "secret")), andNoToken),
+            "ddb61ca14d02e9ef7b55cc5c1f88616f",
+            "1252500234",
+			Options.DEFAULT
+        ) toString
+
+        assertEquals("Actual does not match expected.", expected, actual)
+	}
+
     // See: http://term.ie/oauth/example/client.php
     // See also: http://oauth.net/core/1.0#sig_base_example
     @Test
@@ -285,7 +354,6 @@ class SignatureBaseStringTest extends TestBase {
 		)
 	}
 
-	// TEST: Result includes absolute URL (scheme, host (excluding port) and absolute path), and is in lower case
     // TEST: When URL contains ending slash, then it is included in the result
     // TEST: When URL contains query string, then it is excluded in the result
     // TEST: This class only requires oauth_key, not an entire Credential
