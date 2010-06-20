@@ -44,7 +44,8 @@ class Query(val nameValuePairs : List[NameValuePair]) {
 
 					if (nameCompared != 0)
 						nameCompared < 0
-					else left.value.compareToIgnoreCase(right.value) < 0
+					else
+						left.value.compareToIgnoreCase(right.value) < 0
 				}
 			)
 		)
