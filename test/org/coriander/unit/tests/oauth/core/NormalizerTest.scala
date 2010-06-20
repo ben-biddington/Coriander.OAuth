@@ -73,5 +73,22 @@ class NormalizerTest extends TestBase {
 		assertThat(actual, is(equalTo(expected)))	
 	}
 
+	@Test // @see: http://oauth.net/core/1.0/#anchor14
+	def example_from_spec {
+		val example = Query.from(
+			"a" -> "1",
+			"c" -> "hi%20there",
+			"f" -> "50",
+			"f" -> "25",
+			"f" -> "a",
+			"z" -> "p",
+			"z" -> "t"
+		)
+		val expected = "a=1&c=hi%20there&f=25&f=50&f=a&z=p&z=t"
+		val actual = normalize(example)
+
+		assertThat(actual, is(equalTo(expected)))
+	}
+
 	private def normalize(query : Query) : String = new Normalizer().normalize(query)
 }
