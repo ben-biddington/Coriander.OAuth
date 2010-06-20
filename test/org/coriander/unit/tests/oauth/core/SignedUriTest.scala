@@ -2,9 +2,6 @@ package org.coriander.unit.tests.oauth.core
 
 
 import java.net.URI
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
 import org.junit.Assert._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
@@ -14,6 +11,7 @@ import core.{CredentialSet, Options, SignedUri, Credential}
 import org.coriander.{Query, NameValuePair}
 import org.coriander.unit.tests.TestBase
 import CredentialSet._
+import org.junit.{Ignore, After, Before, Test}
 
 class SignedUriTest extends TestBase {
 
@@ -200,9 +198,9 @@ class SignedUriTest extends TestBase {
 		assertThat(actualSignature, is(equalTo(expectedSignature)))
 	}
 
-	@Test
+	@Test @Ignore
 	def the_sort_order_of_the_parameters_does_not_matter {
-		
+		fail("PENDING")	
 	}
 
 	@Test
