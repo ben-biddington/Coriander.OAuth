@@ -75,6 +75,19 @@ class QueryParserTest extends TestBase {
         then_result_equals(expected)
     }
 
+	@Test
+    def parse_url_decodes_names_and_values {
+        val value = "a%20name=a%20value"
+
+        when_string_parsed(value)
+
+        val expected = Query.from(
+            "a name" -> "a value"
+        )
+
+        then_result_equals(expected)
+    }
+
     private def when_string_parsed(query : String) {
         result = new QueryParser().parse(query)
     }
