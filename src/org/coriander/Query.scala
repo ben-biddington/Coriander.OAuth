@@ -36,11 +36,19 @@ class Query(val nameValuePairs : List[NameValuePair]) {
 		allMatching.head
     }
 
-    def sort : Query = new Query(
-		 nameValuePairs.sort(
-			(left, right) => left.name.compareToIgnoreCase(right.name) < 0
+    def sort : Query = {
+		new Query(
+			nameValuePairs.sort(
+				(left, right) => {
+					val nameCompared = left.name.compareToIgnoreCase(right.name)
+
+					if (nameCompared != 0)
+						nameCompared < 0
+					else left.value.compareToIgnoreCase(right.value) < 0
+				}
+			)
 		)
-	)
+	}
 
     def += (nameValuePair : NameValuePair) : Query = new Query(append(nameValuePair))
 

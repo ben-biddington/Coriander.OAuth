@@ -5,9 +5,9 @@ import org.junit.Assert._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 
-import org.coriander.Query
 import org.coriander.oauth.core.Normalizer
 import org.coriander.unit.tests.TestBase
+import org.coriander.{QueryParser, Query}
 
 class NormalizerTest extends TestBase {
 
@@ -76,14 +76,15 @@ class NormalizerTest extends TestBase {
 	@Test // @see: http://oauth.net/core/1.0/#anchor14
 	def example_from_spec {
 		val example = Query.from(
-			"a" -> "1",
-			"c" -> "hi%20there",
 			"f" -> "50",
+			"z" -> "p",
+			"a" -> "1",
 			"f" -> "25",
 			"f" -> "a",
-			"z" -> "p",
+			"c" -> "hi%20there",
 			"z" -> "t"
 		)
+
 		val expected = "a=1&c=hi%20there&f=25&f=50&f=a&z=p&z=t"
 		val actual = normalize(example)
 
