@@ -3,3 +3,4 @@ out/*
 .idea/
 scala.oauth.properties
 scala.oauth.xml
+*.iml
