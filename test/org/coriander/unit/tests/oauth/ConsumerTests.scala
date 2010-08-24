@@ -22,9 +22,10 @@ class ConsumerTests extends TestBase {
 		 val expectedSignedUrl = "http://xxx/?" +
 			"oauth_consumer_key=key&" +
 			"oauth_nonce=ea757706c42e2b14a7a8999acdc71089&" +
-			"oauth_signature=RO8XXXVxGl1kzYs%2FC7ueQzo974k%3D&" +
+			"oauth_signature=araCdxKcPVOtjuqNZhV3No5hlV4%3D&" +
 			"oauth_signature_method=HMAC-SHA1&" +
 			"oauth_timestamp=1257608197&" +
+			"oauth_token=&" +
 			"oauth_version=1.0"
 
 		val uri = new URI("http://xxx/")

@@ -212,7 +212,7 @@ class SignatureBaseStringTest extends TestBase {
 		val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey" +
             "%26oauth_nonce%3Dddb61ca14d02e9ef7b55cc5c1f88616f%26" +
             "oauth_signature_method%3DHMAC-SHA1%26" +
-            "oauth_timestamp%3D1252500234%26oauth_version%3D1.0"
+            "oauth_timestamp%3D1252500234%26oauth_token%3D%26oauth_version%3D1.0"
 
         // [i] Signature for above: oyg55+J+tiWduaXMdMFrCS/PMZQ=
 
@@ -235,7 +235,7 @@ class SignatureBaseStringTest extends TestBase {
 		val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey" +
             "%26oauth_nonce%3Dddb61ca14d02e9ef7b55cc5c1f88616f%26" +
             "oauth_signature_method%3DHMAC-SHA1%26" +
-            "oauth_timestamp%3D1252500234%26oauth_version%3D1.0"
+            "oauth_timestamp%3D1252500234%26oauth_token%3D%26oauth_version%3D1.0"
 
         // [i] Signature for above: oyg55+J+tiWduaXMdMFrCS/PMZQ=
 
@@ -258,7 +258,7 @@ class SignatureBaseStringTest extends TestBase {
 		val expected = "GET&http%3A%2F%2Fxxx%2FANYPATH&oauth_consumer_key%3Dkey" +
             "%26oauth_nonce%3Dddb61ca14d02e9ef7b55cc5c1f88616f%26" +
             "oauth_signature_method%3DHMAC-SHA1%26" +
-            "oauth_timestamp%3D1252500234%26oauth_version%3D1.0"
+            "oauth_timestamp%3D1252500234%26oauth_token%3D%26oauth_version%3D1.0"
 
         // [i] Signature for above: oyg55+J+tiWduaXMdMFrCS/PMZQ=
 
@@ -282,7 +282,7 @@ class SignatureBaseStringTest extends TestBase {
         val expected = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey" +
             "%26oauth_nonce%3Dddb61ca14d02e9ef7b55cc5c1f88616f%26" +
             "oauth_signature_method%3DHMAC-SHA1%26" +
-            "oauth_timestamp%3D1252500234%26oauth_version%3D1.0"
+            "oauth_timestamp%3D1252500234%26oauth_token%3D%26oauth_version%3D1.0"
         
         // [i] Signature for above: oyg55+J+tiWduaXMdMFrCS/PMZQ=
 
@@ -343,6 +343,33 @@ class SignatureBaseStringTest extends TestBase {
 			new Credential("HZvFeX5T7XlRIcJme/EWTg==", "Ao61gCJXIM20aqLDw7+Cow==")
 		)
         
+		val uri : URI = new URI("http://xxx")
+		val query = Query()
+
+		val signatureBaseString = new SignatureBaseString(uri, query, credentials, nonce, timestamp)
+
+		assertThat(
+			signatureBaseString toString,
+			is(equalTo(expected))
+		)
+	}
+
+
+	@Test
+	def token_is_always_included_even_when_it_has_no_value {
+		val expected = "GET&http%3A%2F%2Fxxx&" +
+			"oauth_consumer_key%3Dkey%26oauth_nonce%3D1108721620a4c6093f92b24d5844e61b%26" +
+			"oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1259051683%26" +
+			"oauth_token%3D%26oauth_version%3D1.0"
+
+		val timestamp = "1259051683"
+		val nonce = "1108721620a4c6093f92b24d5844e61b"
+
+		val credentials = new CredentialSet(
+			new Credential("key", "secret"),
+			null
+		)
+
 		val uri : URI = new URI("http://xxx")
 		val query = Query()
 

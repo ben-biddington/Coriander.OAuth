@@ -192,7 +192,7 @@ class SignedUriTest extends TestBase {
             Options.DEFAULT
         )
 
-		var expectedSignature = "lL9UsKRGi6y9UT5Rlgaag56RgT8="
+		var expectedSignature = "wzcnOSL+4FgCXR9HQUvu1L4Lap8="
 		val actualSignature = parseQuery(signedUri.value) single "oauth_signature" value
 
 		assertThat(actualSignature, is(equalTo(expectedSignature)))
@@ -211,6 +211,27 @@ class SignedUriTest extends TestBase {
 		val theSameValueSampledAgain = instance.value
 
 		assertThat(value, is(equalTo(theSameValueSampledAgain)))
+	}
+
+	@Test
+	def example {
+		var uri 		= new URI("http://photos.example.net/photos?file=vacation.jpg&size=original")
+        var timestamp 	= "1191242096"
+        var nonce 		= "kllo9940pd9333jh"
+		                                  
+        var signedUri = new SignedUri(
+            uri,
+            CredentialSet(
+				forConsumer(new Credential("dpf43f3p2l4k3l03", "kd94hf93k423kf44")), 
+				andToken(new Credential("nnch734d00sl2jdk", "pfkkdhi9sl3r4s00"))
+			),
+            timestamp,
+            nonce,
+            Options.DEFAULT
+        )
+
+		val expected = "http://photos.example.net/photos?file=vacation.jpg&oauth_consumer_key=dpf43f3p2l4k3l03&oauth_nonce=kllo9940pd9333jh&oauth_signature=tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1191242096&oauth_token=nnch734d00sl2jdk&oauth_version=1.0&size=original"
+		assertThat(signedUri.value.toString, is(equalTo(expected)))
 	}
 	
     private def give_a_signed_uri {

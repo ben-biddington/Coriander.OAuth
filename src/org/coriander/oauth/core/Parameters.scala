@@ -9,8 +9,7 @@ final class Parameters(
     val nonce 		: String,
     val options 	: Options
 ) {
-	def toList : List[NameValuePair] =
-		if (credentials.hasToken) addToken(defaultList) else defaultList
+	def toList : List[NameValuePair] = defaultList
 	
     private def defaultList : List[NameValuePair] = {
         List(
@@ -18,9 +17,16 @@ final class Parameters(
             new NameValuePair(Parameters.Names.SIGNATURE_METHOD, options signatureMethod),
             new NameValuePair(Parameters.Names.TIMESTAMP, timestamp),
             new NameValuePair(Parameters.Names.NONCE, nonce),
-            new NameValuePair(Parameters.Names.VERSION, options.version toString)
+            new NameValuePair(Parameters.Names.VERSION, options.version toString),
+            new NameValuePair(Parameters.Names.TOKEN, tokenKey(credentials))
         )
     }
+
+	private def tokenKey(credentials : CredentialSet) = {
+		if (credentials.hasToken && credentials.token.key != null)
+			credentials.token.key
+		else ""
+	}
 
     private def addToken(to : List[NameValuePair]) : List[NameValuePair] = {
         var buffer = new ListBuffer[NameValuePair]
