@@ -175,7 +175,7 @@ class SignatureBaseStringTest extends TestBase {
 
         when_signature_base_string_is_created
 
-		val expectedPath: String = uri getPath
+		val expectedPath : String = uri getPath
 
 		assertThat(
             signatureBaseString toString,
@@ -379,6 +379,38 @@ class SignatureBaseStringTest extends TestBase {
 			signatureBaseString toString,
 			is(equalTo(expected))
 		)
+	}
+
+	@Test // See: http://tools.ietf.org/html/rfc5849, section 3.4.1.1
+	def a_post_example {
+		val uri = new URI("http://example.com/request")
+		
+		query = Query.from(
+			"a2" -> "r b",
+			"a3" -> "2 q",
+			"a3" -> "a",
+			"b5" -> "=%3D",
+			"c@" -> "",
+			"c2" -> ""
+        )
+
+		val credentials = new CredentialSet(
+			new Credential("9djdj82h48djs9d2", ""),
+			new Credential("kkk9d7dh3k39sjv7", "")
+		)
+
+		val signatureBaseString = new SignatureBaseString("POST", uri, query, credentials, "7d8f3e4a", "137131201", Options.DEFAULT)
+		val expected =
+			"POST&http%3A%2F%2Fexample.com%2Frequest&" +
+			"a2%3Dr%2520b%26a3%3D2%2520q%26a3%3Da%26b5%3D%253D%25253D%26c%2540%3D%26c2%3D%26" +
+			"oauth_consumer_key%3D9djdj82h48djs9d2%26" +
+			"oauth_nonce%3D7d8f3e4a%26" +
+			"oauth_signature_method%3DHMAC-SHA1%26" +
+			"oauth_timestamp%3D137131201%26" +
+			"oauth_token%3Dkkk9d7dh3k39sjv7%26" +
+			"oauth_version%3D1.0"
+
+		assertEquals(expected, signatureBaseString.toString)
 	}
 
     // TEST: When URL contains ending slash, then it is included in the result
