@@ -49,6 +49,11 @@ class Query(val nameValuePairs : List[NameValuePair]) {
 		)
 	}
 
+	def += (nameValuePair : Tuple2[String,String]) : Query = {
+		val pair = new NameValuePair(nameValuePair._1, nameValuePair._2)
+		new Query(append(pair))
+	}
+	
     def += (nameValuePair : NameValuePair) : Query = new Query(append(nameValuePair))
 
     override def toString : String = {

@@ -55,4 +55,12 @@ class QueryCompanionTest extends TestBase {
     def given_a_null_reference_then_copy_throws_argument_exception {
         Query.copy(null)
     }
+
+	@Test def can_also_make_one_with_tuple {
+		var query = new Query()
+		query = query += ("a", "aaa")
+
+		assertThat(query.size, is(equalTo(1)))
+		assertThat(query.get("a").first.value, is(equalTo("aaa")))
+	}
 }
