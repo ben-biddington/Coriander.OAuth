@@ -1,22 +1,43 @@
 <?xml version="1.0"?>
 <project name="coriander-oauth-make-jar" basedir=".">
-    <property name="app.name" value="Coriander.Oauth"/>
-    <property name="app.path" value="/${app.name}"/>
-    <property name="app.version" value="2.0.4"/>
-    <property name="src.home" value="${basedir}/src"/>
-    <property name="build.home" value="${basedir}/out"/>
-    <property name="jar.home" value="${build.home}/jar"/>
-    <property name="jar.name" value="coriander-oauth-${app.version}.jar"/>
+    <property name="app.name"     value="Coriander.OAuth"/>
+    <property name="app.path"     value="/${app.name}"/>
+    <property name="app.version"  value="2.0.4"/>
+    <property name="src.home"     value="${basedir}/src"/>
+	<property name="testsrc.home" value="${basedir}/test"/>
+    <property name="build.home"   value="${basedir}/out"/>
+    <property name="jar.home"     value="${build.home}/jar"/>
+    <property name="jar.name"     value="coriander-oauth-${app.version}.jar"/>
+	<property name="report.home"  value="${basedir}/reports"/>
 
     <target name="clean">
-        <delete dir="${jar.home}" verbose="true"/>
+        <delete dir="${jar.home}"    verbose="true"/>
+		<delete dir="${build.home}"  verbose="true"/>
+		<delete dir="${report.home}" verbose="true"/>
     </target>
-
-    <target name="jar" depends="clean">
+		
+	<target name="init" depends="clean">
+		<property name="scala-library.jar" value="lib/scala-library.jar" />
+		<path id="build.classpath">
+			<fileset dir="lib">
+				<include name="*.jar"/>
+			</fileset>
+		  <pathelement location="${build.home}"/>
+		</path>
+		
+		<taskdef resource="scala/tools/ant/antlib.xml">
+		  <classpath>
+			<pathelement location="lib/scala-compiler.jar"/>
+			<pathelement location="${scala-library.jar}"/>
+		  </classpath>
+		</taskdef>
+	</target>
+		
+    <target name="jar" depends="build">
         <mkdir dir="${jar.home}"/>
         <jar
             destfile="${jar.home}/${jar.name}"
-            basedir="${build.home}/production/${app.name}"
+            basedir="${build.home}"
         >
             <manifest>
                 <attribute name="Author" value="Ben Biddington"/>
@@ -24,4 +45,36 @@
             </manifest>
         </jar>
     </target>
+
+	<target name="build" depends="init">
+		<mkdir dir="${build.home}"/>
+		<scalac srcdir="${src.home}" destdir="${build.home}" classpathref="build.classpath">
+		</scalac>
+	</target>
+		
+	<target name="testbuild" depends="build">
+		<scalac srcdir="${testsrc.home}" destdir="${build.home}" classpathref="build.classpath"/>
+	</target>
+		
+	<target name="test" depends="testbuild">
+		<mkdir dir="${report.home}"/>
+		<junit fork="no" printsummary="yes" showoutput="yes">
+			<classpath refid="build.classpath"/>
+			<formatter type="xml"/>
+			
+			<batchtest todir="${build.home}">
+				<fileset dir="${build.home}">
+					<include name="**/*Test.class"/>
+					<exclude name="**/TestBase.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+		
+		<junitreport todir="${report.home}">
+		    <fileset dir="${build.home}">
+			    <include name="TEST-*.xml"/>
+		    </fileset>
+		    <report format="frames" todir="${report.home}"/>
+		</junitreport>
+	</target>
 </project>
