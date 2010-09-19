@@ -1,5 +1,6 @@
 build
 out/*
+reports/
 .idea/
 scala.oauth.properties
 scala.oauth.xml
