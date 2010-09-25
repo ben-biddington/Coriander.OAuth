@@ -58,7 +58,7 @@ class SignatureTest extends TestBase {
         assertEquals(expected, actual)
     }
 
-    @Test
+    @Test @Ignore
     def when_consumer_secret_and_token_secret_supplied_then_sign_returns_correct_signature {
         val baseString = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26" +
 			"oauth_nonce%3D35d48708b951a3adfaa64a9d0632e19a%26oauth_signature_method%3DHMAC-SHA1%26" +
@@ -70,6 +70,10 @@ class SignatureTest extends TestBase {
 
         assertEquals(expected, actual)
     }
+
+	def when_consumer_secret_and_token_secret_supplied_then_both_are_used_for_mac {
+
+	}
 
     @Test
     def when_consumer_secret_contains_uri_reserved_characters_then_sign_returns_correct_signature_having_escaped_them {
@@ -101,23 +105,6 @@ class SignatureTest extends TestBase {
         val actual = new Signature(urlEncoder, credentials) sign(baseString);
 
         assertEquals(expected, actual)
-    }
-
-    @Test
-    def sign_currently_only_supports_hmac_sha1_algorithm() {
-        val expectedMessage = "Unsupported algorithm. Currently only 'HMacSha1' is supported."
-        var success = false
-
-        try {
-            new Signature(null, null, "Anything but hmacsha1") sign("Any string");
-        } catch {
-            case e : Exception => {
-                assertTrue(e.getMessage.contains(expectedMessage))
-                success = true
-            }
-        }
-
-        assertTrue("The expected exception was not thrown", success)
     }
 
 	@Test

@@ -1,6 +1,6 @@
 package org.coriander.oauth.core
 
-import cryptopgraphy.Sha1
+import cryptopgraphy.{Hmac, Sha1}
 import org.apache.commons.codec.binary.Base64.encodeBase64
 import org.coriander.oauth.core.uri._
 
@@ -8,10 +8,10 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
     def this(
         urlEncoder  : UrlEncoder,
         credentials : CredentialSet,
-        algorithm   : String
+        hmac   		: Hmac
     ) {
         this(urlEncoder, credentials)
-        this.algorithm = algorithm
+        this.hmac = hmac
     }
 
     def this(credentials : CredentialSet) = this(
@@ -21,7 +21,7 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
 
     def sign(baseString : String) = {
         validate
-
+		
         getSignature(baseString);
     }
 
@@ -46,13 +46,12 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
     private def %% (value : String) : String = urlEncoder.encode(value)
 
     private def validate {
-        validateAlgorithm
-        requireURLEncoder
+        requireUrlEncoder
         validateConsumerCredential
         validateToken
     }
 
-    private def requireURLEncoder {
+    private def requireUrlEncoder {
         require (urlEncoder != null, "Please supply a UrlEncoder.")
     }
 
@@ -68,15 +67,7 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
 		} 
     }
 
-    private def validateAlgorithm {
-        require (
-			algorithm eq DEFAULT_ALGORITHM,
-			"Unsupported algorithm. Currently only '" + DEFAULT_ALGORITHM + "' is supported."
-		)
-    }
-
-	private val DEFAULT_ALGORITHM 		= "HMacSha1"
 	private val DEFAULT_TOKEN_SECRET 	= ""
-	private var algorithm 				= DEFAULT_ALGORITHM
+	private var hmac : Hmac 			= new Sha1
     private val encoding 				= org.apache.http.protocol.HTTP.UTF_8
 }
