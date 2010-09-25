@@ -1,6 +1,6 @@
 package org.coriander.oauth.core
 
-import javax.crypto
+import cryptopgraphy.Sha1
 import org.apache.commons.codec.binary.Base64.encodeBase64
 import org.coriander.oauth.core.uri._
 
@@ -26,15 +26,8 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
     }
 
     private def getSignature(baseString : String) : String = {
-        mac.init(getSecretKey)
-        new String(encodeBase64(mac.doFinal(baseString.getBytes)))
-    }
-
-    private def getSecretKey : crypto.spec.SecretKeySpec = {
-        new crypto.spec.SecretKeySpec(
-            formatKey getBytes(encoding),
-            algorithm
-        );
+		val mac = new Sha1().create(formatKey, baseString)
+		new String(encodeBase64(mac))
     }
 
     // See: http://oauth.net/core/1.0, section 9.2
@@ -85,6 +78,5 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
 	private val DEFAULT_ALGORITHM 		= "HMacSha1"
 	private val DEFAULT_TOKEN_SECRET 	= ""
 	private var algorithm 				= DEFAULT_ALGORITHM
-    private val mac 					= crypto.Mac.getInstance(algorithm)
     private val encoding 				= org.apache.http.protocol.HTTP.UTF_8
 }

@@ -95,7 +95,7 @@ class SignatureTest extends TestBase {
 
         val credentials = CredentialSet(
             forConsumer(validConsumerCredential),
-            andToken(token)
+            andToken(token) 
         )
 
         val actual = new Signature(urlEncoder, credentials) sign(baseString);
