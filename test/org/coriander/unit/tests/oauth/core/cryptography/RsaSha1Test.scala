@@ -1,17 +1,10 @@
 package org.coriander.unit.tests.oauth.core.cryptography
 
-import org.junit._
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
-import org.junit.Assert._
-import org.junit.matchers._
-import org.hamcrest.core.Is._
-import org.hamcrest.core.IsEqual._
-import java.io.FileInputStream
 import java.security._
-import com.sun.xml.internal.bind.Util
-
+import java.io.{FileReader, BufferedReader}
+import org.bouncycastle.openssl.PEMReader
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 
 class RsaSha1Test  {
 	@Test
@@ -23,6 +16,17 @@ class RsaSha1Test  {
     	val sigbytes = signCore(new Array[Byte](1), privateKey, "SHA1withRSA");
 
 		println("Signature(in hex):: " + sigbytes)
+	}
+
+	@Test
+	def how_to_load_keys_from_pem_files_with_bouncy_castle {
+		val path =  "C:/Users/Ben/Documents/My Dropbox/work/e-two/xero/e_two_cert.pem"
+		val br = new BufferedReader(new FileReader(path))
+		Security.addProvider(new BouncyCastleProvider())
+		val kp : KeyPair = new PEMReader(br).readObject().asInstanceOf[KeyPair]
+
+		println(kp.getPrivate)
+		println(kp.getPublic)
 	}
 
 	private def signCore(
