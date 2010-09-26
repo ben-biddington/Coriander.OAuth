@@ -16,37 +16,31 @@ import com.sun.xml.internal.bind.Util
 class RsaSha1Test  {
 	@Test
 	def an_example { // http://www.informit.com/articles/article.aspx?p=170967&seqNum=7
-		val kpg = KeyPairGenerator.getInstance("RSA");
-    	kpg.initialize(512); // 512 is the keysize.
-    	val kp = kpg.generateKeyPair();
-    	val pubk = kp.getPublic();
-    	val prvk = kp.getPrivate();
+		val kp = newKeyPair
 
-    	val datafile = "C:/Users/Ben/Documents/Sauce/Coriander.OAuth/README";
-    	val sigbytes = sign(datafile, prvk, "SHA1withRSA");
+    	val privateKey	= kp.getPrivate
+
+    	val sigbytes = signCore(new Array[Byte](1), privateKey, "SHA1withRSA");
 
 		println("Signature(in hex):: " + sigbytes)
 	}
 
-	private def sign(
-		datafile: String,
-		prvKey : PrivateKey ,
-     	sigAlg : String
-	) : Array[Byte] = {
-    	val sig : Signature = Signature.getInstance(sigAlg);
+	private def signCore(
+		message	: Array[Byte],
+		prvKey 	: PrivateKey,
+     	sigAlg 	: String
+	) = {
+		val sig = Signature.getInstance(sigAlg);
     	sig.initSign(prvKey);
+		sig.update(message, 0, message.size);
+		sig.sign()
+	}
 
-		var fis = new FileInputStream(datafile);
-    	val dataBytes = new Array[Byte](1024)
-    	var nread = fis.read(dataBytes);
+	private def newKeyPair = {
+		val kpg = KeyPairGenerator.getInstance("RSA");
+		val KEYSIZE : Int = 512
+		kpg.initialize(KEYSIZE);
 
-		while (nread > 0) {
-    		sig.update(dataBytes, 0, nread);
-      		nread = fis.read(dataBytes);
-    	}
-
-		fis.close
-
-    	sig.sign()
-  }
+		kpg.generateKeyPair()
+	}
 }
