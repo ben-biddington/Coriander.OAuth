@@ -26,8 +26,8 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
     }
 
     private def getSignature(baseString : String) : String = {
-		val mac = new Sha1().create(formatKey, baseString)
-		new String(encodeBase64(mac))
+		val theHmac = hmac.create(formatKey, baseString)
+		new String(encodeBase64(theHmac))
     }
 
     // See: http://oauth.net/core/1.0, section 9.2

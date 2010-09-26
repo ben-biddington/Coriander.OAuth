@@ -8,11 +8,14 @@ import org.junit.matchers._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.junit._
+import org.mockito.Mockito._
+import org.mockito.Matchers._
 import org.apache.commons.httpclient._
 import org.apache.commons.httpclient.util._
 import org.junit.rules._
 import scala.collection.immutable._
 import org.coriander.oauth._
+import core.cryptopgraphy.Hmac
 import core.uri.OAuthUrlEncoder
 import core.{CredentialSet, Signature, Credential}
 import CredentialSet._
@@ -25,6 +28,12 @@ class SignatureTest extends TestBase {
     val validConsumerCredential = new Credential("key", "secret")
     val validToken = new Credential("token_key", "token_secret")
     val urlEncoder = new OAuthUrlEncoder
+    var hmac : Hmac = null
+
+	@Before
+	def before {
+		hmac = newMockHmac
+	}
 
     // TODO: Better exception name
     @Test { val expected=classOf[Exception] }
@@ -46,65 +55,44 @@ class SignatureTest extends TestBase {
         newSignature(validConsumerCredential, tokenWithNullSecret) sign("anything");
     }
 
-    @Test 
-    def when_just_consumer_secret_supplied_then_sign_returns_correct_signature {
-        val baseString = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26" +
-			"oauth_nonce%3Df3df23228e40e2905e305a893895f115%26oauth_signature_method%3DHMAC-SHA1%26" +
-			"oauth_timestamp%3D1252657173%26oauth_version%3D1.0"
+	@Test
+	def when_just_consumer_secret_supplied_then_token_secret_is_just_left_empty {
+		val baseString = "anything"
 
-        val expected = "2/MMtvuImh4H+clAdThQWk916lo="
-        val actual = newSignature(validConsumerCredential) sign(baseString)
+		val credentials = CredentialSet(forConsumer(validConsumerCredential), andNoToken)
+		val expectedKey = "secret&"
 
-        assertEquals(expected, actual)
-    }
+		val signature = new Signature(urlEncoder, credentials, hmac).sign("anything")
 
-    @Test @Ignore
-    def when_consumer_secret_and_token_secret_supplied_then_sign_returns_correct_signature {
-        val baseString = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26" +
-			"oauth_nonce%3D35d48708b951a3adfaa64a9d0632e19a%26oauth_signature_method%3DHMAC-SHA1%26" +
-			"oauth_timestamp%3D1252669302%26oauth_token%3Dtoken_key%26oauth_version%3D1.0"
+		verify(hmac).create(expectedKey, "anything")
+	}
+	
+	@Test
+	def when_consumer_secret_and_token_secret_supplied_then_both_are_used_for_hmac {
+		val baseString = "anything"
 
-        val expected = "a6D1JJVdKIxKe7L/AW+gtSzBT24="
+		val credentials = CredentialSet(forConsumer(validConsumerCredential), andToken(validToken))
+		val expectedKey = "secret&token_secret"
 
-        val actual = newSignature(validConsumerCredential, validToken) sign(baseString);
+		val signature = new Signature(urlEncoder, credentials, hmac).sign("anything")
 
-        assertEquals(expected, actual)
-    }
-
-	def when_consumer_secret_and_token_secret_supplied_then_both_are_used_for_mac {
-
+		verify(hmac).create(expectedKey, "anything")
 	}
 
     @Test
-    def when_consumer_secret_contains_uri_reserved_characters_then_sign_returns_correct_signature_having_escaped_them {
-        val baseString = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26" +
-			"oauth_nonce%3D26db6028882d344cccad2227f4a9dae8%26oauth_signature_method%3DHMAC-SHA1%26" +
-			"oauth_timestamp%3D1252670619%26oauth_version%3D1.0"
+    def each_part_of_the_key_is_url_encoded {
+		val baseString = "anything"
 
-        val expected = "DD+dh4ZaBlgf4WrUBfFoah/gfZg="
-        
-        val actual = newSignature(new Credential("key", "secret with spaces")) sign(baseString);
+		val credentials = CredentialSet(
+			forConsumer(new Credential("key", "secret with spaces")),
+			andToken(new Credential("key", "token secret with spaces"))
+		)
 
-        assertEquals(expected, actual)
-    }
+		val expectedKey = "secret%20with%20spaces&token%20secret%20with%20spaces"
 
-    @Test
-    def when_token_secret_contains_uri_reserved_characters_then_sign_returns_correct_signature_having_escaped_them {
-        val baseString = "GET&http%3A%2F%2Fxxx%2F&oauth_consumer_key%3Dkey%26" +
-			"oauth_nonce%3D69ed8b3bd8cab8a40d4069f422de9854%26oauth_signature_method%3DHMAC-SHA1%26" +
-			"oauth_timestamp%3D1252671920%26oauth_token%3Dtoken_key%26oauth_version%3D1.0"
+		val signature = new Signature(urlEncoder, credentials, hmac).sign("anything")
 
-        val token = new Credential("token_key", "token secret with spaces")
-        val expected = "aNXBLy2UtMF99dgrJa+9PSWYYUI="
-
-        val credentials = CredentialSet(
-            forConsumer(validConsumerCredential),
-            andToken(token) 
-        )
-
-        val actual = new Signature(urlEncoder, credentials) sign(baseString);
-
-        assertEquals(expected, actual)
+		verify(hmac).create(expectedKey, "anything")
     }
 
 	@Test
@@ -117,22 +105,28 @@ class SignatureTest extends TestBase {
 		val consumer = new Credential("key", "secret")
 		val token = new Credential("HZvFeX5T7XlRIcJme/EWTg==", "Ao61gCJXIM20aqLDw7+Cow==")
         val credentials = CredentialSet(consumer, token)
-        
+
 		val expected = "ZZ3oRaIMA4dg4HrS63qokpKwGbY="
 		val actual = new Signature(credentials) sign(baseString)
 
 		assertThat(actual, is(equalTo(expected)))
 	}
 
-    def newSignature(consumerCredential : Credential) : Signature = {
+	private def newMockHmac = {
+		val hmac = mock(classOf[Hmac])
+		when(hmac.create(anyString, anyString)).thenReturn(new Array[Byte](0))
+		hmac
+	}
+
+    private def newSignature(consumerCredential : Credential) : Signature = {
         newSignature(consumerCredential, null)
     }
 
-    def newSignature(consumer  : Credential, token : Credential) : Signature = {
+    private def newSignature(consumer  : Credential, token : Credential) : Signature = {
         val credentials = CredentialSet(
             forConsumer(consumer),
             andToken(token)
         )
-        new Signature(urlEncoder, credentials)
+        new Signature(urlEncoder, credentials, hmac)
     }
 }
