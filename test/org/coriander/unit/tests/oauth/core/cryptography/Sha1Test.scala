@@ -11,7 +11,7 @@ import org.hamcrest.core.IsEqual._
 import org.apache.commons.codec.binary.Base64.encodeBase64
 import org.coriander.oauth.core.cryptography.Sha1
 
-class Sha1Tests {
+class Sha1Test {
 	@Test
 	def an_example_using_oauth_consumer_secret_only {
 		val key 	= "secret&"
