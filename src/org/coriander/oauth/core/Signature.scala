@@ -1,6 +1,6 @@
 package org.coriander.oauth.core
 
-import cryptopgraphy.{Hmac, Sha1}
+import cryptography.{Hmac, Sha1}
 import org.apache.commons.codec.binary.Base64.encodeBase64
 import org.coriander.oauth.core.uri._
 

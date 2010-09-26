@@ -15,7 +15,7 @@ import org.apache.commons.httpclient.util._
 import org.junit.rules._
 import scala.collection.immutable._
 import org.coriander.oauth._
-import core.cryptopgraphy.Hmac
+import core.cryptography.Hmac
 import core.uri.{UrlEncoder, OAuthUrlEncoder}
 import core.{CredentialSet, Signature, Credential}
 import CredentialSet._

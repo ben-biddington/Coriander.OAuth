@@ -1,4 +1,4 @@
-package org.coriander.oauth.core.cryptopgraphy
+package org.coriander.oauth.core.cryptography
 
 import javax.crypto
 

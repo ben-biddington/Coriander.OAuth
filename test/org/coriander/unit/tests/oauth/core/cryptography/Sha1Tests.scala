@@ -9,7 +9,7 @@ import org.junit.matchers._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.apache.commons.codec.binary.Base64.encodeBase64
-import org.coriander.oauth.core.cryptopgraphy.Sha1
+import org.coriander.oauth.core.cryptography.Sha1
 
 class Sha1Tests {
 	@Test
