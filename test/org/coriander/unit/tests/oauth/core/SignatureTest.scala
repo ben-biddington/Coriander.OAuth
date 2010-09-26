@@ -16,7 +16,7 @@ import org.junit.rules._
 import scala.collection.immutable._
 import org.coriander.oauth._
 import core.cryptopgraphy.Hmac
-import core.uri.OAuthUrlEncoder
+import core.uri.{UrlEncoder, OAuthUrlEncoder}
 import core.{CredentialSet, Signature, Credential}
 import CredentialSet._
 import org.coriander.unit.tests.TestBase
@@ -24,15 +24,15 @@ import org.coriander.unit.tests.TestBase
 // See: http://www.infoq.com/news/2009/07/junit-4.7-rules#
 // For signature examples, see: http://term.ie/oauth/example/client.php
 class SignatureTest extends TestBase {
-
-    val validConsumerCredential = new Credential("key", "secret")
-    val validToken = new Credential("token_key", "token_secret")
-    val urlEncoder = new OAuthUrlEncoder
-    var hmac : Hmac = null
+    val validConsumerCredential 	= new Credential("key", "secret")
+    val validToken 					= new Credential("token_key", "token_secret")
+    var urlEncoder 	: UrlEncoder 	= null
+    var hmac 		: Hmac 			= null
 
 	@Before
 	def before {
 		hmac = newMockHmac
+		urlEncoder = new OAuthUrlEncoder
 	}
 
     // TODO: Better exception name
@@ -74,25 +74,24 @@ class SignatureTest extends TestBase {
 		val credentials = CredentialSet(forConsumer(validConsumerCredential), andToken(validToken))
 		val expectedKey = "secret&token_secret"
 
-		val signature = new Signature(urlEncoder, credentials, hmac).sign("anything")
+		val signature = new Signature(urlEncoder, credentials, hmac).sign(baseString)
 
-		verify(hmac).create(expectedKey, "anything")
+		verify(hmac).create(expectedKey, baseString)
 	}
 
     @Test
     def each_part_of_the_key_is_url_encoded {
-		val baseString = "anything"
-
 		val credentials = CredentialSet(
 			forConsumer(new Credential("key", "secret with spaces")),
 			andToken(new Credential("key", "token secret with spaces"))
 		)
 
-		val expectedKey = "secret%20with%20spaces&token%20secret%20with%20spaces"
+		urlEncoder = mock(classOf[UrlEncoder])
 
-		val signature = new Signature(urlEncoder, credentials, hmac).sign("anything")
+		new Signature(urlEncoder, credentials, hmac).sign("anything")
 
-		verify(hmac).create(expectedKey, "anything")
+		verify(urlEncoder).encode("secret with spaces")
+		verify(urlEncoder).encode("token secret with spaces")
     }
 
 	@Test
