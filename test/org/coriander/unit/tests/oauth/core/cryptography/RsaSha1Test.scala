@@ -1,10 +1,13 @@
 package org.coriander.unit.tests.oauth.core.cryptography
 
 import org.junit.Test
+import org.junit.Assert._
+import org.hamcrest.core.Is._
+import org.hamcrest.core.IsEqual._
 import java.security._
 import java.io.{FileReader, BufferedReader}
 import org.bouncycastle.openssl.PEMReader
-import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.bouncycastle.jce.provider.{X509CertificateObject, BouncyCastleProvider}
 
 class RsaSha1Test  {
 	@Test
@@ -19,14 +22,24 @@ class RsaSha1Test  {
 	}
 
 	@Test
-	def how_to_load_keys_from_pem_files_with_bouncy_castle {
-		val path =  "C:/Users/Ben/Documents/My Dropbox/work/e-two/xero/e_two_cert.pem"
+	def how_to_load_x509_certificate_with_bouncy_castle {
+		val path =  "test/cert.pem"
+		val br = new BufferedReader(new FileReader(path))
+		Security.addProvider(new BouncyCastleProvider())
+		val certificate : X509CertificateObject = new PEMReader(br).readObject().asInstanceOf[X509CertificateObject]
+	
+		assertThat(certificate.getPublicKey.getAlgorithm, is(equalTo("RSA")))
+	}
+
+	@Test
+	def how_to_load_key_pair_from_pem_files_with_bouncy_castle {
+		val path =  "test/rsa_cert.pem"
 		val br = new BufferedReader(new FileReader(path))
 		Security.addProvider(new BouncyCastleProvider())
 		val kp : KeyPair = new PEMReader(br).readObject().asInstanceOf[KeyPair]
 
-		println(kp.getPrivate)
-		println(kp.getPublic)
+		assertThat(kp.getPrivate.getAlgorithm, is(equalTo("RSA")))
+		assertThat(kp.getPublic.getAlgorithm, is(equalTo("RSA")))
 	}
 
 	private def signCore(
