@@ -2,7 +2,7 @@
 <project name="coriander-oauth-make-jar" basedir=".">
     <property name="app.name"     value="Coriander.OAuth"/>
     <property name="app.path"     value="/${app.name}"/>
-    <property name="app.version"  value="2.0.4"/>
+    <property name="app.version"  value="2.1.0"/>
     <property name="src.home"     value="${basedir}/src"/>
 	<property name="testsrc.home" value="${basedir}/test"/>
     <property name="build.home"   value="${basedir}/out"/>
