@@ -65,22 +65,28 @@ object RsaPrivateKeyReader {
 		if (false == isDsaFormat)
 			throw new IOException("The supplied file does not appear to be in DSA format.")
 
+		val justTheKey = linesBetween(file, START_TOKEN, END_TOKEN)
+
+		toPrivateKey(justTheKey.mkString)
+	}
+
+	private def linesBetween(file : String, start : String, end : String) = {
+		val allLines : List[String] = fromFile(new File(file).getCanonicalPath).getLines.toList
+		
 		var done = false
 		var started = false
-		
+
 	 	val lines = allLines.takeWhile((line : String) => {
 			if (false == started) {
-				started = line.trim.matches(START_TOKEN)
+				started = line.trim.matches(start)
 			}
 
-			done = line.trim.matches(END_TOKEN)
+			done = line.trim.matches(end)
 
 			started && !done
 		})
 
-		val justTheKey = lines.slice(1, lines.size)
-
-		toPrivateKey(justTheKey.mkString)
+		lines.slice(1, lines.size)
 	}
 
 	private def toPrivateKey(encodedKey : String) = {	
