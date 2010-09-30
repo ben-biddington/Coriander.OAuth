@@ -7,8 +7,8 @@ import org.hamcrest.core.IsEqual._
 import java.security._
 import org.bouncycastle.openssl.PEMReader
 import org.bouncycastle.jce.provider.{X509CertificateObject, BouncyCastleProvider}
-import spec.{PKCS8EncodedKeySpec, KeySpec, X509EncodedKeySpec}
-import java.io.{IOException, ByteArrayInputStream, FileReader, BufferedReader}
+import java.io.{FileReader, BufferedReader}
+import org.apache.commons.codec.binary.Base64._
 
 class RsaSha1Test  {
 	@Test
@@ -57,7 +57,20 @@ class RsaSha1Test  {
 		sig.initSign(privateKey)
 		sig.update(message)
 
-		val signature = sig.sign;
+		val signature = encodeBase64(sig.sign);
+		val expected =
+			"QUJVRzA2VWFKZWJEdzNSc2FMQ3JZZ0M2cW5HaWEyUkVBQUFOQlRtRGEvem8yN21Od0h2S0" +
+			"hBQ3NkVCt0RHNic0RBWkc1YzdTVlQ5U09lWFFKK2NaM1kzQnFybTd0bDBZZFgxb1NYUm9o" +
+			"L1JXYTJqY1BpdkxFenNWQzRoWWhvMG9JbGtwNlNIMXBSYWEyZUlUNUdiWm5SQ1Z4TWgvRXZ" +
+			"1MTJ1MnFMY05HSzRNPQ=="
+		val actual = new String(encodeBase64(signature))
+
+		assertThat(actual, is(equalTo(expected)))
+	}
+
+	@Test
+	def how_to_verify_a_signature {
+
 	}
 
 	private def load(pemFile : String) : KeyPair = {
