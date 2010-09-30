@@ -54,8 +54,6 @@ object RsaPrivateKeyReader {
 	def read(file : String): PrivateKey = {
 		val theFile = new File(file)
 
-		requireExists(theFile)
-
 		val allLines : List[String] = fromFile(theFile.getCanonicalPath).getLines.toList
 		val START_TOKEN = "-----BEGIN PRIVATE KEY-----"
 		val END_TOKEN 	= "-----END PRIVATE KEY-----"
@@ -93,10 +91,5 @@ object RsaPrivateKeyReader {
 		val privSpec = new PKCS8EncodedKeySpec(decodeBase64(encodedKey))
 		val keyFactory = KeyFactory.getInstance("RSA");
 		keyFactory.generatePrivate(privSpec).asInstanceOf[RSAPrivateKey]
-	}
-
-	private def requireExists(file : File) {
-		if (false == file.exists)
-			throw new IOException("File not found. Unable to load key.")
 	}
 }
