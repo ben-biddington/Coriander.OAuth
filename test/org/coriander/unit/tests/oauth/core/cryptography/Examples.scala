@@ -10,8 +10,7 @@ import org.bouncycastle.openssl.PEMReader
 import org.bouncycastle.jce.provider.{X509CertificateObject, BouncyCastleProvider}
 import java.io.{FileReader, BufferedReader}
 import org.apache.commons.codec.binary.Base64._
-import org.coriander.oauth.core.cryptography.Sha1
-import org.junit.{Ignore, Test}
+import org.junit.{Test}
 
 class Examples  {
 	@Test
@@ -25,7 +24,7 @@ class Examples  {
 
 	@Test
 	def how_to_load_x509_certificate_with_bouncy_castle {
-		val path =  "test/cert.pem"
+		val path =  "test/PKCS8_cert.pem"
 		val br = new BufferedReader(new FileReader(path))
 		Security.addProvider(new BouncyCastleProvider())
 
