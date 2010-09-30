@@ -1,6 +1,6 @@
 package org.coriander.oauth.core
 
-import cryptography.{Hmac, Sha1}
+import cryptography.{Sha1, HmacSha1}
 import org.apache.commons.codec.binary.Base64.encodeBase64
 import org.coriander.oauth.core.uri._
 
@@ -8,7 +8,7 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
     def this(
         urlEncoder  : UrlEncoder,
         credentials : CredentialSet,
-        hmac   		: Hmac
+        hmac   		: Sha1
     ) {
         this(urlEncoder, credentials)
         this.hmac = hmac
@@ -68,6 +68,6 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
     }
 
 	private val DEFAULT_TOKEN_SECRET 	= ""
-	private var hmac : Hmac 			= new Sha1
+	private var hmac : Sha1 			= new HmacSha1
     private val encoding 				= org.apache.http.protocol.HTTP.UTF_8
 }

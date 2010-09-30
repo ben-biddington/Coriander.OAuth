@@ -2,7 +2,7 @@ package org.coriander.oauth.core.cryptography
 
 import java.security.{Signature, PrivateKey}
 
-class RsaSha1(key : PrivateKey) extends Hmac {
+class RsaSha1(key : PrivateKey) extends Sha1 {
 	def create(key : String, message : String) : Array[Byte] = {
 		sign(message.getBytes);
 	}

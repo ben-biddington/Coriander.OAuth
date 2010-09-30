@@ -15,7 +15,7 @@ import org.apache.commons.httpclient.util._
 import org.junit.rules._
 import scala.collection.immutable._
 import org.coriander.oauth._
-import core.cryptography.Hmac
+import core.cryptography.Sha1
 import core.uri.{UrlEncoder, OAuthUrlEncoder}
 import core.{CredentialSet, Signature, Credential}
 import CredentialSet._
@@ -27,7 +27,7 @@ class SignatureTest extends TestBase {
     val validConsumerCredential 	= new Credential("key", "secret")
     val validToken 					= new Credential("token_key", "token_secret")
     var urlEncoder 	: UrlEncoder 	= null
-    var hmac 		: Hmac 			= null
+    var hmac 		: Sha1 			= null
 
 	@Before
 	def before {
@@ -112,7 +112,7 @@ class SignatureTest extends TestBase {
 	}
 
 	private def newMockHmac = {
-		val hmac = mock(classOf[Hmac])
+		val hmac = mock(classOf[Sha1])
 		when(hmac.create(anyString, anyString)).thenReturn(new Array[Byte](0))
 		hmac
 	}

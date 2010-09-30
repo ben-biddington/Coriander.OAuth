@@ -9,7 +9,7 @@ import org.junit.matchers._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import org.apache.commons.codec.binary.Base64.encodeBase64
-import org.coriander.oauth.core.cryptography.Sha1
+import org.coriander.oauth.core.cryptography.HmacSha1
 
 class Sha1Test {
 	@Test
@@ -40,7 +40,7 @@ class Sha1Test {
 	}
 
 	private def mac(key : String, message : String) = {
-		val theMac = new Sha1().create(key, message)
+		val theMac = new HmacSha1().create(key, message)
 		new String(encodeBase64(theMac))		
 	}
 }

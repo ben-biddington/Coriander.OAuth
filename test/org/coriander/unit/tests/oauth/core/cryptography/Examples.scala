@@ -10,7 +10,7 @@ import org.bouncycastle.openssl.PEMReader
 import org.bouncycastle.jce.provider.{X509CertificateObject, BouncyCastleProvider}
 import java.io.{FileReader, BufferedReader}
 import org.apache.commons.codec.binary.Base64._
-import org.coriander.oauth.core.cryptography.Hmac
+import org.coriander.oauth.core.cryptography.Sha1
 import org.junit.{Ignore, Test}
 
 class Examples  {
