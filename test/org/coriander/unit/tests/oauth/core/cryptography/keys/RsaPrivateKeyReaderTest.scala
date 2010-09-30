@@ -40,7 +40,7 @@ class RsaPrivateKeyReaderTest {
 			"AO/0isr/3aa6O6NLQxISLKcPDk2NOccAfS/xOtfOz4sJYM3+Bs4Io9+dZGSDCA54" +
 			"Lw03eHTNQghS0A=="
 
-		val actual : PrivateKey = RsaPrivateKeyReader.read("test/example_der.key");
+		val actual = RsaPrivateKeyReader.read("test/example_der.key");
 		val actualAsString = new String(encodeBase64(actual.getEncoded))
 
 		assertThat(actualAsString, is(equalTo(expected)))
