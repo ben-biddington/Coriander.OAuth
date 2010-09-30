@@ -18,8 +18,6 @@ class RsaSha1Test  {
     	val privateKey	= kp.getPrivate
 
     	val sigbytes = signCore(new Array[Byte](1), privateKey, "SHA1withRSA");
-
-		println("Signature(in hex):: " + sigbytes)
 	}
 
 	@Test
@@ -47,22 +45,14 @@ class RsaSha1Test  {
 
 	@Test // See: http://download.oracle.com/javase/1.4.2/docs/api/java/security/Signature.html
 	def how_to_sign_something_with_private_key_from_pem_file {
-		val path =  "test/rsa_cert.pem"
-		val keypair = load(path)
+		val keypair = load(RSA_PEM_FILE)
 
 		val message = "any message".getBytes
 
-		val privateKey = keypair.getPrivate
-		val sig : Signature = Signature.getInstance("SHA1withRSA")
-		sig.initSign(privateKey)
-		sig.update(message)
+		val signature = signCore(message, keypair.getPrivate, "SHA1withRSA")
 
-		val signature = encodeBase64(sig.sign);
-		val expected =
-			"QUJVRzA2VWFKZWJEdzNSc2FMQ3JZZ0M2cW5HaWEyUkVBQUFOQlRtRGEvem8yN21Od0h2S0" +
-			"hBQ3NkVCt0RHNic0RBWkc1YzdTVlQ5U09lWFFKK2NaM1kzQnFybTd0bDBZZFgxb1NYUm9o" +
-			"L1JXYTJqY1BpdkxFenNWQzRoWWhvMG9JbGtwNlNIMXBSYWEyZUlUNUdiWm5SQ1Z4TWgvRXZ" +
-			"1MTJ1MnFMY05HSzRNPQ=="
+		val expected : String = "ABUG06UaJebDw3RsaLCrYgC6qnGia2REAAANBTmDa/zo27mNwHvKHACsdT+tDsbsDAZG5c7SVT9SOeXQJ+cZ3Y3Bqrm7tl0YdX1oSXRoh/RWa2jcPivLEzsVC4hYho0oIlkp6SH1pRaa2eIT5GbZnRCVxMh/Evu12u2qLcNGK4M="
+
 		val actual = new String(encodeBase64(signature))
 
 		assertThat(actual, is(equalTo(expected)))
@@ -70,7 +60,20 @@ class RsaSha1Test  {
 
 	@Test
 	def how_to_verify_a_signature {
+		val message = "any message".getBytes
+		val signature = "ABUG06UaJebDw3RsaLCrYgC6qnGia2REAAANBTmDa/zo27mNwHvKHACsdT+tDsbsDAZG5c7SVT9SOeXQJ+cZ3Y3Bqrm7tl0YdX1oSXRoh/RWa2jcPivLEzsVC4hYho0oIlkp6SH1pRaa2eIT5GbZnRCVxMh/Evu12u2qLcNGK4M="
 
+		val bytes = decodeBase64(signature)
+		
+		val keypair = load(RSA_PEM_FILE)
+
+		val sig : Signature = Signature.getInstance("SHA1withRSA")
+		sig.initVerify(keypair.getPublic)
+		sig.update(message)
+
+		val okay = sig.verify(bytes)
+
+		assertTrue("The signature did not verify", okay)
 	}
 
 	private def load(pemFile : String) : KeyPair = {
@@ -94,8 +97,8 @@ class RsaSha1Test  {
 	) = {
 		val sig = Signature.getInstance(sigAlg);
     	sig.initSign(prvKey);
-		sig.update(message, 0, message.size);
-		sig.sign()
+		sig.update(message);
+		sig.sign
 	}
 
 	private def newKeyPair = {
@@ -105,4 +108,6 @@ class RsaSha1Test  {
 
 		kpg.generateKeyPair()
 	}
+
+	private val RSA_PEM_FILE = "test/rsa_cert.pem"
 }
