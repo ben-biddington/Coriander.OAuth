@@ -48,18 +48,30 @@ class RsaSha1Test  {
 	@Test // See: http://download.oracle.com/javase/1.4.2/docs/api/java/security/Signature.html
 	def how_to_sign_something_with_private_key_from_pem_file {
 		val path =  "test/rsa_cert.pem"
-		val br = new BufferedReader(new FileReader(path))
-		Security.addProvider(new BouncyCastleProvider())
-		val kp : KeyPair = new PEMReader(br).readObject().asInstanceOf[KeyPair]
+		val keypair = load(path)
 
 		val message = "any message".getBytes
 
-		val privateKey = kp.getPrivate
+		val privateKey = keypair.getPrivate
 		val sig : Signature = Signature.getInstance("SHA1withRSA")
 		sig.initSign(privateKey)
 		sig.update(message)
 
 		val signature = sig.sign;
+	}
+
+	private def load(pemFile : String) : KeyPair = {
+		var reader : BufferedReader = null
+
+		try {
+			reader = new BufferedReader(new FileReader(pemFile))
+			Security.addProvider(new BouncyCastleProvider())
+			new PEMReader(reader).readObject().asInstanceOf[KeyPair]
+		} finally {
+			if (reader != null) {
+				reader.close
+			}
+		}
 	}
 
 	private def signCore(
