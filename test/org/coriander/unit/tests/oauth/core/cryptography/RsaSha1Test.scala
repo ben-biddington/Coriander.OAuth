@@ -1,5 +1,6 @@
 package org.coriander.unit.tests.oauth.core.cryptography
 
+import org.junit.Test
 import org.junit.Assert._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
@@ -7,7 +8,6 @@ import java.security._
 import interfaces.RSAPrivateKey
 import spec.PKCS8EncodedKeySpec
 import org.apache.commons.codec.binary.Base64._
-import org.junit.Test
 import org.coriander.oauth.core.cryptography.RsaSha1
 
 class RsaSha1Test  {
