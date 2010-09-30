@@ -16,7 +16,7 @@ class RsaPrivateKeyReaderTest {
 	}
 
 	@Test {val expected = classOf[IOException]}
-	def it_fails_when_file_is_not_in_dsa_format{
+	def it_fails_when_file_is_not_in_correct_format{
 		RsaPrivateKeyReader.read("test/rsa_cert.pem")				
 	}
 

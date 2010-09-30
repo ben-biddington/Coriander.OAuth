@@ -8,10 +8,10 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
     def this(
         urlEncoder  : UrlEncoder,
         credentials : CredentialSet,
-        hmac   		: Sha1
+        sha1   		: Sha1
     ) {
         this(urlEncoder, credentials)
-        this.hmac = hmac
+        this.sha1 = sha1
     }
 
     def this(credentials : CredentialSet) = this(
@@ -26,8 +26,8 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
     }
 
     private def getSignature(baseString : String) : String = {
-		val theHmac = hmac.create(formatKey, baseString)
-		new String(encodeBase64(theHmac))
+		val signature = sha1.create(formatKey, baseString)
+		new String(encodeBase64(signature))
     }
 
     // See: http://oauth.net/core/1.0, section 9.2
@@ -68,6 +68,6 @@ class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
     }
 
 	private val DEFAULT_TOKEN_SECRET 	= ""
-	private var hmac : Sha1 			= new HmacSha1
+	private var sha1 : Sha1 			= new HmacSha1
     private val encoding 				= org.apache.http.protocol.HTTP.UTF_8
 }
