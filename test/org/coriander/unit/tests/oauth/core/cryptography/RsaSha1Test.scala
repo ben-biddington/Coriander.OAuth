@@ -5,9 +5,10 @@ import org.junit.Assert._
 import org.hamcrest.core.Is._
 import org.hamcrest.core.IsEqual._
 import java.security._
-import java.io.{FileReader, BufferedReader}
 import org.bouncycastle.openssl.PEMReader
 import org.bouncycastle.jce.provider.{X509CertificateObject, BouncyCastleProvider}
+import spec.{PKCS8EncodedKeySpec, KeySpec, X509EncodedKeySpec}
+import java.io.{IOException, ByteArrayInputStream, FileReader, BufferedReader}
 
 class RsaSha1Test  {
 	@Test
@@ -26,9 +27,11 @@ class RsaSha1Test  {
 		val path =  "test/cert.pem"
 		val br = new BufferedReader(new FileReader(path))
 		Security.addProvider(new BouncyCastleProvider())
+
 		val certificate : X509CertificateObject = new PEMReader(br).readObject().asInstanceOf[X509CertificateObject]
-	
+	    assertTrue("Certificate load failed", certificate != null)
 		assertThat(certificate.getPublicKey.getAlgorithm, is(equalTo("RSA")))
+		assertThat(certificate.getSignature.size, is(equalTo(128)))
 	}
 
 	@Test
@@ -39,7 +42,24 @@ class RsaSha1Test  {
 		val kp : KeyPair = new PEMReader(br).readObject().asInstanceOf[KeyPair]
 
 		assertThat(kp.getPrivate.getAlgorithm, is(equalTo("RSA")))
-		assertThat(kp.getPublic.getAlgorithm, is(equalTo("RSA")))
+		assertThat(kp.getPublic.getAlgorithm, is(equalTo("RSA")))		
+	}
+
+	@Test // See: http://download.oracle.com/javase/1.4.2/docs/api/java/security/Signature.html
+	def how_to_sign_something_with_private_key_from_pem_file {
+		val path =  "test/rsa_cert.pem"
+		val br = new BufferedReader(new FileReader(path))
+		Security.addProvider(new BouncyCastleProvider())
+		val kp : KeyPair = new PEMReader(br).readObject().asInstanceOf[KeyPair]
+
+		val message = "any message".getBytes
+
+		val privateKey = kp.getPrivate
+		val sig : Signature = Signature.getInstance("SHA1withRSA")
+		sig.initSign(privateKey)
+		sig.update(message)
+
+		val signature = sig.sign;
 	}
 
 	private def signCore(
