@@ -9,16 +9,14 @@ import org.apache.commons.codec.binary.Base64._
 
 object RsaPrivateKeyReader {
 	def read(file : String): PrivateKey = {
-		val theFile = new File(file)
-
-		val allLines : List[String] = fromFile(theFile.getCanonicalPath).getLines.toList
+		val allLines = fromFile(new File(file).getCanonicalPath).getLines.toList
 		val START_TOKEN = "-----BEGIN PRIVATE KEY-----"
 		val END_TOKEN 	= "-----END PRIVATE KEY-----"
 
-		val isDsaFormat = allLines.count((line : String) => line.trim.matches(START_TOKEN)) == 1
+		val isPKCS8Format = allLines.count((line : String) => line.trim.matches(START_TOKEN)) == 1
 
-		if (false == isDsaFormat)
-			throw new IOException("The supplied file does not appear to be in DSA format.")
+		if (false == isPKCS8Format)
+			throw new IOException("The supplied file does not appear to be in PKCS8 format.")
 
 		val justTheKey = linesBetween(file, START_TOKEN, END_TOKEN)
 
@@ -26,12 +24,12 @@ object RsaPrivateKeyReader {
 	}
 
 	private def linesBetween(file : String, start : String, end : String) = {
-		val allLines : List[String] = fromFile(new File(file).getCanonicalPath).getLines.toList
+		val lines = fromFile(new File(file).getCanonicalPath).getLines.toList
 
 		var done = false
 		var started = false
 
-	 	val lines = allLines.takeWhile((line : String) => {
+	 	lines.takeWhile((line : String) => {
 			if (false == started) {
 				started = line.trim.matches(start)
 			}
