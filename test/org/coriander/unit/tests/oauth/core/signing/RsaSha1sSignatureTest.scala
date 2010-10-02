@@ -1,4 +1,4 @@
-package org.coriander.unit.tests.oauth.core.cryptography
+package org.coriander.unit.tests.oauth.core.signing
 
 import org.junit.Test
 import org.junit.Assert._
@@ -8,9 +8,9 @@ import java.security._
 import interfaces.RSAPrivateKey
 import spec.PKCS8EncodedKeySpec
 import org.apache.commons.codec.binary.Base64._
-import org.coriander.oauth.core.cryptography.RsaSha1
+import org.coriander.oauth.core.signing.RsaSha1Signature
 
-class RsaSha1Test  {
+class RsaSha1sSignatureTest  {
 	@Test
 	def it_produces_correct_signature {
 		val privateKey = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALRiMLAh9iimur8V" +
@@ -42,9 +42,9 @@ class RsaSha1Test  {
 		val privSpec : PKCS8EncodedKeySpec = new PKCS8EncodedKeySpec(decodeBase64(privateKey))
         val privKey : RSAPrivateKey = keyFactory.generatePrivate(privSpec).asInstanceOf[RSAPrivateKey]
 
-		val rsaSha1 : RsaSha1 = new RsaSha1(privKey)
-		val signature = rsaSha1.create(null, message)
+		val rsaSha1 = new RsaSha1Signature(privKey)
+		val signature = rsaSha1.sign(message)
 
-		assertThat(new String(encodeBase64(signature)), is(equalTo(expected)))
+		assertThat(signature, is(equalTo(expected)))
 	}
 }

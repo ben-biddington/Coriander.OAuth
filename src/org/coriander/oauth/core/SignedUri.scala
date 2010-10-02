@@ -1,5 +1,6 @@
 package org.coriander.oauth.core
 
+import cryptography.signing.HmacSha1Signature
 import http.HttpVerb
 import java.net.URI
 import org.coriander.{NameValuePair, QueryParser, Query}
@@ -92,7 +93,7 @@ class SignedUri(
 			Options.DEFAULT
         )
 
- 		new Signature(credentials) sign(signatureBaseString)
+ 		new HmacSha1Signature(credentials) sign(signatureBaseString)
     }
 
     private def normalize(query : Query) = normalizer normalize(query)

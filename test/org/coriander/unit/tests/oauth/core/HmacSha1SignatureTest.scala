@@ -16,14 +16,15 @@ import org.junit.rules._
 import scala.collection.immutable._
 import org.coriander.oauth._
 import core.cryptography.Sha1
+import core.cryptography.signing.HmacSha1Signature
 import core.uri.{UrlEncoder, OAuthUrlEncoder}
-import core.{CredentialSet, Signature, Credential}
+import core.{CredentialSet, Credential}
 import CredentialSet._
 import org.coriander.unit.tests.TestBase
 
 // See: http://www.infoq.com/news/2009/07/junit-4.7-rules#
 // For signature examples, see: http://term.ie/oauth/example/client.php
-class SignatureTest extends TestBase {
+class HmacSha1SignatureTest extends TestBase {
     val validConsumerCredential 	= new Credential("key", "secret")
     val validToken 					= new Credential("token_key", "token_secret")
     var urlEncoder 	: UrlEncoder 	= null
@@ -62,7 +63,7 @@ class SignatureTest extends TestBase {
 		val credentials = CredentialSet(forConsumer(validConsumerCredential), andNoToken)
 		val expectedKey = "secret&"
 
-		val signature = new Signature(urlEncoder, credentials, hmac).sign("anything")
+		val signature = new HmacSha1Signature(urlEncoder, credentials, hmac).sign("anything")
 
 		verify(hmac).create(expectedKey, "anything")
 	}
@@ -74,7 +75,7 @@ class SignatureTest extends TestBase {
 		val credentials = CredentialSet(forConsumer(validConsumerCredential), andToken(validToken))
 		val expectedKey = "secret&token_secret"
 
-		val signature = new Signature(urlEncoder, credentials, hmac).sign(baseString)
+		val signature = new HmacSha1Signature(urlEncoder, credentials, hmac).sign(baseString)
 
 		verify(hmac).create(expectedKey, baseString)
 	}
@@ -88,7 +89,7 @@ class SignatureTest extends TestBase {
 
 		urlEncoder = mock(classOf[UrlEncoder])
 
-		new Signature(urlEncoder, credentials, hmac).sign("anything")
+		new HmacSha1Signature(urlEncoder, credentials, hmac).sign("anything")
 
 		verify(urlEncoder).encode("secret with spaces")
 		verify(urlEncoder).encode("token secret with spaces")
@@ -106,7 +107,7 @@ class SignatureTest extends TestBase {
         val credentials = CredentialSet(consumer, token)
 
 		val expected = "ZZ3oRaIMA4dg4HrS63qokpKwGbY="
-		val actual = new Signature(credentials) sign(baseString)
+		val actual = new HmacSha1Signature(credentials) sign(baseString)
 
 		assertThat(actual, is(equalTo(expected)))
 	}
@@ -117,15 +118,15 @@ class SignatureTest extends TestBase {
 		hmac
 	}
 
-    private def newSignature(consumerCredential : Credential) : Signature = {
+    private def newSignature(consumerCredential : Credential) : HmacSha1Signature = {
         newSignature(consumerCredential, null)
     }
 
-    private def newSignature(consumer  : Credential, token : Credential) : Signature = {
+    private def newSignature(consumer  : Credential, token : Credential) : HmacSha1Signature = {
         val credentials = CredentialSet(
             forConsumer(consumer),
             andToken(token)
         )
-        new Signature(urlEncoder, credentials, hmac)
+        new HmacSha1Signature(urlEncoder, credentials, hmac)
     }
 }

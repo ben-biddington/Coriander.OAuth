@@ -1,10 +1,12 @@
-package org.coriander.oauth.core
+package org.coriander.oauth.core.cryptography.signing
 
-import cryptography.{Sha1, HmacSha1}
 import org.apache.commons.codec.binary.Base64.encodeBase64
 import org.coriander.oauth.core.uri._
+import org.coriander.oauth.core.CredentialSet
+import org.coriander.oauth.core.cryptography.Sha1
+import org.coriander.oauth.core.signing.Signature
 
-class Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) {
+class HmacSha1Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) extends Signature {
     def this(
         urlEncoder  : UrlEncoder,
         credentials : CredentialSet,
