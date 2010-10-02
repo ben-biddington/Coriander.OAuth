@@ -24,7 +24,7 @@ class Examples  {
 
 	@Test
 	def how_to_load_x509_certificate_with_bouncy_castle {
-		val path =  "test/PKCS8_cert.pem"
+		val path =  "test/res/PKCS8_cert.pem"
 		val br = new BufferedReader(new FileReader(path))
 		Security.addProvider(new BouncyCastleProvider())
 
@@ -73,8 +73,7 @@ class Examples  {
 
 	@Test
 	def how_to_load_key_pair_from_pem_files_with_bouncy_castle {
-		val path =  "test/rsa_cert.pem"
-		val br = new BufferedReader(new FileReader(path))
+		val br = new BufferedReader(new FileReader(RSA_PEM_FILE))
 		Security.addProvider(new BouncyCastleProvider())
 		val kp : KeyPair = new PEMReader(br).readObject().asInstanceOf[KeyPair]
 
@@ -154,5 +153,5 @@ class Examples  {
 		kpg.generateKeyPair()
 	}
 
-	private val RSA_PEM_FILE = "test/rsa_cert.pem"
+	private val RSA_PEM_FILE = "test/res/cert.pem"
 }

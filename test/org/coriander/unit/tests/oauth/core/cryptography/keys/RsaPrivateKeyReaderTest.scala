@@ -17,7 +17,7 @@ class RsaPrivateKeyReaderTest {
 
 	@Test {val expected = classOf[IOException]}
 	def it_fails_when_file_is_not_in_correct_format{
-		RsaPrivateKeyReader.read("test/rsa_cert.pem")				
+		RsaPrivateKeyReader.read("test/res/cert.pem")
 	}
 
 	@Test
@@ -37,7 +37,7 @@ class RsaPrivateKeyReaderTest {
 			"AO/0isr/3aa6O6NLQxISLKcPDk2NOccAfS/xOtfOz4sJYM3+Bs4Io9+dZGSDCA54" +
 			"Lw03eHTNQghS0A=="
 
-		val actual = RsaPrivateKeyReader.read("test/example_der.key");
+		val actual = RsaPrivateKeyReader.read("test/res/pxcs8.key");
 		val actualAsString = new String(encodeBase64(actual.getEncoded))
 
 		assertThat(actualAsString, is(equalTo(expected)))
