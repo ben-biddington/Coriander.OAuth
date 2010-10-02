@@ -12,7 +12,7 @@ import org.coriander.oauth.core.cryptography.keys.RsaPrivateKeyReader
 class RsaPrivateKeyReaderTest {
 	@Test {val expected = classOf[IOException]}
 	def it_fails_when_file_not_found {
-		RsaPrivateKeyReader.read("xxx_bung_file")
+		RsaPrivateKeyReader.read("xxx_bung_file_xxx")
 	}
 
 	@Test {val expected = classOf[IOException]}
