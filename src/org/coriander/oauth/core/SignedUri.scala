@@ -7,6 +7,7 @@ import org.coriander.{NameValuePair, QueryParser, Query}
 import collection.mutable.ListBuffer
 import uri.OAuthUrlEncoder
 
+// TODO: Consider adding support for RSA-SHA1
 class SignedUri(
     uri 		: URI,
     credentials : CredentialSet,
