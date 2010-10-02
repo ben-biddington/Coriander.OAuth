@@ -6,6 +6,7 @@ import org.coriander.oauth.core.CredentialSet
 import org.coriander.oauth.core.cryptography.Sha1
 import org.coriander.oauth.core.signing.Signature
 
+// TODO: Do we need the sha1 abstraction any longer?
 class HmacSha1Signature(urlEncoder : UrlEncoder, credentials : CredentialSet) extends Signature {
     def this(
         urlEncoder  : UrlEncoder,
