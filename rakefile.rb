@@ -4,7 +4,7 @@ desc 'Generate HTML from readme'
 task :readme_preview do
 	require 'maruku'
 	
-	readme = 'README.markdown'
+	readme = 'README.md'
 	
 	fail("Error. There is no #{readme} in <#{pwd}>") unless File.exists?(readme)
 	
