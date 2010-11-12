@@ -24,7 +24,7 @@ class AuthorizationHeader(
         
         "realm=\""                  + realm + "\"," +
         "oauth_consumer_key=\""     + urlEncoder.%%(credentials.consumer.key) + "\"," +
-        "oauth_token=\""            + urlEncoder.%%(credentials.token.key) + "\"," +
+        "oauth_token=\""            + (if (credentials.hasToken) urlEncoder.%%(credentials.token.key) else "") + "\"," +
         "oauth_signature_method=\"" + urlEncoder.%%(options.signatureMethod) + "\"," +
         "oauth_signature=\""        + urlEncoder.%%(signature) + "\"," +
         "oauth_timestamp=\""        + urlEncoder.%%(timestamp) + "\"," +
