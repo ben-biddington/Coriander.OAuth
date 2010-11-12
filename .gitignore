@@ -5,3 +5,4 @@ reports/
 scala.oauth.properties
 scala.oauth.xml
 *.iml
+readme.html
