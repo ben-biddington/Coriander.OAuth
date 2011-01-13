@@ -37,9 +37,7 @@ object RsaPrivateKeyReader {
 			done = line.trim.matches(end)
 
 			started && !done
-		})
-
-		lines.slice(1, lines.size)
+		}).slice(1, lines.size)
 	}
 
 	private def toPrivateKey(encodedKey : String) = {
