@@ -20,6 +20,9 @@
                 <attribute name="Author" value="Ben Biddington"/>
                 <attribute name="Version" value="${app.version}"/>
             </manifest>
+			<fileset dir="${basedir}">
+                <include name="LICENSE"/>
+            </fileset>
         </jar>
     </target>
 		
