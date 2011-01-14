@@ -41,9 +41,7 @@ task :license do
 	
 	total = skipped + added
 	
-	puts "Process (#{total}) files, added (#{added}), skipped (#{skipped})"
-	
-	#all_file_types = Dir.glob("**/*.*").sort.uniq
+	puts "Processed (#{total}) files, added (#{added}), skipped (#{skipped})"
 end
 
 desc 'Generates github-styled html from a markdown file and writes it to stdout'
