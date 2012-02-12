@@ -10,7 +10,7 @@
     <url>http://maven.apache.org</url>
     <build>
 		<sourceDirectory>src/org/coriander</sourceDirectory>
-    	<testSourceDirectory>src/test/org.coriander.oauth.unit.tests</testSourceDirectory>
+    	<testSourceDirectory>test/org/coriander/</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <version>4.7</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
@@ -75,6 +75,21 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 			<version>4.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk16</artifactId>
+			<version>1.46</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.7.7</version>
 		</dependency>
     </dependencies>
     <properties>
